@@ -1,4 +1,4 @@
-# worldcup-dashboard
+# v1.0-group-dashboard
 A dashboard that automatically fetches 2026 FIFA World Cup group stage data from Wikipedia.
 
 Features

@@ -5,3 +5,4 @@ html5lib
 ipywidgets
 matplotlib
 beautifulsoup4
+streamlit

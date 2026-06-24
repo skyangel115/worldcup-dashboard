@@ -1,1 +1,8 @@
 # worldcup-dashboard
+A dashboard that automatically fetches 2026 FIFA World Cup group stage data from Wikipedia.
+
+Features
+- Group standings
+- Match matrix
+- Remaining matches
+- Qualification status

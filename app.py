@@ -5,9 +5,6 @@ st.set_page_config(page_title="World Cup Dashboard", layout="wide")
 st.title("🌍 World Cup Group Dashboard")
 st.write("Choose a group to view standings, match matrix, and remaining matches.")
 
-selected_group = st.selectbox("Group", list("ABCDEFGHIJKL"))
-st.write("Selected group:", selected_group)
-
 # =====================
 # Load Libraries
 # =====================
@@ -62,6 +59,8 @@ for group_label, table_idx in zip(list("ABCDEFGHIJKL"), standing_tables):
     )
 
     groups[group_label] = teams
+selected_group = st.selectbox("Group", sorted(groups.keys()))
+st.write("Selected group:", selected_group)
 
 # =====================
 # Extract Match Results
@@ -340,3 +339,4 @@ def show_group(selected_group):
         hide_index=True
     )
 show_group(selected_group)
+

@@ -338,5 +338,37 @@ def show_group(selected_group):
         use_container_width=True,
         hide_index=True
     )
+    # =====================
+    # Match Matrix
+    # =====================
+    matrix = pd.DataFrame(
+        "⏳",
+        index=teams,
+        columns=teams
+    )
+
+    for team in teams:
+        matrix.loc[team, team] = "—"
+
+    for g, team1, score1, team2, score2 in matches:
+        if g != selected_group:
+            continue
+
+        matrix.loc[team1, team2] = f"{score1}-{score2}"
+        matrix.loc[team2, team1] = f"{score2}-{score1}"
+    st.subheader(f"Group {selected_group} Match Matrix")
+
+    st.dataframe(
+        matrix.reset_index().rename(columns={"index": ""}),
+        use_container_width=True,
+        hide_index=True
+    )
+
+
+
+
+
+
+
 show_group(selected_group)
 

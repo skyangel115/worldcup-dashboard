@@ -6,3 +6,7 @@ Features
 - Match matrix
 - Remaining matches
 - Qualification status
+- Head-to-head ranking
+- First-place scenario probability
+- Top-2 qualification probability
+- Interactive dashboard

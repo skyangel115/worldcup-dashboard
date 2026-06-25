@@ -318,7 +318,6 @@ def rank_with_head_to_head(sim, all_matches, group):
     return ranked
 
 def calculate_group_status_and_probability(group, table, matrix):
-    st.write("Calculating:", group)
     teams = list(table.index)
 
     remaining_games = []
@@ -330,6 +329,33 @@ def calculate_group_status_and_probability(group, table, matrix):
 
             if matrix.loc[t1, t2] == "⏳":
                 remaining_games.append((t1, t2))
+    if len(remaining_games) == 0:
+        final_ranked = rank_with_head_to_head(
+            table[["MP","W","D","L","GF","GA","GD","Pts"]].copy(),
+            matches,
+            group
+        )
+
+        statuses = {}
+        probabilities = {}
+        first_probabilities = {}
+
+        for idx, team in enumerate(final_ranked.index):
+            position = idx + 1
+
+            probabilities[team] = 100.0 if position <= 2 else 0.0
+            first_probabilities[team] = 100.0 if position == 1 else 0.0
+
+            if position == 1:
+                statuses[team] = "🥇 Winner"
+            elif position == 2:
+                statuses[team] = "🥈 Runner-up"
+            elif position == 3:
+                statuses[team] = "🥉 Third Place"
+            else:
+                statuses[team] = "❌ Fourth Place"
+
+        return statuses, probabilities, first_probabilities
 
     possible_scores = []
 
@@ -549,8 +575,16 @@ def show_group(selected_group):
 # =====================
 # Group Standings
 # =====================
-    table, matrix, statuses, probabilities, first_probabilities = get_group_data(selected_group)
+
+    table = build_group_table(selected_group)
+    matrix = build_group_matrix(selected_group, table)
     teams = list(table.index)
+
+    statuses, probabilities, first_probabilities = calculate_group_status_and_probability(
+        selected_group,
+        table,
+        matrix
+    )
 
     table["Status"] = [statuses[team] for team in table.index]
     table["1st Scenario %"] = [first_probabilities[team] for team in table.index]

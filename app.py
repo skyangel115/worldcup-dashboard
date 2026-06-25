@@ -548,7 +548,7 @@ def show_group(selected_group):
 # =====================
 # Group Standings
 # =====================
-    table, matrix, statuses, probabilities, first_probabilities = get_group_data(group)
+    table, matrix, statuses, probabilities, first_probabilities = get_group_data(selected_group)
 
     table["Status"] = [statuses[team] for team in table.index]
     table["1st Scenario %"] = [first_probabilities[team] for team in table.index]
@@ -1191,7 +1191,7 @@ def show_tournament():
     eliminated = []
 
     for group in sorted(groups.keys()):
-        ranked, matrix, statuses, _, _ = get_group_data(selected_group)
+        ranked, matrix, statuses, _, _ = get_group_data(group)
         remaining_count = (matrix.values == "⏳").sum() // 2
 
         # 剩餘比賽不多時，直接用原本完整 simulation 判斷，包含 H2H

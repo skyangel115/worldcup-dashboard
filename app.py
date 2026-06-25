@@ -89,11 +89,15 @@ st.markdown("### 🌍 Select Group")
 
 selected_group_label = st.selectbox(
     "Group",
-    options=list(group_options.keys()),
+    options=list(group_options.values()),
     label_visibility="collapsed"
 )
 
-selected_group = selected_group_label
+selected_group = [
+    g for g, label in group_options.items()
+    if label == selected_group_label
+][0]
+
 #st.write("Selected group:", selected_group)
 
 # =====================

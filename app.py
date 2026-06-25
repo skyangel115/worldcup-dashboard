@@ -409,18 +409,18 @@ def show_group(selected_group):
 
     summary_cols = st.columns(4)
 
-    for col, (label, team) in zip(summary_cols, summary_items):
+    border_colors = ["#1f4e79", "#2a9d8f", "#f4a261", "#d62828"]
+
+    for i, (col, (label, team)) in enumerate(zip(summary_cols, summary_items)):
+
+        border_color = border_colors[i]
+
         pts = table.loc[team, "Pts"]
         gd = table.loc[team, "GD"]
         top2 = table.loc[team, "Top 2 Scenario %"]
         status = table.loc[team, "Status"]
 
         gd_text = f"+{gd}" if gd > 0 else str(gd)
-
-    border_colors = ["#1f4e79", "#2a9d8f", "#f4a261", "#d62828"]
-
-        for i, (col, (label, team)) in enumerate(zip(summary_cols, summary_items)):
-            border_color = border_colors[i]
 
         with col:
             st.markdown(
@@ -437,9 +437,11 @@ def show_group(selected_group):
                     <div style="font-size:14px;color:#6b7280;margin-bottom:8px;">
                         {label}
                     </div>
+
                     <div style="font-size:22px;font-weight:700;margin-bottom:8px;">
                         {team}
                     </div>
+
                     <div style="font-size:14px;line-height:1.9;color:#374151;">
                         <b>Pts</b> {pts}<br>
                         <b>GD</b> {gd_text}<br>

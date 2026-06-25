@@ -484,8 +484,6 @@ font-weight:600;
     st.subheader(f"Group {selected_group} Standings")
     standings_df = table.reset_index().rename(columns={"index": "Team"})
 
-    standings_df = table.reset_index().rename(columns={"index": "Team"})
-
     row_colors = [
         "#E8F6EF",  # 1st
         "#EEF7FF",  # 2nd
@@ -493,8 +491,7 @@ font-weight:600;
         "#FFF1F2"   # 4th
     ]
 
-    html = """
-    <div style="width:100%; overflow-x:auto;">
+    html = """<div style="width:100%; overflow-x:auto;">
     <table style="
         width:100%;
         border-collapse:separate;

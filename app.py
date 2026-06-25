@@ -409,42 +409,75 @@ def show_group(selected_group):
 
     summary_cols = st.columns(4)
 
-    border_colors = ["#1f4e79", "#2a9d8f", "#f4a261", "#d62828"]
+    border_colors = ["#0057B8", "#2BA84A", "#F4A300", "#D7263D"]
+    background_colors = ["#F5FAFF", "#F4FCF6", "#FFFAF2", "#FFF5F5"]
 
     for i, (col, (label, team)) in enumerate(zip(summary_cols, summary_items)):
 
         border_color = border_colors[i]
+        background = background_colors[i]
 
         pts = table.loc[team, "Pts"]
         gd = table.loc[team, "GD"]
-        top2 = table.loc[team, "Top 2 Scenario %"]
+        gf = table.loc[team, "GF"]
         status = table.loc[team, "Status"]
 
         gd_text = f"+{gd}" if gd > 0 else str(gd)
 
         with col:
-            card_html = f"""<div style="
-background:#ffffff;
+            card_html = f"""
+<div style="
+background:{background};
 border:1px solid #e5e7eb;
-border-left:6px solid {border_color};
+border-top:7px solid {border_color};
 border-radius:16px;
 padding:18px;
 box-shadow:0 4px 12px rgba(0,0,0,0.06);
-min-height:155px;
+min-height:170px;
 ">
-<div style="font-size:14px;color:#6b7280;margin-bottom:8px;">
+
+<div style="
+font-size:14px;
+color:#6b7280;
+margin-bottom:10px;
+">
 {label}
 </div>
-<div style="font-size:22px;font-weight:700;margin-bottom:8px;">
+
+<div style="
+font-size:30px;
+font-weight:700;
+margin-bottom:14px;
+color:#222;
+">
 {team}
 </div>
-<div style="font-size:14px;line-height:1.9;color:#374151;">
+
+<div style="
+font-size:15px;
+line-height:2;
+color:#374151;
+">
 <b>Pts</b> {pts}<br>
 <b>GD</b> {gd_text}<br>
-<b>Top 2</b> {top2:.1f}%<br>
-<b>Status</b> {status}
+<b>GF</b> {gf}
 </div>
-</div>"""
+
+<hr style="
+border:none;
+border-top:1px solid #dddddd;
+margin:12px 0;
+">
+
+<div style="
+font-size:16px;
+font-weight:600;
+">
+{status}
+</div>
+
+</div>
+"""
 
             st.markdown(card_html, unsafe_allow_html=True)
 
@@ -500,8 +533,14 @@ min-height:155px;
             ])
         )
 
+    table_html = style_standings(standings_df).to_html()
+
     st.markdown(
-        style_standings(standings_df).to_html(),
+        f"""
+    <div style="width:100%; overflow-x:auto;">
+    {table_html}
+    </div>
+    """,
         unsafe_allow_html=True
     )
 

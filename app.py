@@ -787,7 +787,99 @@ color:#B45309;
 
         st.markdown("#### Upcoming Matches")
         st.markdown(remaining_cards, unsafe_allow_html=True)
-        
+        # =====================
+        # Score Simulator
+        # =====================
+        st.markdown("### 🎮 Score Simulator")
+
+        remaining_games = []
+
+        for i in range(len(teams)):
+            for j in range(i + 1, len(teams)):
+                t1 = teams[i]
+                t2 = teams[j]
+                if matrix.loc[t1, t2] == "⏳":
+                    remaining_games.append((t1, t2))
+
+        if len(remaining_games) == 0:
+            st.success("No remaining matches to simulate.")
+        else:
+            sim_scores = []
+
+            for idx, (t1, t2) in enumerate(remaining_games):
+                st.markdown(f"#### {t1} vs {t2}")
+
+                c1, c2, c3 = st.columns([1, 0.3, 1])
+
+                with c1:
+                    s1 = st.number_input(
+                        t1,
+                        min_value=0,
+                        max_value=20,
+                        value=0,
+                        step=1,
+                        key=f"sim_{selected_group}_{idx}_{t1}"
+                    )
+
+                with c2:
+                    st.markdown(
+                        "<div style='text-align:center;font-size:26px;font-weight:800;margin-top:30px;'>-</div>",
+                        unsafe_allow_html=True
+                    )
+
+                with c3:
+                    s2 = st.number_input(
+                        t2,
+                        min_value=0,
+                        max_value=20,
+                        value=0,
+                        step=1,
+                        key=f"sim_{selected_group}_{idx}_{t2}"
+                    )
+
+                sim_scores.append((t1, int(s1), t2, int(s2)))
+
+            if st.button("Run Simulation", use_container_width=True):
+                sim_table = table[["MP","W","D","L","GF","GA","GD","Pts"]].copy()
+                sim_matches = matches.copy()
+
+                for t1, s1, t2, s2 in sim_scores:
+                    sim_matches.append((selected_group, t1, s1, t2, s2))
+
+                    sim_table.loc[t1, "MP"] += 1
+                    sim_table.loc[t2, "MP"] += 1
+
+                    sim_table.loc[t1, "GF"] += s1
+                    sim_table.loc[t1, "GA"] += s2
+                    sim_table.loc[t2, "GF"] += s2
+                    sim_table.loc[t2, "GA"] += s1
+
+                    if s1 > s2:
+                        sim_table.loc[t1, "W"] += 1
+                        sim_table.loc[t2, "L"] += 1
+                        sim_table.loc[t1, "Pts"] += 3
+                    elif s1 < s2:
+                        sim_table.loc[t2, "W"] += 1
+                        sim_table.loc[t1, "L"] += 1
+                        sim_table.loc[t2, "Pts"] += 3
+                    else:
+                        sim_table.loc[t1, "D"] += 1
+                        sim_table.loc[t2, "D"] += 1
+                        sim_table.loc[t1, "Pts"] += 1
+                        sim_table.loc[t2, "Pts"] += 1
+
+                sim_table["GD"] = sim_table["GF"] - sim_table["GA"]
+                sim_table = rank_with_head_to_head(sim_table, sim_matches, selected_group)
+
+                st.markdown("### 🧪 Simulated Final Standings")
+                st.dataframe(
+                    sim_table.reset_index().rename(columns={"index": "Team"}),
+                    use_container_width=True,
+                    hide_index=True
+                )
+
+
+    
     # =====================
     # Top 2 Scenario Chart
     # =====================

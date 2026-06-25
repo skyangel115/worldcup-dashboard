@@ -310,6 +310,29 @@ def rank_with_head_to_head(sim, all_matches, group):
 
     return ranked
 
+def get_group_status(group, ranked, matrix):
+    if "group_status_cache" not in st.session_state:
+        st.session_state.group_status_cache = {}
+
+    cache = st.session_state.group_status_cache
+
+    cache_key = (
+        group,
+        tuple(matches),
+        tuple(groups[group])
+    )
+
+    if cache_key not in cache:
+        statuses, probabilities, first_probabilities = calculate_group_status_and_probability(
+            group,
+            ranked,
+            matrix
+        )
+
+        cache[cache_key] = (statuses, probabilities, first_probabilities)
+
+    return cache[cache_key]
+
 def calculate_group_status_and_probability(group, table, matrix):
     teams = list(table.index)
 
@@ -571,7 +594,7 @@ def show_group(selected_group):
         matrix.loc[team1, team2] = f"{score1}-{score2}"
         matrix.loc[team2, team1] = f"{score2}-{score1}"
 
-    statuses, probabilities, first_probabilities = calculate_group_status_and_probability(
+    statuses, probabilities, first_probabilities = get_group_status(
         selected_group,
         table,
         matrix
@@ -1236,7 +1259,7 @@ def show_tournament():
 
         # 剩餘比賽不多時，直接用原本完整 simulation 判斷，包含 H2H
         if remaining_count <= 2:
-            statuses, _, _ = calculate_group_status_and_probability(
+            statuses, _, _ = get_group_status(
                 group,
                 ranked,
                 matrix

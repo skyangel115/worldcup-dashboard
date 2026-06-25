@@ -638,19 +638,9 @@ display:inline-block;
     with col2:
         st.subheader("Matches")
 
-        played = []
-        for g, team1, score1, team2, score2 in matches:
-            if g == selected_group:
-                played.append(f"✅ {team1} {score1}-{score2} {team2}")
-
-        remaining = []
-        for i in range(len(teams)):
-            for j in range(i + 1, len(teams)):
-                t1 = teams[i]
-                t2 = teams[j]
-                if matrix.loc[t1, t2] == "⏳":
-                    remaining.append(f"⏳ {t1} vs {t2}")
-
+        # =====================
+        # Played Match Cards
+        # =====================
         played_cards = ""
 
         for g, team1, score1, team2, score2 in matches:
@@ -658,63 +648,85 @@ display:inline-block;
                 continue
 
             played_cards += f"""<div style="
-        background:white;
-        border:1px solid #e5e7eb;
-        border-radius:14px;
-        padding:14px;
-        margin-bottom:12px;
-        box-shadow:0 2px 8px rgba(0,0,0,.06);
-        ">
-        <div style="
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        font-size:15px;
-        font-weight:700;
-        ">
-        <span>{team1}</span>
-        <span style="
-        font-size:20px;
-        font-weight:800;
-        color:#1f2937;
-        background:#EEF7FF;
-        padding:4px 14px;
-        border-radius:999px;
-        ">{score1} - {score2}</span>
-        <span>{team2}</span>
-        </div>
-        <div style="
-        margin-top:8px;
-        font-size:13px;
-        color:#16a34a;
-        font-weight:700;
-        ">
-        ✔ Finished
-        </div>
-        </div>"""
+background:white;
+border:1px solid #e5e7eb;
+border-radius:14px;
+padding:16px;
+margin-bottom:12px;
+box-shadow:0 2px 8px rgba(0,0,0,.06);
+">
+<div style="
+display:grid;
+grid-template-columns:1fr auto 1fr;
+align-items:center;
+gap:12px;
+font-size:15px;
+font-weight:700;
+">
+<span style="text-align:left;">{team1}</span>
+<span style="
+font-size:20px;
+font-weight:800;
+color:#1f2937;
+background:#EEF7FF;
+padding:6px 16px;
+border-radius:999px;
+">{score1} - {score2}</span>
+<span style="text-align:right;">{team2}</span>
+</div>
+</div>"""
 
         if not played_cards:
             played_cards = "No played matches yet"
 
         st.markdown("#### Played Matches")
         st.markdown(played_cards, unsafe_allow_html=True)
-        
-        st.markdown("#### Upcoming Matches")
-        st.markdown(
-            f"""
-            <div style="
-                background:#fff3cd;
-                padding:14px;
-                border-radius:12px;
-                line-height:2;
-                border:1px solid #ffe69c;
-            ">
-                {remaining_html}
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
 
+        # =====================
+        # Upcoming Match Cards
+        # =====================
+        remaining_cards = ""
+
+        for i in range(len(teams)):
+            for j in range(i + 1, len(teams)):
+                t1 = teams[i]
+                t2 = teams[j]
+
+                if matrix.loc[t1, t2] == "⏳":
+                    remaining_cards += f"""<div style="
+background:#FFFBEB;
+border:1px solid #FDE68A;
+border-radius:14px;
+padding:16px;
+margin-bottom:12px;
+box-shadow:0 2px 8px rgba(0,0,0,.05);
+">
+<div style="
+display:grid;
+grid-template-columns:1fr auto 1fr;
+align-items:center;
+gap:12px;
+font-size:15px;
+font-weight:700;
+">
+<span style="text-align:left;">{t1}</span>
+<span style="
+background:#FFF3CD;
+padding:6px 14px;
+border-radius:999px;
+font-weight:800;
+color:#B45309;
+">VS</span>
+<span style="text-align:right;">{t2}</span>
+</div>
+</div>"""
+
+        if not remaining_cards:
+            remaining_cards = "No remaining matches"
+
+        st.markdown("#### Upcoming Matches")
+        st.markdown(remaining_cards, unsafe_allow_html=True)
+        
     # =====================
     # Top 2 Scenario Chart
     # =====================

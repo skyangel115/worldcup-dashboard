@@ -3,7 +3,7 @@ import streamlit as st
 st.set_page_config(page_title="World Cup Dashboard", layout="wide")
 
 st.title("🌍 FIFA World Cup 2026 Group Dashboard")
-st.write("Choose a group to view standings, match matrix, and remaining matches.")
+st.write("Choose a group to view standings, match matrix, and upcoming matches.")
 st.caption(
     "⚠ Scenario percentages are based on simulated scorelines from 0–7 goals per team and represent scenario frequency, not real-world match probabilities."
 )
@@ -61,6 +61,7 @@ for group_label, table_idx in zip(list("ABCDEFGHIJKL"), standing_tables):
     )
 
     groups[group_label] = teams
+
 group_options = {
     g: f"Group {g} — {', '.join(groups[g])}"
     for g in sorted(groups.keys())
@@ -650,26 +651,55 @@ display:inline-block;
                 if matrix.loc[t1, t2] == "⏳":
                     remaining.append(f"⏳ {t1} vs {t2}")
 
-        played_html = "<br>".join(played) if played else "No played matches yet"
-        remaining_html = "<br>".join(remaining) if remaining else "✅ No remaining matches"
+        played_cards = ""
+
+        for g, team1, score1, team2, score2 in matches:
+            if g != selected_group:
+                continue
+
+            played_cards += f"""<div style="
+        background:white;
+        border:1px solid #e5e7eb;
+        border-radius:14px;
+        padding:14px;
+        margin-bottom:12px;
+        box-shadow:0 2px 8px rgba(0,0,0,.06);
+        ">
+        <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        font-size:15px;
+        font-weight:700;
+        ">
+        <span>{team1}</span>
+        <span style="
+        font-size:20px;
+        font-weight:800;
+        color:#1f2937;
+        background:#EEF7FF;
+        padding:4px 14px;
+        border-radius:999px;
+        ">{score1} - {score2}</span>
+        <span>{team2}</span>
+        </div>
+        <div style="
+        margin-top:8px;
+        font-size:13px;
+        color:#16a34a;
+        font-weight:700;
+        ">
+        ✔ Finished
+        </div>
+        </div>"""
+
+        if not played_cards:
+            played_cards = "No played matches yet"
 
         st.markdown("#### Played Matches")
-        st.markdown(
-            f"""
-            <div style="
-                background:#f8f9fa;
-                padding:14px;
-                border-radius:12px;
-                line-height:2;
-                border:1px solid #e9ecef;
-            ">
-                {played_html}
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-        st.markdown("#### Remaining Matches")
+        st.markdown(played_cards, unsafe_allow_html=True)
+        
+        st.markdown("#### Upcoming Matches")
         st.markdown(
             f"""
             <div style="

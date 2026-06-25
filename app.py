@@ -4,6 +4,9 @@ st.set_page_config(page_title="World Cup Dashboard", layout="wide")
 
 st.title("🌍 World Cup Group Dashboard")
 st.write("Choose a group to view standings, match matrix, and remaining matches.")
+st.caption(
+    "⚠ Scenario percentages are based on simulated scorelines from 0–7 goals per team and represent scenario frequency, not real-world match probabilities."
+)
 
 # =====================
 # Load Libraries
@@ -13,7 +16,6 @@ import pandas as pd
 import requests
 import re
 from io import StringIO
-import matplotlib.pyplot as plt
 
 # =====================
 #Load data from Wikipedia
@@ -399,7 +401,7 @@ def show_group(selected_group):
     # =====================
     # Matrix + Match List
     # =====================
-    col1, col2 = st.columns([1.4, 1])
+    col1, col2 = st.columns([1.6, 0.8])
 
     with col1:
         st.subheader(f"Group {selected_group} Match Matrix")
@@ -415,16 +417,7 @@ def show_group(selected_group):
         played = []
         for g, team1, score1, team2, score2 in matches:
             if g == selected_group:
-                played.append({"Match": f"{team1} {score1}-{score2} {team2}"})
-
-        played_df = pd.DataFrame(played, columns=["Match"])
-
-        st.markdown("#### Played Matches")
-        if len(played_df) > 0:
-            for m in played_df["Match"]:
-                st.write(f"✅ {m}")
-        else:
-            st.info("No played matches yet")
+                played.append(f"✅ {team1} {score1}-{score2} {team2}")
 
         remaining = []
         for i in range(len(teams)):
@@ -432,47 +425,76 @@ def show_group(selected_group):
                 t1 = teams[i]
                 t2 = teams[j]
                 if matrix.loc[t1, t2] == "⏳":
-                    remaining.append({"Match": f"{t1} vs {t2}"})
+                    remaining.append(f"⏳ {t1} vs {t2}")
 
-        remaining_df = pd.DataFrame(remaining, columns=["Match"])
+        played_html = "<br>".join(played) if played else "No played matches yet"
+        remaining_html = "<br>".join(remaining) if remaining else "✅ No remaining matches"
+
+        st.markdown("#### Played Matches")
+        st.markdown(
+            f"""
+            <div style="
+                background:#f8f9fa;
+                padding:14px;
+                border-radius:12px;
+                line-height:2;
+                border:1px solid #e9ecef;
+            ">
+                {played_html}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
         st.markdown("#### Remaining Matches")
-        if len(remaining_df) > 0:
-            for m in remaining_df["Match"]:
-                st.write(f"⏳ {m}")
-        else:
-            st.success("No remaining matches")
+        st.markdown(
+            f"""
+            <div style="
+                background:#fff3cd;
+                padding:14px;
+                border-radius:12px;
+                line-height:2;
+                border:1px solid #ffe69c;
+            ">
+                {remaining_html}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
     # =====================
     # Top 2 Scenario Chart
     # =====================
     st.subheader(f"Group {selected_group} Top 2 Qualification Chance")
 
-    chance_df = table[["Top 2 Scenario %"]].sort_values(
-        "Top 2 Scenario %",
-        ascending=False
-    )
+    chart_col, _ = st.columns([0.65, 0.35])
 
-    for team, row in chance_df.iterrows():
-        prob = row["Top 2 Scenario %"]
-
-        st.markdown(
-            f"""
-            <div style="
-                display:flex;
-                justify-content:space-between;
-                align-items:center;
-                margin-top:12px;
-                font-size:16px;
-            ">
-                <span><b>{team}</b></span>
-                <span>{prob:.1f}%</span>
-            </div>
-            """,
-            unsafe_allow_html=True
+    with chart_col:
+        chance_df = table[["Top 2 Scenario %"]].sort_values(
+            "Top 2 Scenario %",
+            ascending=False
         )
 
-        st.progress(prob / 100)
+        for team, row in chance_df.iterrows():
+            prob = row["Top 2 Scenario %"]
+
+            st.markdown(
+                f"""
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    margin-top:12px;
+                    font-size:16px;
+                ">
+                    <span><b>{team}</b></span>
+                    <span>{prob:.1f}%</span>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            st.progress(prob / 100)
 
 
 

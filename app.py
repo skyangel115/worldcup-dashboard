@@ -318,6 +318,7 @@ def rank_with_head_to_head(sim, all_matches, group):
     return ranked
 
 def calculate_group_status_and_probability(group, table, matrix):
+    st.write("Calculating:", group)
     teams = list(table.index)
 
     remaining_games = []

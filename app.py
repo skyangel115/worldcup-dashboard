@@ -1144,108 +1144,74 @@ def show_best_third():
     )
 
 def show_tournament():
-    st.header("🏆 Tournament Overview")
-    st.subheader("🏅 Projected Round of 32")
+    st.header("🏆 Knockout Qualification")
     st.caption(
-        "Round of 32 pairings follow FIFA's official slot structure. "
-        "Third-place opponents remain provisional until the full FIFA mapping table is added."
+        "Only teams that have locked first place or have been eliminated are listed here. "
+        "Teams still in contention remain under Group Stage."
     )
 
-    round32_slots = [
-        ("Match 74", "1E", "3A/B/C/D/F"),
-        ("Match 77", "1I", "3C/D/F/G/H"),
+    first_locked = []
+    eliminated = []
 
-        ("Match 73", "2A", "2B"),
-        ("Match 80", "1L", "3E/H/I/J/K"),
+    for group in sorted(groups.keys()):
+        ranked = build_group_table(group)
 
-        ("Match 75", "1F", "2C"),
-        ("Match 78", "2E", "2I"),
+        matrix = pd.DataFrame("⏳", index=ranked.index, columns=ranked.index)
+        for team in ranked.index:
+            matrix.loc[team, team] = "—"
 
-        ("Match 76", "1C", "2F"),
-        ("Match 79", "1A", "3C/E/F/H/I"),
+        for g, team1, score1, team2, score2 in matches:
+            if g != group:
+                continue
+            matrix.loc[team1, team2] = f"{score1}-{score2}"
+            matrix.loc[team2, team1] = f"{score2}-{score1}"
 
-        ("Match 81", "1D", "3B/E/F/I/J"),
-        ("Match 82", "1G", "3A/E/H/I/J"),
+        statuses, _, _ = calculate_group_status_and_probability(
+            group,
+            ranked,
+            matrix
+        )
 
-        ("Match 83", "2K", "2L"),
-        ("Match 84", "1H", "2J"),
+        for team, status in statuses.items():
+            if status == "🥇 1st Locked" or status == "🥇 Winner":
+                first_locked.append({
+                    "Group": group,
+                    "Team": team,
+                    "Status": "🥇 1st Locked"
+                })
 
-        ("Match 85", "1B", "3E/F/G/I/J"),
-        ("Match 87", "1K", "3D/E/I/J/L"),
+            elif status == "🔴 Eliminated" or status == "❌ Fourth Place":
+                eliminated.append({
+                    "Group": group,
+                    "Team": team,
+                    "Status": "🔴 Eliminated"
+                })
 
-        ("Match 86", "1J", "2H"),
-        ("Match 88", "2D", "2G"),
-    ]
+    col1, col2 = st.columns(2)
 
-    def get_slot_team(slot):
-        if slot.startswith("1"):
-            group = slot[1]
-            ranked = build_group_table(group)
-            return ranked.index[0]
+    with col1:
+        st.subheader("🥇 Qualified as Group Winners")
 
-        elif slot.startswith("2"):
-            group = slot[1]
-            ranked = build_group_table(group)
-            return ranked.index[1]
+        if first_locked:
+            st.dataframe(
+                pd.DataFrame(first_locked),
+                use_container_width=True,
+                hide_index=True
+            )
+        else:
+            st.info("No group winners locked yet.")
 
-        elif slot.startswith("3"):
-            return f"3rd Group {slot[1:]}"
+    with col2:
+        st.subheader("🔴 Eliminated Teams")
 
-        return slot
-
-    cards_html = ""
-
-    for match, slot1, slot2 in round32_slots:
-        team1 = get_slot_team(slot1)
-        team2 = get_slot_team(slot2)
-
-        cards_html += f"""
-<div style="
-background:white;
-border:1px solid #e5e7eb;
-border-radius:16px;
-padding:18px 22px;
-margin-bottom:14px;
-box-shadow:0 4px 12px rgba(0,0,0,0.06);
-">
-<div style="
-font-size:14px;
-font-weight:800;
-color:#1f4e79;
-margin-bottom:12px;
-">
-🏆 {match}
-</div>
-
-<div style="
-display:grid;
-grid-template-columns:1fr auto 1fr;
-align-items:center;
-gap:18px;
-font-size:20px;
-font-weight:850;
-color:#1f2937;
-">
-<div style="text-align:right;">{team1}</div>
-
-<div style="
-background:#FFF3CD;
-color:#B45309;
-padding:8px 16px;
-border-radius:999px;
-font-size:15px;
-font-weight:900;
-">
-VS
-</div>
-
-<div style="text-align:left;">{team2}</div>
-</div>
-</div>
-"""
-
-    st.markdown(cards_html, unsafe_allow_html=True)
-
+        if eliminated:
+            st.dataframe(
+                pd.DataFrame(eliminated),
+                use_container_width=True,
+                hide_index=True
+            )
+        else:
+            st.info("No eliminated teams yet.")
 
 
 

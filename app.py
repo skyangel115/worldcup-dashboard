@@ -407,6 +407,78 @@ def calculate_group_status_and_probability(group, table, matrix):
 
     return statuses, probabilities, first_probabilities
 
+def build_group_table(group):
+    teams = groups[group]
+
+    table = pd.DataFrame(
+        0,
+        index=teams,
+        columns=["MP", "W", "D", "L", "GF", "GA", "GD", "Pts"]
+    )
+
+    for g, team1, score1, team2, score2 in matches:
+        if g != group:
+            continue
+
+        table.loc[team1, "MP"] += 1
+        table.loc[team2, "MP"] += 1
+
+        table.loc[team1, "GF"] += score1
+        table.loc[team1, "GA"] += score2
+        table.loc[team2, "GF"] += score2
+        table.loc[team2, "GA"] += score1
+
+        if score1 > score2:
+            table.loc[team1, "W"] += 1
+            table.loc[team2, "L"] += 1
+            table.loc[team1, "Pts"] += 3
+        elif score1 < score2:
+            table.loc[team2, "W"] += 1
+            table.loc[team1, "L"] += 1
+            table.loc[team2, "Pts"] += 3
+        else:
+            table.loc[team1, "D"] += 1
+            table.loc[team2, "D"] += 1
+            table.loc[team1, "Pts"] += 1
+            table.loc[team2, "Pts"] += 1
+
+    table["GD"] = table["GF"] - table["GA"]
+
+    table = rank_with_head_to_head(table, matches, group)
+
+    return table
+
+
+def rank_third_placed_teams():
+    third_teams = []
+
+    for group in sorted(groups.keys()):
+        ranked = build_group_table(group)
+
+        third_team = ranked.index[2]
+
+        third_teams.append({
+            "Group": group,
+            "Team": third_team,
+            "Pts": ranked.loc[third_team, "Pts"],
+            "GD": ranked.loc[third_team, "GD"],
+            "GF": ranked.loc[third_team, "GF"],
+        })
+
+    third_df = pd.DataFrame(third_teams)
+
+    third_df = third_df.sort_values(
+        ["Pts", "GD", "GF"],
+        ascending=False
+    ).reset_index(drop=True)
+
+    third_df["Third Place Rank"] = range(1, len(third_df) + 1)
+    third_df["Advance"] = third_df["Third Place Rank"].apply(
+        lambda x: "✅ Advance" if x <= 8 else "❌ Out"
+    )
+
+    return third_df
+
 def show_group(selected_group):
     teams = groups[selected_group]
 
@@ -941,6 +1013,18 @@ color:#B45309;
                 )
 
                 st.progress(prob / 100)
+    
+    st.markdown("---")
+    st.header("🌎 Current Best Third-Placed Teams")
+
+    third_df = rank_third_placed_teams()
+
+    st.dataframe(
+        third_df,
+        use_container_width=True,
+        hide_index=True
+    )
+    
 
 
 

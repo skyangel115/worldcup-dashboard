@@ -10,8 +10,8 @@ st.caption(
 st.markdown("""
 <style>
 label[data-testid="stWidgetLabel"] p {
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 22px;
+    font-weight: 800;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -475,6 +475,7 @@ def rank_third_placed_teams():
             "Pts": ranked.loc[third_team, "Pts"],
             "GD": ranked.loc[third_team, "GD"],
             "GF": ranked.loc[third_team, "GF"],
+            "Group Status": "Completed" if get_group_remaining_count(group) == 0 else "In Progress",
         })
 
     third_df = pd.DataFrame(third_teams)
@@ -1043,7 +1044,7 @@ def show_best_third():
     html_parts.append('<thead>')
     html_parts.append('<tr style="background:#1f4e79;color:white;">')
 
-    columns = ["Rank", "Group", "Team", "Pts", "GD", "GF", "Status"]
+    columns = ["Rank", "Group", "Team", "Pts", "GD", "GF", "Group Status", "Current Status"]
 
     for col in columns:
         html_parts.append(
@@ -1077,11 +1078,20 @@ def show_best_third():
         status_badge = (
             '<span style="background:#DCFCE7;color:#166534;'
             'padding:6px 14px;border-radius:999px;font-weight:800;">'
-            '🟢 Advance</span>'
+            '🟢 Currently In</span>'
             if is_advance else
             '<span style="background:#FEE2E2;color:#991B1B;'
             'padding:6px 14px;border-radius:999px;font-weight:800;">'
-            '🔴 Out</span>'
+            '🔴 Currently Out</span>'
+        )
+        group_status_badge = (
+            '<span style="background:#DCFCE7;color:#166534;'
+            'padding:6px 14px;border-radius:999px;font-weight:800;">'
+            'Completed</span>'
+            if row["Group Status"] == "Completed" else
+            '<span style="background:#DBEAFE;color:#1D4ED8;'
+            'padding:6px 14px;border-radius:999px;font-weight:800;">'
+            'In Progress</span>'
         )
 
         values = [
@@ -1091,6 +1101,7 @@ def show_best_third():
             row["Pts"],
             gd_text,
             row["GF"],
+            group_status_badge,
             status_badge
         ]
 

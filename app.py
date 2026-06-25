@@ -9,16 +9,6 @@ st.caption(
 )
 st.markdown("""
 <style>
-div[data-baseweb="select"] > div {
-    min-height: 58px;
-    font-size: 18px;
-    font-weight: 600;
-}
-
-div[data-baseweb="select"] span {
-    font-size: 17px;
-}
-
 label[data-testid="stWidgetLabel"] p {
     font-size: 18px;
     font-weight: 700;
@@ -85,16 +75,38 @@ group_options = {
     for g in sorted(groups.keys())
 }
 
-st.markdown("### 🌍 Select Group")
-
-selected_group = st.radio(
+selected_group = st.segmented_control(
     "Group",
     options=sorted(groups.keys()),
-    horizontal=True,
     label_visibility="collapsed"
 )
 
-st.caption(group_options[selected_group])
+if selected_group is None:
+    selected_group = "A"
+
+team_list_html = "<br>".join(groups[selected_group])
+
+st.markdown(
+    f"""<div style="
+background:#F8FAFC;
+border-left:6px solid #1F4E79;
+padding:16px 20px;
+border-radius:12px;
+font-size:16px;
+font-weight:600;
+color:#374151;
+margin-bottom:18px;
+box-shadow:0 2px 8px rgba(0,0,0,.04);
+">
+<div style="font-size:22px;font-weight:800;color:#1f2937;margin-bottom:10px;">
+🏆 Group {selected_group}
+</div>
+<div style="line-height:1.9;">
+{team_list_html}
+</div>
+</div>""",
+    unsafe_allow_html=True
+)
 
 #st.write("Selected group:", selected_group)
 

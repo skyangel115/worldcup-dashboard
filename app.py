@@ -423,35 +423,30 @@ def show_group(selected_group):
         gd_text = f"+{gd}" if gd > 0 else str(gd)
 
         with col:
-            st.markdown(
-        f"""
-        <div style="
-            background:#ffffff;
-            border:1px solid #e5e7eb;
-            border-left:6px solid {border_color};
-            border-radius:16px;
-            padding:18px;
-            box-shadow:0 4px 12px rgba(0,0,0,0.06);
-            min-height:155px;
-        ">
-            <div style="font-size:14px;color:#6b7280;margin-bottom:8px;">
-                {label}
-            </div>
+            card_html = f"""<div style="
+background:#ffffff;
+border:1px solid #e5e7eb;
+border-left:6px solid {border_color};
+border-radius:16px;
+padding:18px;
+box-shadow:0 4px 12px rgba(0,0,0,0.06);
+min-height:155px;
+">
+<div style="font-size:14px;color:#6b7280;margin-bottom:8px;">
+{label}
+</div>
+<div style="font-size:22px;font-weight:700;margin-bottom:8px;">
+{team}
+</div>
+<div style="font-size:14px;line-height:1.9;color:#374151;">
+<b>Pts</b> {pts}<br>
+<b>GD</b> {gd_text}<br>
+<b>Top 2</b> {top2:.1f}%<br>
+<b>Status</b> {status}
+</div>
+</div>"""
 
-            <div style="font-size:22px;font-weight:700;margin-bottom:8px;">
-                {team}
-            </div>
-
-            <div style="font-size:14px;line-height:1.9;color:#374151;">
-                <b>Pts</b> {pts}<br>
-                <b>GD</b> {gd_text}<br>
-                <b>Top 2</b> {top2:.1f}%<br>
-                <b>Status</b> {status}
-            </div>
-        </div>
-        """,
-                unsafe_allow_html=True
-            )
+            st.markdown(card_html, unsafe_allow_html=True)
 
     st.subheader(f"Group {selected_group} Standings")
     standings_df = table.reset_index().rename(columns={"index": "Team"})

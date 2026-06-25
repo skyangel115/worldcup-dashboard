@@ -553,12 +553,57 @@ display:inline-block;
     col1, col2 = st.columns([1.6, 0.8])
 
     with col1:
-        st.subheader(f"Group {selected_group} Match Matrix")
-        st.dataframe(
-            matrix.reset_index().rename(columns={"index": ""}),
-            use_container_width=True,
-            hide_index=True
+    st.subheader(f"Group {selected_group} Match Matrix")
+
+    matrix_df = matrix.reset_index().rename(columns={"index": "Team"})
+
+    matrix_parts = []
+
+    matrix_parts.append('<div style="width:100%; overflow-x:auto;">')
+    matrix_parts.append(
+        '<table style="width:100%; border-collapse:separate; border-spacing:0; '
+        'border-radius:14px; overflow:hidden; '
+        'box-shadow:0 4px 14px rgba(0,0,0,0.06); font-size:14px;">'
+    )
+
+    matrix_parts.append('<thead>')
+    matrix_parts.append('<tr style="background:#1f4e79;color:white;">')
+
+    for col in matrix_df.columns:
+        matrix_parts.append(
+            f'<th style="padding:12px 10px; text-align:center; font-weight:700; '
+            f'border-bottom:3px solid #F4A300; white-space:nowrap;">{col}</th>'
         )
+
+    matrix_parts.append('</tr></thead><tbody>')
+
+    for i, row in matrix_df.iterrows():
+        bg = "#ffffff" if i % 2 == 0 else "#f8fafc"
+        matrix_parts.append(f'<tr style="background:{bg};">')
+
+        for col in matrix_df.columns:
+            value = row[col]
+
+            if value == "⏳":
+                cell_html = '<span style="background:#fff3cd; padding:4px 10px; border-radius:999px;">⏳</span>'
+            elif value == "—":
+                cell_html = '<span style="color:#9ca3af;">—</span>'
+            elif col == "Team":
+                cell_html = f'<b>{value}</b>'
+            else:
+                cell_html = f'<span style="background:#eef7ff; padding:4px 10px; border-radius:999px; font-weight:700;">{value}</span>'
+
+            matrix_parts.append(
+                f'<td style="padding:11px 10px; text-align:center; '
+                f'border-bottom:1px solid #e5e7eb; border-right:1px solid #e5e7eb; '
+                f'white-space:nowrap;">{cell_html}</td>'
+            )
+
+        matrix_parts.append('</tr>')
+
+    matrix_parts.append('</tbody></table></div>')
+
+    st.markdown("".join(matrix_parts), unsafe_allow_html=True)
 
     with col2:
         st.subheader("Matches")

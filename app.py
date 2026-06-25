@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(page_title="World Cup Dashboard", layout="wide")
 
-st.title("🌍 World Cup Group Dashboard")
+st.title("🌍 FIFA World Cup 2026 Group Dashboard")
 st.write("Choose a group to view standings, match matrix, and remaining matches.")
 st.caption(
     "⚠ Scenario percentages are based on simulated scorelines from 0–7 goals per team and represent scenario frequency, not real-world match probabilities."
@@ -524,6 +524,8 @@ font-weight:600;
                     "selector": "table",
                     "props": [
                         ("width", "100%"),
+                        ("min-width", "100%"),
+                        ("table-layout", "auto"),
                         ("border-collapse", "collapse"),
                         ("border-radius", "14px"),
                         ("overflow", "hidden"),
@@ -536,11 +538,9 @@ font-weight:600;
     table_html = style_standings(standings_df).to_html()
 
     st.markdown(
-        f"""
-    <div style="width:100%; overflow-x:auto;">
+        f"""<div style="width:100%; overflow-x:auto;">
     {table_html}
-    </div>
-    """,
+    </div>""",
         unsafe_allow_html=True
     )
 

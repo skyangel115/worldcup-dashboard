@@ -445,10 +445,11 @@ margin-bottom:10px;
 </div>
 
 <div style="
-font-size:30px;
-font-weight:700;
-margin-bottom:14px;
-color:#222;
+font-size:32px;
+font-weight:800;
+margin-bottom:16px;
+color:#1f2937;
+line-height:1.2;
 ">
 {team}
 </div>

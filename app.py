@@ -7,6 +7,24 @@ st.write("Choose a group to view standings, match matrix, and upcoming matches."
 st.caption(
     "⚠ Scenario percentages are based on simulated scorelines from 0–7 goals per team and represent scenario frequency, not real-world match probabilities."
 )
+st.markdown("""
+<style>
+div[data-baseweb="select"] > div {
+    min-height: 58px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+div[data-baseweb="select"] span {
+    font-size: 17px;
+}
+
+label[data-testid="stWidgetLabel"] p {
+    font-size: 18px;
+    font-weight: 700;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # =====================
 # Load Libraries
@@ -67,10 +85,12 @@ group_options = {
     for g in sorted(groups.keys())
 }
 
+st.markdown("### 🌍 Select Group")
+
 selected_group_label = st.selectbox(
     "Group",
-    list(group_options.keys()),
-    format_func=lambda g: group_options[g]
+    options=list(group_options.keys()),
+    label_visibility="collapsed"
 )
 
 selected_group = selected_group_label
@@ -395,9 +415,9 @@ def show_group(selected_group):
     remaining_count = (matrix.values == "⏳").sum() // 2
 
     if remaining_count == 0:
-        st.success(f"Group {selected_group} finished")
+        st.success(f"🏆Group {selected_group} finished")
     else:
-        st.info(f"Group {selected_group}: {remaining_count} matches remaining")
+        st.info(f"⚽Group {selected_group}: {remaining_count} matches remaining")
 
     st.markdown("### Group Summary")
 
@@ -730,36 +750,29 @@ color:#B45309;
     # =====================
     # Top 2 Scenario Chart
     # =====================
-    st.subheader(f"Group {selected_group} Top 2 Qualification Chance")
+    with st.expander("Top 2 Qualification Chance", expanded=False):
+        chart_col, _ = st.columns([0.55, 0.45])
 
-    chart_col, _ = st.columns([0.55, 0.45])
-
-    with chart_col:
-        chance_df = table[["Top 2 Scenario %"]].sort_values(
-            "Top 2 Scenario %",
-            ascending=False
-        )
-
-        for team, row in chance_df.iterrows():
-            prob = row["Top 2 Scenario %"]
-
-            st.markdown(
-                f"""
-                <div style="
-                    display:flex;
-                    justify-content:space-between;
-                    align-items:center;
-                    margin-top:12px;
-                    font-size:16px;
-                ">
-                    <span><b>{team}</b></span>
-                    <span>{prob:.1f}%</span>
-                </div>
-                """,
-                unsafe_allow_html=True
+        with chart_col:
+            chance_df = table[["Top 2 Scenario %"]].sort_values(
+                "Top 2 Scenario %",
+                ascending=False
             )
 
-            st.progress(min(max(prob / 100, 0), 1))
+            for team, row in chance_df.iterrows():
+                prob = row["Top 2 Scenario %"]
+
+                st.markdown(
+                    f"""
+<div style="display:flex;justify-content:space-between;margin-top:12px;font-size:16px;">
+<span><b>{team}</b></span>
+<span>{prob:.1f}%</span>
+</div>
+""",
+                    unsafe_allow_html=True
+                )
+
+                st.progress(prob / 100)
 
 
 

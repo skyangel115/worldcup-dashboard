@@ -364,7 +364,7 @@ def show_group(selected_group):
         matrix.loc[team2, team1] = f"{score2}-{score1}"
     
     statuses, probabilities, first_probabilities = calculate_group_status_and_probability(
-    slelcted_group,
+    selected_group,
     table,
     matrix
     )

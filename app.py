@@ -226,6 +226,18 @@ min-height:150px;
             unsafe_allow_html=True
         )
 
+st.markdown("---")
+
+view = st.segmented_control(
+    "View",
+    options=[
+        "Group Dashboard",
+        "Best Third-Placed Teams",
+        "Tournament Overview"
+    ],
+    default="Group Dashboard"
+)
+
 from itertools import product
 
 def rank_with_head_to_head(sim, all_matches, group):
@@ -1014,21 +1026,108 @@ color:#B45309;
 
                 st.progress(prob / 100)
     
-    st.markdown("---")
+def show_best_third():
     st.header("🌎 Current Best Third-Placed Teams")
 
     third_df = rank_third_placed_teams()
 
-    st.dataframe(
-        third_df,
-        use_container_width=True,
-        hide_index=True
+    html_parts = []
+
+    html_parts.append('<div style="width:100%; overflow-x:auto;">')
+    html_parts.append(
+        '<table style="width:100%; border-collapse:separate; border-spacing:0; '
+        'border-radius:14px; overflow:hidden; '
+        'box-shadow:0 4px 14px rgba(0,0,0,0.08); font-size:14px;">'
     )
-    
+
+    html_parts.append('<thead>')
+    html_parts.append('<tr style="background:#1f4e79;color:white;">')
+
+    columns = ["Rank", "Group", "Team", "Pts", "GD", "GF", "Status"]
+
+    for col in columns:
+        html_parts.append(
+            f'<th style="padding:12px 10px; text-align:center; font-weight:700; '
+            f'border-bottom:3px solid #F4A300; white-space:nowrap;">{col}</th>'
+        )
+
+    html_parts.append('</tr>')
+    html_parts.append('</thead>')
+    html_parts.append('<tbody>')
+
+    for _, row in third_df.iterrows():
+        rank = int(row["Third Place Rank"])
+
+        if rank == 1:
+            rank_text = "🥇 1"
+        elif rank == 2:
+            rank_text = "🥈 2"
+        elif rank == 3:
+            rank_text = "🥉 3"
+        else:
+            rank_text = str(rank)
+
+        gd = int(row["GD"])
+        gd_text = f"+{gd}" if gd > 0 else str(gd)
+
+        is_advance = rank <= 8
+
+        bg = "#F4FCF6" if is_advance else "#FFF5F5"
+
+        status_badge = (
+            '<span style="background:#DCFCE7;color:#166534;'
+            'padding:6px 14px;border-radius:999px;font-weight:800;">'
+            '🟢 Advance</span>'
+            if is_advance else
+            '<span style="background:#FEE2E2;color:#991B1B;'
+            'padding:6px 14px;border-radius:999px;font-weight:800;">'
+            '🔴 Out</span>'
+        )
+
+        values = [
+            rank_text,
+            row["Group"],
+            row["Team"],
+            row["Pts"],
+            gd_text,
+            row["GF"],
+            status_badge
+        ]
+
+        html_parts.append(f'<tr style="background:{bg};">')
+
+        for col_name, value in zip(columns, values):
+            weight = "800" if col_name in ["Rank", "Team", "Pts", "Status"] else "500"
+
+            html_parts.append(
+                f'<td style="padding:12px 10px;text-align:center;'
+                f'border-bottom:1px solid #e5e7eb;'
+                f'border-right:1px solid #e5e7eb;'
+                f'font-weight:{weight};white-space:nowrap;">{value}</td>'
+            )
+
+        html_parts.append('</tr>')
+
+    html_parts.append('</tbody>')
+    html_parts.append('</table>')
+    html_parts.append('</div>')
+
+    st.markdown("".join(html_parts), unsafe_allow_html=True)
+
+def show_tournament():
+    st.header("🏆 Tournament Overview")
+    st.info("Knockout stage will be added here later.")
 
 
 
 
 
-show_group(selected_group)
+if view == "Group Dashboard":
+    show_group(selected_group)
+
+elif view == "Best Third-Placed Teams":
+    show_best_third()
+
+elif view == "Tournament Overview":
+    show_tournament()
 

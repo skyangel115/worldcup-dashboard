@@ -71,7 +71,7 @@ selected_group_label = st.selectbox(
 )
 
 selected_group = selected_group_label
-st.write("Selected group:", selected_group)
+#st.write("Selected group:", selected_group)
 
 # =====================
 # Extract Match Results
@@ -378,11 +378,11 @@ def show_group(selected_group):
 
         matrix.loc[team1, team2] = f"{score1}-{score2}"
         matrix.loc[team2, team1] = f"{score2}-{score1}"
-    
+
     statuses, probabilities, first_probabilities = calculate_group_status_and_probability(
-    selected_group,
-    table,
-    matrix
+        selected_group,
+        table,
+        matrix
     )
 
     table["Status"] = [statuses[team] for team in table.index]
@@ -395,16 +395,81 @@ def show_group(selected_group):
         use_container_width=True,
         hide_index=True
     )
-    
-    st.subheader(f"Group {selected_group} Match Matrix")
 
-    st.dataframe(
-        matrix.reset_index().rename(columns={"index": ""}),
-        use_container_width=True,
-        hide_index=True
+    # =====================
+    # Matrix + Match List
+    # =====================
+    col1, col2 = st.columns([1.4, 1])
+
+    with col1:
+        st.subheader(f"Group {selected_group} Match Matrix")
+        st.dataframe(
+            matrix.reset_index().rename(columns={"index": ""}),
+            use_container_width=True,
+            hide_index=True
+        )
+
+    with col2:
+        st.subheader("Matches")
+
+        played = []
+        for g, team1, score1, team2, score2 in matches:
+            if g == selected_group:
+                played.append({"Match": f"{team1} {score1}-{score2} {team2}"})
+
+        played_df = pd.DataFrame(played, columns=["Match"])
+
+        st.markdown("#### Played Matches")
+        if len(played_df) > 0:
+            for m in played_df["Match"]:
+                st.write(f"✅ {m}")
+        else:
+            st.info("No played matches yet")
+
+        remaining = []
+        for i in range(len(teams)):
+            for j in range(i + 1, len(teams)):
+                t1 = teams[i]
+                t2 = teams[j]
+                if matrix.loc[t1, t2] == "⏳":
+                    remaining.append({"Match": f"{t1} vs {t2}"})
+
+        remaining_df = pd.DataFrame(remaining, columns=["Match"])
+
+        st.markdown("#### Remaining Matches")
+        if len(remaining_df) > 0:
+            for m in remaining_df["Match"]:
+                st.write(f"⏳ {m}")
+        else:
+            st.success("No remaining matches")
+
+    # =====================
+    # Top 2 Scenario Chart
+    # =====================
+    st.subheader(f"Group {selected_group} Top 2 Scenario Chance")
+
+    chance_df = table[["Top 2 Scenario %"]].sort_values(
+        "Top 2 Scenario %",
+        ascending=True
     )
 
+    fig, ax = plt.subplots(figsize=(8, 3.8))
 
+    chance_df.plot(
+        kind="barh",
+        legend=False,
+        ax=ax
+    )
+
+    ax.set_xlim(0, 105)
+    ax.set_xlabel("Top 2 Scenario %")
+    ax.set_ylabel("")
+    ax.set_title(f"Group {selected_group} Top 2 Scenario Chance")
+
+    for i, value in enumerate(chance_df["Top 2 Scenario %"]):
+        ax.text(value + 1, i, f"{value:.1f}%", va="center")
+
+    st.pyplot(fig)
 
 
 

@@ -75,6 +75,8 @@ group_options = {
     for g in sorted(groups.keys())
 }
 
+st.markdown("### 🌍 Select Group")
+
 selected_group = st.segmented_control(
     "Group",
     options=sorted(groups.keys()),

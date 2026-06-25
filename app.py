@@ -96,11 +96,6 @@ selected_group = st.radio(
 
 st.caption(group_options[selected_group])
 
-selected_group = [
-    g for g, label in group_options.items()
-    if label == selected_group_label
-][0]
-
 #st.write("Selected group:", selected_group)
 
 # =====================

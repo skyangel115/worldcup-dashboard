@@ -484,65 +484,84 @@ font-weight:600;
     st.subheader(f"Group {selected_group} Standings")
     standings_df = table.reset_index().rename(columns={"index": "Team"})
 
-    def style_standings(df):
-        def row_style(row):
-            if row.name == 0:
-                return ["background-color: #e8f6ef; font-weight: 600"] * len(row)
-            elif row.name == 1:
-                return ["background-color: #eef7ff"] * len(row)
-            elif row.name == 2:
-                return ["background-color: #fff7e8"] * len(row)
-            else:
-                return ["background-color: #fff1f2"] * len(row)
+    standings_df = table.reset_index().rename(columns={"index": "Team"})
 
-        return (
-            df.style
-            .apply(row_style, axis=1)
-            .format({
-                "1st Scenario %": "{:.1f}",
-                "Top 2 Scenario %": "{:.1f}"
-            })
-            .set_properties(**{
-                "text-align": "center",
-                "font-size": "14px",
-                "padding": "10px",
-                "border": "1px solid #e5e7eb"
-            })
-            .set_table_styles([
-                {
-                    "selector": "th",
-                    "props": [
-                        ("background-color", "#1f4e79"),
-                        ("color", "white"),
-                        ("font-weight", "700"),
-                        ("text-align", "center"),
-                        ("padding", "11px"),
-                        ("border", "1px solid #1f4e79")
-                    ]
-                },
-                {
-                    "selector": "table",
-                    "props": [
-                        ("width", "100%"),
-                        ("min-width", "100%"),
-                        ("table-layout", "auto"),
-                        ("border-collapse", "collapse"),
-                        ("border-radius", "14px"),
-                        ("overflow", "hidden"),
-                        ("box-shadow", "0 4px 14px rgba(0,0,0,0.08)")
-                    ]
-                }
-            ])
-        )
+    row_colors = [
+        "#E8F6EF",  # 1st
+        "#EEF7FF",  # 2nd
+        "#FFF7E8",  # 3rd
+        "#FFF1F2"   # 4th
+    ]
 
-    table_html = style_standings(standings_df).to_html()
+    html = """
+    <div style="width:100%; overflow-x:auto;">
+    <table style="
+        width:100%;
+        border-collapse:separate;
+        border-spacing:0;
+        border-radius:14px;
+        overflow:hidden;
+        box-shadow:0 4px 14px rgba(0,0,0,0.08);
+        font-size:14px;
+    ">
+    <thead>
+    <tr style="background:#1f4e79;color:white;">
+    """
 
-    st.markdown(
-        f"""<div style="width:100%; overflow-x:auto;">
-    {table_html}
-    </div>""",
-        unsafe_allow_html=True
-    )
+    for col in standings_df.columns:
+        html += f"""
+        <th style="
+            padding:12px 10px;
+            text-align:center;
+            font-weight:700;
+            border-bottom:3px solid #F4A300;
+            white-space:nowrap;
+        ">{col}</th>
+        """
+
+    html += """
+    </tr>
+    </thead>
+    <tbody>
+    """
+
+    for i, row in standings_df.iterrows():
+        bg = row_colors[i] if i < len(row_colors) else "#ffffff"
+
+        html += f"""
+        <tr style="background:{bg};">
+        """
+
+        for col in standings_df.columns:
+            value = row[col]
+
+            if col in ["1st Scenario %", "Top 2 Scenario %"]:
+                value = f"{value:.1f}"
+
+            weight = "700" if col in ["Team", "Pts", "Status"] else "400"
+
+            html += f"""
+            <td style="
+                padding:12px 10px;
+                text-align:center;
+                border-bottom:1px solid #e5e7eb;
+                border-right:1px solid #e5e7eb;
+                font-weight:{weight};
+                white-space:nowrap;
+            ">{value}</td>
+            """
+
+        html += """
+        </tr>
+        """
+
+    html += """
+    </tbody>
+    </table>
+    </div>
+    """
+
+    st.markdown(html, unsafe_allow_html=True)
 
     # =====================
     # Matrix + Match List

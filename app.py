@@ -1143,6 +1143,70 @@ def show_best_third():
         "Current ranking only. Final third-place qualification may change because some groups are still in progress."
     )
 
+def render_status_table(df, title, theme="green"):
+    st.subheader(title)
+
+    if df.empty:
+        st.info("No teams to display.")
+        return
+
+    header_color = "#1f4e79"
+    accent_color = "#F4A300"
+    row_bg = "#F4FCF6" if theme == "green" else "#FFF5F5"
+
+    html_parts = []
+    html_parts.append('<div style="width:100%; overflow-x:auto;">')
+    html_parts.append(
+        '<table style="width:100%; border-collapse:separate; border-spacing:0; '
+        'border-radius:14px; overflow:hidden; '
+        'box-shadow:0 4px 14px rgba(0,0,0,0.08); font-size:14px;">'
+    )
+
+    html_parts.append('<thead>')
+    html_parts.append(f'<tr style="background:{header_color};color:white;">')
+
+    for col in df.columns:
+        html_parts.append(
+            f'<th style="padding:12px 10px;text-align:center;font-weight:800;'
+            f'border-bottom:3px solid {accent_color};white-space:nowrap;">{col}</th>'
+        )
+
+    html_parts.append('</tr></thead><tbody>')
+
+    for _, row in df.iterrows():
+        html_parts.append(f'<tr style="background:{row_bg};">')
+
+        for col in df.columns:
+            value = row[col]
+
+            if col == "Status" and theme == "green":
+                value = (
+                    '<span style="background:#DCFCE7;color:#166534;'
+                    'padding:6px 14px;border-radius:999px;font-weight:800;">'
+                    f'{value}</span>'
+                )
+            elif col == "Status" and theme == "red":
+                value = (
+                    '<span style="background:#FEE2E2;color:#991B1B;'
+                    'padding:6px 14px;border-radius:999px;font-weight:800;">'
+                    f'{value}</span>'
+                )
+
+            weight = "800" if col in ["Team", "Status"] else "500"
+
+            html_parts.append(
+                f'<td style="padding:12px 10px;text-align:center;'
+                f'border-bottom:1px solid #e5e7eb;'
+                f'border-right:1px solid #e5e7eb;'
+                f'font-weight:{weight};white-space:nowrap;">{value}</td>'
+            )
+
+        html_parts.append('</tr>')
+
+    html_parts.append('</tbody></table></div>')
+
+    st.markdown("".join(html_parts), unsafe_allow_html=True)
+
 def show_tournament():
     st.header("🏆 Knockout Qualification")
     st.caption(
@@ -1155,65 +1219,59 @@ def show_tournament():
 
     for group in sorted(groups.keys()):
         ranked = build_group_table(group)
-        remaining_count = get_group_remaining_count(group)
 
-        # 已完成小組：直接用最終排名判斷，不跑 simulation
-        if remaining_count == 0:
-            first_locked.append({
-                "Group": group,
-                "Team": ranked.index[0],
-                "Status": "🥇 Winner"
-            })
+        matrix = pd.DataFrame("⏳", index=ranked.index, columns=ranked.index)
 
-            eliminated.append({
-                "Group": group,
-                "Team": ranked.index[3],
-                "Status": "🔴 Eliminated"
-            })
+        for team in ranked.index:
+            matrix.loc[team, team] = "—"
 
-        # 未完成小組：只做簡單判斷誰一定第一
-        else:
-            leader = ranked.index[0]
-            leader_pts = ranked.loc[leader, "Pts"]
+        for g, team1, score1, team2, score2 in matches:
+            if g != group:
+                continue
 
-            max_other_possible_pts = max(
-                ranked.loc[t, "Pts"] + 3 * get_group_remaining_count(group)
-                for t in ranked.index
-                if t != leader
+            matrix.loc[team1, team2] = f"{score1}-{score2}"
+            matrix.loc[team2, team1] = f"{score2}-{score1}"
+
+        remaining_count = (matrix.values == "⏳").sum() // 2
+
+        # 剩餘比賽不多時，直接用原本完整 simulation 判斷，包含 H2H
+        if remaining_count <= 2:
+            statuses, _, _ = calculate_group_status_and_probability(
+                group,
+                ranked,
+                matrix
             )
 
-            if leader_pts > max_other_possible_pts:
-                first_locked.append({
-                    "Group": group,
-                    "Team": leader,
-                    "Status": "🥇 1st Locked"
-                })
+            for team, status in statuses.items():
+                if status in ["🥇 1st Locked", "🥇 Winner"]:
+                    first_locked.append({
+                        "Group": group,
+                        "Team": team,
+                        "Status": status
+                    })
+
+                elif status in ["🔴 Eliminated", "❌ Fourth Place"]:
+                    eliminated.append({
+                        "Group": group,
+                        "Team": team,
+                        "Status": "🔴 Eliminated"
+                    })
 
     col1, col2 = st.columns(2)
 
     with col1:
-        st.subheader("🥇 Qualified as Group Winners")
-
-        if first_locked:
-            st.dataframe(
-                pd.DataFrame(first_locked),
-                use_container_width=True,
-                hide_index=True
-            )
-        else:
-            st.info("No group winners locked yet.")
+        render_status_table(
+            pd.DataFrame(first_locked),
+            "🥇 Qualified as Group Winners",
+            theme="green"
+        )
 
     with col2:
-        st.subheader("🔴 Eliminated Teams")
-
-        if eliminated:
-            st.dataframe(
-                pd.DataFrame(eliminated),
-                use_container_width=True,
-                hide_index=True
-            )
-        else:
-            st.info("No eliminated teams yet.")
+        render_status_table(
+            pd.DataFrame(eliminated),
+            "🔴 Eliminated Teams",
+            theme="red"
+        )
 
 
 

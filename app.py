@@ -400,50 +400,50 @@ def show_group(selected_group):
 
     st.markdown("### Group Summary")
 
-summary_items = [
-    ("🥇 Leader", table.index[0]),
-    ("🥈 2nd Place", table.index[1]),
-    ("🥉 3rd Place", table.index[2]),
-    ("🔻 Bottom", table.index[3]),
-]
+    summary_items = [
+        ("🥇 Leader", table.index[0]),
+        ("🥈 2nd Place", table.index[1]),
+        ("🥉 3rd Place", table.index[2]),
+        ("🔻 Bottom", table.index[3]),
+    ]
 
-summary_cols = st.columns(4)
+    summary_cols = st.columns(4)
 
-for col, (label, team) in zip(summary_cols, summary_items):
-    pts = table.loc[team, "Pts"]
-    gd = table.loc[team, "GD"]
-    top2 = table.loc[team, "Top 2 Scenario %"]
-    status = table.loc[team, "Status"]
+    for col, (label, team) in zip(summary_cols, summary_items):
+        pts = table.loc[team, "Pts"]
+        gd = table.loc[team, "GD"]
+        top2 = table.loc[team, "Top 2 Scenario %"]
+        status = table.loc[team, "Status"]
 
-    gd_text = f"+{gd}" if gd > 0 else str(gd)
+        gd_text = f"+{gd}" if gd > 0 else str(gd)
 
-    with col:
-        st.markdown(
-            f"""
-            <div style="
-                background:#ffffff;
-                border:1px solid #e5e7eb;
-                border-radius:16px;
-                padding:18px;
-                box-shadow:0 4px 12px rgba(0,0,0,0.06);
-                min-height:155px;
-            ">
-                <div style="font-size:14px;color:#6b7280;margin-bottom:8px;">
-                    {label}
+        with col:
+            st.markdown(
+                f"""
+                <div style="
+                    background:#ffffff;
+                    border:1px solid #e5e7eb;
+                    border-radius:16px;
+                    padding:18px;
+                    box-shadow:0 4px 12px rgba(0,0,0,0.06);
+                    min-height:155px;
+                ">
+                    <div style="font-size:14px;color:#6b7280;margin-bottom:8px;">
+                        {label}
+                    </div>
+                    <div style="font-size:22px;font-weight:700;margin-bottom:8px;">
+                        {team}
+                    </div>
+                    <div style="font-size:14px;line-height:1.9;color:#374151;">
+                        <b>Pts</b> {pts}<br>
+                        <b>GD</b> {gd_text}<br>
+                        <b>Top 2</b> {top2:.1f}%<br>
+                        <b>Status</b> {status}
+                    </div>
                 </div>
-                <div style="font-size:22px;font-weight:700;margin-bottom:8px;">
-                    {team}
-                </div>
-                <div style="font-size:14px;line-height:1.9;color:#374151;">
-                    <b>Pts</b> {pts}<br>
-                    <b>GD</b> {gd_text}<br>
-                    <b>Top 2</b> {top2:.1f}%<br>
-                    <b>Status</b> {status}
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+                """,
+                unsafe_allow_html=True
+            )
 
     st.subheader(f"Group {selected_group} Standings")
     st.dataframe(

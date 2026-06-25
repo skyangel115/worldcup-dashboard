@@ -278,6 +278,9 @@ def calculate_group_status_and_probability(group, table, matrix):
     first_probabilities = {}
     statuses = {}
 
+    finished = len(remaining_games) == 0
+    final_order = list(table.index)
+
     for team in teams:
         top2_prob = top2_count[team] / total_outcomes * 100
         third_prob = third_count[team] / total_outcomes * 100
@@ -285,17 +288,30 @@ def calculate_group_status_and_probability(group, table, matrix):
 
         probabilities[team] = round(top2_prob, 1)
         first_probabilities[team] = round(first_prob, 1)
+        
+        if finished:
+            position = final_order.index(team) + 1
 
-        if first_prob == 100:
-            statuses[team] = "🥇 1st Locked"
-        elif top2_prob == 100:
-            statuses[team] = "🟢 Top 2 Locked"
-        elif top2_prob > 0:
-            statuses[team] = "🟡 Top 2 Possible"
-        elif third_prob > 0:
-            statuses[team] = "🟠 3rd Possible"
+            if position == 1:
+                statuses[team] = "🥇 Winner"
+            elif position == 2:
+                statuses[team] = "🥈 Runner-up"
+            elif position == 3:
+                statuses[team] = "🥉 Third Place"
+            else:
+                statuses[team] = "❌ Fourth Place"
+
         else:
-            statuses[team] = "🔴 Eliminated"
+            if first_prob == 100:
+                statuses[team] = "🥇 1st Locked"
+            elif top2_prob == 100:
+                statuses[team] = "🟢 Top 2 Locked"
+            elif top2_prob > 0:
+                statuses[team] = "🟡 Top 2 Possible"
+            elif third_prob > 0:
+                statuses[team] = "🟠 3rd Possible"
+            else:
+                statuses[team] = "🔴 Eliminated"
 
     return statuses, probabilities, first_probabilities
 

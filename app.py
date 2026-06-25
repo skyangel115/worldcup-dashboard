@@ -70,10 +70,20 @@ for group_label, table_idx in zip(list("ABCDEFGHIJKL"), standing_tables):
 
     groups[group_label] = teams
 
-group_options = {
-    g: f"Group {g} — {', '.join(groups[g])}"
-    for g in sorted(groups.keys())
-}
+
+def get_group_remaining_count(group):
+    teams = groups[group]
+    remaining_count = 0
+
+    for i in range(len(teams)):
+        for j in range(i + 1, len(teams)):
+            match_key = tuple(sorted([teams[i], teams[j]]))
+
+            if match_key in match_info and match_info[match_key]["Status"] == "Remaining":
+                remaining_count += 1
+
+    return remaining_count
+
 
 st.markdown("### 🌍 Select Group")
 
@@ -85,6 +95,7 @@ selected_group = st.segmented_control(
 
 if selected_group is None:
     selected_group = "A"
+
 
 st.markdown("### 🏆 Group Overview")
 
@@ -101,6 +112,21 @@ for idx, g in enumerate(sorted(groups.keys())):
     shadow = "0 4px 14px rgba(0,0,0,.10)" if is_selected else "0 2px 8px rgba(0,0,0,.04)"
     title_icon = "🏆" if is_selected else "⚽"
 
+    remaining_in_group = get_group_remaining_count(g)
+
+    if remaining_in_group == 0:
+        group_status_badge = """
+<span style="background:#DCFCE7;color:#166534;padding:5px 10px;border-radius:999px;font-size:13px;font-weight:800;">
+Completed
+</span>
+"""
+    else:
+        group_status_badge = f"""
+<span style="background:#DBEAFE;color:#1D4ED8;padding:5px 10px;border-radius:999px;font-size:13px;font-weight:800;">
+{remaining_in_group} left
+</span>
+"""
+
     teams_html = "<br>".join(groups[g])
 
     with col:
@@ -114,21 +140,14 @@ margin-bottom:14px;
 box-shadow:{shadow};
 min-height:150px;
 ">
-<div style="
-font-size:21px;
-font-weight:800;
-color:#1f2937;
-margin-bottom:10px;
-">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+<div style="font-size:21px;font-weight:800;color:#1f2937;">
 {title_icon} Group {g}
 </div>
+{group_status_badge}
+</div>
 
-<div style="
-font-size:15px;
-font-weight:600;
-line-height:1.8;
-color:#374151;
-">
+<div style="font-size:15px;font-weight:600;line-height:1.8;color:#374151;">
 {teams_html}
 </div>
 </div>""",
@@ -136,6 +155,7 @@ color:#374151;
         )
 
 #st.write("Selected group:", selected_group)
+
 
 # =====================
 # Extract Match Results

@@ -544,12 +544,12 @@ def rank_third_placed_teams():
 # =====================
 
 def show_group(selected_group):
-    teams = groups[selected_group]
 
 # =====================
 # Group Standings
 # =====================
     table, matrix, statuses, probabilities, first_probabilities = get_group_data(selected_group)
+    teams = list(table.index)
 
     table["Status"] = [statuses[team] for team in table.index]
     table["1st Scenario %"] = [first_probabilities[team] for team in table.index]

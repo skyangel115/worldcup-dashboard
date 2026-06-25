@@ -16,9 +16,9 @@ label[data-testid="stWidgetLabel"] p {
 
 div[data-testid="stSegmentedControl"] button {
     font-size: 18px !important;
-    font-weight: 700 !important;
-    padding: 10px 22px !important;
-    min-height: 48px !important;
+    font-weight: 750 !important;
+    padding: 10px 24px !important;
+    min-height: 50px !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -236,7 +236,7 @@ min-height:150px;
 st.markdown("---")
 
 view = st.segmented_control(
-    "View",
+    "📊 Dashboard View",
     options=[
         "Group Dashboard",
         "Best Third-Placed Teams",
@@ -1138,8 +1138,8 @@ def show_best_third():
 def show_tournament():
     st.header("🏆 Tournament Overview")
     st.caption(
-        "Projected Round of 32 slots based on current group standings. "
-        "Third-place opponents are shown as official slot ranges until the full FIFA mapping table is added."
+        "Round of 32 pairings follow FIFA's official slot structure. "
+        "Third-place opponents remain provisional until the full FIFA mapping table is added."
     )
 
     round32_slots = [
@@ -1177,51 +1177,58 @@ def show_tournament():
 
         return slot
 
-    html_parts = []
+    cards_html = ""
 
-    html_parts.append('<div style="width:100%; overflow-x:auto;">')
-    html_parts.append(
-        '<table style="width:100%; border-collapse:separate; border-spacing:0; '
-        'border-radius:14px; overflow:hidden; '
-        'box-shadow:0 4px 14px rgba(0,0,0,0.08); font-size:14px;">'
-    )
-
-    html_parts.append('<thead>')
-    html_parts.append('<tr style="background:#1f4e79;color:white;">')
-
-    columns = ["Match", "Team 1", "Team 2"]
-
-    for col in columns:
-        html_parts.append(
-            f'<th style="padding:12px 10px;text-align:center;font-weight:700;'
-            f'border-bottom:3px solid #F4A300;white-space:nowrap;">{col}</th>'
-        )
-
-    html_parts.append('</tr></thead><tbody>')
-
-    for i, (match, slot1, slot2) in enumerate(round32_slots):
-        bg = "#ffffff" if i % 2 == 0 else "#f8fafc"
-
+    for match, slot1, slot2 in round32_slots:
         team1 = get_slot_team(slot1)
         team2 = get_slot_team(slot2)
 
-        html_parts.append(f'<tr style="background:{bg};">')
+        cards_html += f"""
+<div style="
+background:white;
+border:1px solid #e5e7eb;
+border-radius:16px;
+padding:18px 22px;
+margin-bottom:14px;
+box-shadow:0 4px 12px rgba(0,0,0,0.06);
+">
+<div style="
+font-size:14px;
+font-weight:800;
+color:#1f4e79;
+margin-bottom:12px;
+">
+🏆 {match}
+</div>
 
-        values = [match, team1, team2]
+<div style="
+display:grid;
+grid-template-columns:1fr auto 1fr;
+align-items:center;
+gap:18px;
+font-size:20px;
+font-weight:850;
+color:#1f2937;
+">
+<div style="text-align:right;">{team1}</div>
 
-        for value in values:
-            html_parts.append(
-                f'<td style="padding:12px 10px;text-align:center;'
-                f'border-bottom:1px solid #e5e7eb;'
-                f'border-right:1px solid #e5e7eb;'
-                f'font-weight:700;white-space:nowrap;">{value}</td>'
-            )
+<div style="
+background:#FFF3CD;
+color:#B45309;
+padding:8px 16px;
+border-radius:999px;
+font-size:15px;
+font-weight:900;
+">
+VS
+</div>
 
-        html_parts.append('</tr>')
+<div style="text-align:left;">{team2}</div>
+</div>
+</div>
+"""
 
-    html_parts.append('</tbody></table></div>')
-
-    st.markdown("".join(html_parts), unsafe_allow_html=True)
+    st.markdown(cards_html, unsafe_allow_html=True)
 
 
 

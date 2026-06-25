@@ -71,6 +71,78 @@ for group_label, table_idx in zip(list("ABCDEFGHIJKL"), standing_tables):
     groups[group_label] = teams
 
 
+
+#st.write("Selected group:", selected_group)
+
+
+# =====================
+# Extract Match Results
+# =====================
+
+matches = []
+
+match_info = {}
+
+for i, table in enumerate(tables):
+    if table.shape[1] < 3:
+        continue
+
+    team1 = str(table.columns[0]).strip()
+    score = str(table.columns[1]).strip()
+    team2 = str(table.columns[2]).strip()
+
+    if not re.match(r"^\d+\s*[–-]\s*\d+$", score):
+        continue
+
+    s1, s2 = re.split(r"[–-]", score)
+    s1 = int(s1.strip())
+    s2 = int(s2.strip())
+
+    group_found = None
+
+    for g, team_list in groups.items():
+        if team1 in team_list and team2 in team_list:
+            group_found = g
+            break
+
+    if group_found is not None:
+        matches.append((group_found, team1, s1, team2, s2))
+        match_key = tuple(sorted([team1, team2]))
+        match_info[match_key] = {
+            "Group": group_found,
+            "Score": f"{s1}-{s2}",
+            "Status": "Played"
+        }
+  
+for i, table in enumerate(tables):
+    if table.shape[1] < 3:
+        continue
+
+    team1 = str(table.columns[0]).strip()
+    middle = str(table.columns[1]).strip()
+    team2 = str(table.columns[2]).strip()
+
+    if not middle.startswith("Match"):
+        continue
+
+    group_found = None
+
+    for g, team_list in groups.items():
+        if team1 in team_list and team2 in team_list:
+            group_found = g
+            break
+
+    if group_found is not None:
+        match_key = tuple(sorted([team1, team2]))
+        match_info[match_key] = {
+            "Group": group_found,
+            "Score": "⏳",
+            "Status": "Remaining"
+        }
+
+# =====================
+# Dashboard Functions
+# =====================
 def get_group_remaining_count(group):
     teams = groups[group]
     remaining_count = 0
@@ -153,78 +225,6 @@ min-height:150px;
 </div>""",
             unsafe_allow_html=True
         )
-
-#st.write("Selected group:", selected_group)
-
-
-# =====================
-# Extract Match Results
-# =====================
-
-matches = []
-
-match_info = {}
-
-for i, table in enumerate(tables):
-    if table.shape[1] < 3:
-        continue
-
-    team1 = str(table.columns[0]).strip()
-    score = str(table.columns[1]).strip()
-    team2 = str(table.columns[2]).strip()
-
-    if not re.match(r"^\d+\s*[–-]\s*\d+$", score):
-        continue
-
-    s1, s2 = re.split(r"[–-]", score)
-    s1 = int(s1.strip())
-    s2 = int(s2.strip())
-
-    group_found = None
-
-    for g, team_list in groups.items():
-        if team1 in team_list and team2 in team_list:
-            group_found = g
-            break
-
-    if group_found is not None:
-        matches.append((group_found, team1, s1, team2, s2))
-        match_key = tuple(sorted([team1, team2]))
-        match_info[match_key] = {
-            "Group": group_found,
-            "Score": f"{s1}-{s2}",
-            "Status": "Played"
-        }
-  
-for i, table in enumerate(tables):
-    if table.shape[1] < 3:
-        continue
-
-    team1 = str(table.columns[0]).strip()
-    middle = str(table.columns[1]).strip()
-    team2 = str(table.columns[2]).strip()
-
-    if not middle.startswith("Match"):
-        continue
-
-    group_found = None
-
-    for g, team_list in groups.items():
-        if team1 in team_list and team2 in team_list:
-            group_found = g
-            break
-
-    if group_found is not None:
-        match_key = tuple(sorted([team1, team2]))
-        match_info[match_key] = {
-            "Group": group_found,
-            "Score": "⏳",
-            "Status": "Remaining"
-        }
-
-# =====================
-# Dashboard Functions
-# =====================
 
 from itertools import product
 
@@ -363,7 +363,15 @@ def calculate_group_status_and_probability(group, table, matrix):
     statuses = {}
 
     finished = len(remaining_games) == 0
-    final_order = list(table.index)
+    if finished:
+        final_ranked = rank_with_head_to_head(
+            table[["MP","W","D","L","GF","GA","GD","Pts"]].copy(),
+            matches,
+            group
+        )
+        final_order = list(final_ranked.index)
+    else:
+        final_order = list(table.index)
 
     for team in teams:
         top2_prob = top2_count[team] / total_outcomes * 100
@@ -807,29 +815,31 @@ color:#B45309;
 
         st.markdown("#### Upcoming Matches")
         st.markdown(remaining_cards, unsafe_allow_html=True)
-        # =====================
-        # Score Simulator
-        # =====================
-        st.markdown("### 🎮 Score Simulator")
+    # =====================
+    # Score Simulator
+    # =====================
+    st.markdown("### 🎮 Score Simulator")
 
-        remaining_games = []
+    remaining_games = []
 
-        for i in range(len(teams)):
-            for j in range(i + 1, len(teams)):
-                t1 = teams[i]
-                t2 = teams[j]
-                if matrix.loc[t1, t2] == "⏳":
-                    remaining_games.append((t1, t2))
+    for i in range(len(teams)):
+        for j in range(i + 1, len(teams)):
+            t1 = teams[i]
+            t2 = teams[j]
+            if matrix.loc[t1, t2] == "⏳":
+                remaining_games.append((t1, t2))
 
-        if len(remaining_games) == 0:
-            st.success("No remaining matches to simulate.")
-        else:
+    if len(remaining_games) == 0:
+        st.success("No remaining matches to simulate.")
+    else:
+        with st.form(key=f"sim_form_{selected_group}"):
+
             sim_scores = []
 
             for idx, (t1, t2) in enumerate(remaining_games):
                 st.markdown(f"#### {t1} vs {t2}")
 
-                c1, c2, c3 = st.columns([1, 0.3, 1])
+                c1, c2, c3 = st.columns([1, 0.2, 1])
 
                 with c1:
                     s1 = st.number_input(
@@ -843,7 +853,7 @@ color:#B45309;
 
                 with c2:
                     st.markdown(
-                        "<div style='text-align:center;font-size:26px;font-weight:800;margin-top:30px;'>-</div>",
+                        "<div style='text-align:center;font-size:24px;font-weight:800;margin-top:30px;'>-</div>",
                         unsafe_allow_html=True
                     )
 
@@ -859,44 +869,49 @@ color:#B45309;
 
                 sim_scores.append((t1, int(s1), t2, int(s2)))
 
-            if st.button("Run Simulation", use_container_width=True):
-                sim_table = table[["MP","W","D","L","GF","GA","GD","Pts"]].copy()
-                sim_matches = matches.copy()
+            run_sim = st.form_submit_button(
+                "Run Simulation",
+                use_container_width=True
+            )
 
-                for t1, s1, t2, s2 in sim_scores:
-                    sim_matches.append((selected_group, t1, s1, t2, s2))
+        if run_sim:
+            sim_table = table[["MP","W","D","L","GF","GA","GD","Pts"]].copy()
+            sim_matches = matches.copy()
 
-                    sim_table.loc[t1, "MP"] += 1
-                    sim_table.loc[t2, "MP"] += 1
+            for t1, s1, t2, s2 in sim_scores:
+                sim_matches.append((selected_group, t1, s1, t2, s2))
 
-                    sim_table.loc[t1, "GF"] += s1
-                    sim_table.loc[t1, "GA"] += s2
-                    sim_table.loc[t2, "GF"] += s2
-                    sim_table.loc[t2, "GA"] += s1
+                sim_table.loc[t1, "MP"] += 1
+                sim_table.loc[t2, "MP"] += 1
 
-                    if s1 > s2:
-                        sim_table.loc[t1, "W"] += 1
-                        sim_table.loc[t2, "L"] += 1
-                        sim_table.loc[t1, "Pts"] += 3
-                    elif s1 < s2:
-                        sim_table.loc[t2, "W"] += 1
-                        sim_table.loc[t1, "L"] += 1
-                        sim_table.loc[t2, "Pts"] += 3
-                    else:
-                        sim_table.loc[t1, "D"] += 1
-                        sim_table.loc[t2, "D"] += 1
-                        sim_table.loc[t1, "Pts"] += 1
-                        sim_table.loc[t2, "Pts"] += 1
+                sim_table.loc[t1, "GF"] += s1
+                sim_table.loc[t1, "GA"] += s2
+                sim_table.loc[t2, "GF"] += s2
+                sim_table.loc[t2, "GA"] += s1
 
-                sim_table["GD"] = sim_table["GF"] - sim_table["GA"]
-                sim_table = rank_with_head_to_head(sim_table, sim_matches, selected_group)
+                if s1 > s2:
+                    sim_table.loc[t1, "W"] += 1
+                    sim_table.loc[t2, "L"] += 1
+                    sim_table.loc[t1, "Pts"] += 3
+                elif s1 < s2:
+                    sim_table.loc[t2, "W"] += 1
+                    sim_table.loc[t1, "L"] += 1
+                    sim_table.loc[t2, "Pts"] += 3
+                else:
+                    sim_table.loc[t1, "D"] += 1
+                    sim_table.loc[t2, "D"] += 1
+                    sim_table.loc[t1, "Pts"] += 1
+                    sim_table.loc[t2, "Pts"] += 1
 
-                st.markdown("### 🧪 Simulated Final Standings")
-                st.dataframe(
-                    sim_table.reset_index().rename(columns={"index": "Team"}),
-                    use_container_width=True,
-                    hide_index=True
-                )
+            sim_table["GD"] = sim_table["GF"] - sim_table["GA"]
+            sim_table = rank_with_head_to_head(sim_table, sim_matches, selected_group)
+
+            st.markdown("### 🧪 Simulated Final Standings")
+            st.dataframe(
+                sim_table.reset_index().rename(columns={"index": "Team"}),
+                use_container_width=True,
+                hide_index=True
+            )
 
 
     

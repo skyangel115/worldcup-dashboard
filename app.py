@@ -49,9 +49,12 @@ headers = {
     "User-Agent": "Mozilla/5.0"
 }
 
-html = requests.get(url, headers=headers).text
+@st.cache_data(ttl=600)
+def load_tables():
+    html = requests.get(url, headers=headers).text
+    return pd.read_html(StringIO(html))
 
-tables = pd.read_html(StringIO(html))
+tables = load_tables()
 
 standing_tables = []
 
@@ -60,6 +63,10 @@ for i, table in enumerate(tables):
 
     if any("Team" in str(c) for c in cols) and any("Pts" in str(c) for c in cols):
         standing_tables.append(i)
+
+# =====================
+# Data Preparation
+# =====================
 
 # =====================
 # Build Group Information
@@ -310,29 +317,6 @@ def rank_with_head_to_head(sim, all_matches, group):
 
     return ranked
 
-def get_group_status(group, ranked, matrix):
-    if "group_status_cache" not in st.session_state:
-        st.session_state.group_status_cache = {}
-
-    cache = st.session_state.group_status_cache
-
-    cache_key = (
-        group,
-        tuple(matches),
-        tuple(groups[group])
-    )
-
-    if cache_key not in cache:
-        statuses, probabilities, first_probabilities = calculate_group_status_and_probability(
-            group,
-            ranked,
-            matrix
-        )
-
-        cache[cache_key] = (statuses, probabilities, first_probabilities)
-
-    return cache[cache_key]
-
 def calculate_group_status_and_probability(group, table, matrix):
     teams = list(table.index)
 
@@ -357,9 +341,7 @@ def calculate_group_status_and_probability(group, table, matrix):
     first_count = {team: 0 for team in teams}
     total_outcomes = 0
 
-    outcomes = list(product(possible_scores, repeat=len(remaining_games)))
-
-    for outcome_set in outcomes:
+    for outcome_set in product(possible_scores, repeat=len(remaining_games)):
         sim = table[["MP","W","D","L","GF","GA","GD","Pts"]].copy()
         sim_matches = matches.copy()
 
@@ -498,12 +480,39 @@ def build_group_table(group):
 
     return table
 
+def build_group_matrix(group, ranked):
+    matrix = pd.DataFrame("⏳", index=ranked.index, columns=ranked.index)
+
+    for team in ranked.index:
+        matrix.loc[team, team] = "—"
+
+    for g, team1, score1, team2, score2 in matches:
+        if g != group:
+            continue
+
+        matrix.loc[team1, team2] = f"{score1}-{score2}"
+        matrix.loc[team2, team1] = f"{score2}-{score1}"
+
+    return matrix
+
+
+def get_group_data(group):
+    ranked = build_group_table(group)
+    matrix = build_group_matrix(group, ranked)
+
+    statuses, probabilities, first_probabilities = calculate_group_status_and_probability(
+        group,
+        ranked,
+        matrix
+    )
+
+    return ranked, matrix, statuses, probabilities, first_probabilities
 
 def rank_third_placed_teams():
     third_teams = []
 
     for group in sorted(groups.keys()):
-        ranked = build_group_table(group)
+        ranked, _, _, _, _ = all_group_data[group]
 
         third_team = ranked.index[2]
 
@@ -530,75 +539,16 @@ def rank_third_placed_teams():
 
     return third_df
 
+# =====================
+# UI Functions
+# =====================
+
 def show_group(selected_group):
-    teams = groups[selected_group]
 
 # =====================
 # Group Standings
 # =====================
-    table = pd.DataFrame(
-        0,
-        index=teams,
-        columns=["MP","W","D","L","GF","GA","GD","Pts"]
-    )
-
-    for g, team1, score1, team2, score2 in matches:
-        if g != selected_group:
-            continue
-
-        table.loc[team1, "MP"] += 1
-        table.loc[team2, "MP"] += 1
-
-        table.loc[team1, "GF"] += score1
-        table.loc[team1, "GA"] += score2
-        table.loc[team2, "GF"] += score2
-        table.loc[team2, "GA"] += score1
-
-        if score1 > score2:
-            table.loc[team1, "W"] += 1
-            table.loc[team2, "L"] += 1
-            table.loc[team1, "Pts"] += 3
-
-        elif score1 < score2:
-            table.loc[team2, "W"] += 1
-            table.loc[team1, "L"] += 1
-            table.loc[team2, "Pts"] += 3
-
-        else:
-            table.loc[team1, "D"] += 1
-            table.loc[team2, "D"] += 1
-            table.loc[team1, "Pts"] += 1
-            table.loc[team2, "Pts"] += 1
-
-    table["GD"] = table["GF"] - table["GA"]
-
-    table = rank_with_head_to_head(table, matches, selected_group)
-
-    
-    # =====================
-    # Match Matrix
-    # =====================
-    matrix = pd.DataFrame(
-        "⏳",
-        index=teams,
-        columns=teams
-    )
-
-    for team in teams:
-        matrix.loc[team, team] = "—"
-
-    for g, team1, score1, team2, score2 in matches:
-        if g != selected_group:
-            continue
-
-        matrix.loc[team1, team2] = f"{score1}-{score2}"
-        matrix.loc[team2, team1] = f"{score2}-{score1}"
-
-    statuses, probabilities, first_probabilities = get_group_status(
-        selected_group,
-        table,
-        matrix
-    )
+    table, matrix, statuses, probabilities, first_probabilities = all_group_data[selected_group]
 
     table["Status"] = [statuses[team] for team in table.index]
     table["1st Scenario %"] = [first_probabilities[team] for team in table.index]
@@ -1241,30 +1191,11 @@ def show_tournament():
     eliminated = []
 
     for group in sorted(groups.keys()):
-        ranked = build_group_table(group)
-
-        matrix = pd.DataFrame("⏳", index=ranked.index, columns=ranked.index)
-
-        for team in ranked.index:
-            matrix.loc[team, team] = "—"
-
-        for g, team1, score1, team2, score2 in matches:
-            if g != group:
-                continue
-
-            matrix.loc[team1, team2] = f"{score1}-{score2}"
-            matrix.loc[team2, team1] = f"{score2}-{score1}"
-
+        ranked, matrix, statuses, _, _ = all_group_data[group]
         remaining_count = (matrix.values == "⏳").sum() // 2
 
         # 剩餘比賽不多時，直接用原本完整 simulation 判斷，包含 H2H
         if remaining_count <= 2:
-            statuses, _, _ = get_group_status(
-                group,
-                ranked,
-                matrix
-            )
-
             for team, status in statuses.items():
                 if status in ["🥇 1st Locked", "🥇 Winner"]:
                     first_locked.append({
@@ -1295,6 +1226,12 @@ def show_tournament():
             "🔴 Eliminated Teams",
             theme="red"
         )
+
+
+all_group_data = {}
+
+for group in sorted(groups.keys()):
+    all_group_data[group] = get_group_data(group)
 
 
 

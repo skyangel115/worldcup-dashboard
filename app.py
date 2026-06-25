@@ -77,15 +77,23 @@ group_options = {
 
 st.markdown("### 🌍 Select Group")
 
-if "selected_group" not in st.session_state:
-    st.session_state.selected_group = "A"
+selected_group = st.segmented_control(
+    "Group",
+    options=sorted(groups.keys()),
+    label_visibility="collapsed"
+)
+
+if selected_group is None:
+    selected_group = "A"
+
+st.markdown("### 🏆 Group Overview")
 
 group_cols = st.columns(4)
 
 for idx, g in enumerate(sorted(groups.keys())):
     col = group_cols[idx % 4]
 
-    is_selected = g == st.session_state.selected_group
+    is_selected = g == selected_group
 
     border_color = "#1F4E79" if is_selected else "#E5E7EB"
     border_width = "3px" if is_selected else "1px"
@@ -96,14 +104,6 @@ for idx, g in enumerate(sorted(groups.keys())):
     teams_html = "<br>".join(groups[g])
 
     with col:
-        if st.button(
-            f"Group {g}",
-            key=f"group_btn_{g}",
-            use_container_width=True
-        ):
-            st.session_state.selected_group = g
-            st.rerun()
-
         st.markdown(
             f"""<div style="
 background:{background};
@@ -134,8 +134,6 @@ color:#374151;
 </div>""",
             unsafe_allow_html=True
         )
-
-selected_group = st.session_state.selected_group
 
 #st.write("Selected group:", selected_group)
 

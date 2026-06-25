@@ -10,15 +10,22 @@ st.caption(
 st.markdown("""
 <style>
 label[data-testid="stWidgetLabel"] p {
-    font-size: 24px;
-    font-weight: 900;
+    font-size:24px;
+    font-weight:900;
+    margin-bottom:8px;
 }
 
-div[data-testid="stSegmentedControl"] button {
-    font-size: 18px !important;
-    font-weight: 750 !important;
-    padding: 10px 24px !important;
-    min-height: 50px !important;
+div[data-testid="stSegmentedControl"]{
+    margin-top:8px;
+    margin-bottom:28px;
+}
+
+div[data-testid="stSegmentedControl"] button{
+    font-size:18px !important;
+    font-weight:850 !important;
+    padding:13px 34px !important;
+    min-height:56px !important;
+    border-radius:16px !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -236,13 +243,14 @@ min-height:150px;
 st.markdown("---")
 
 view = st.segmented_control(
-    "📊 Dashboard View",
+    "Navigation",
     options=[
-        "Group Dashboard",
-        "Best Third-Placed Teams",
-        "Tournament Overview"
+        "🌍 Group Stage",
+        "🥉 Best Third-Placed Teams",
+        "🏆 Knockout Stage"
     ],
-    default="Group Dashboard"
+    label_visibility="collapsed",
+    default="🌍 Group Stage"
 )
 
 from itertools import product
@@ -1137,27 +1145,35 @@ def show_best_third():
 
 def show_tournament():
     st.header("🏆 Tournament Overview")
+    st.subheader("🏅 Projected Round of 32")
     st.caption(
         "Round of 32 pairings follow FIFA's official slot structure. "
         "Third-place opponents remain provisional until the full FIFA mapping table is added."
     )
 
     round32_slots = [
-        ("Match 73", "2A", "2B"),
         ("Match 74", "1E", "3A/B/C/D/F"),
-        ("Match 75", "1F", "2C"),
-        ("Match 76", "1C", "2F"),
         ("Match 77", "1I", "3C/D/F/G/H"),
-        ("Match 78", "2E", "2I"),
-        ("Match 79", "1A", "3C/E/F/H/I"),
+
+        ("Match 73", "2A", "2B"),
         ("Match 80", "1L", "3E/H/I/J/K"),
+
+        ("Match 75", "1F", "2C"),
+        ("Match 78", "2E", "2I"),
+
+        ("Match 76", "1C", "2F"),
+        ("Match 79", "1A", "3C/E/F/H/I"),
+
         ("Match 81", "1D", "3B/E/F/I/J"),
         ("Match 82", "1G", "3A/E/H/I/J"),
+
         ("Match 83", "2K", "2L"),
         ("Match 84", "1H", "2J"),
+
         ("Match 85", "1B", "3E/F/G/I/J"),
-        ("Match 86", "1J", "2H"),
         ("Match 87", "1K", "3D/E/I/J/L"),
+
+        ("Match 86", "1J", "2H"),
         ("Match 88", "2D", "2G"),
     ]
 
@@ -1234,12 +1250,12 @@ VS
 
 
 
-if view == "Group Dashboard":
+if view == "🌍 Group Stage":
     show_group(selected_group)
 
-elif view == "Best Third-Placed Teams":
+elif view == "🥉 Best Third-Placed Teams":
     show_best_third()
 
-elif view == "Tournament Overview":
+elif view == "🏆 Knockout Stage":
     show_tournament()
 

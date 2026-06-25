@@ -87,11 +87,14 @@ group_options = {
 
 st.markdown("### 🌍 Select Group")
 
-selected_group_label = st.selectbox(
+selected_group = st.radio(
     "Group",
-    options=list(group_options.values()),
+    options=sorted(groups.keys()),
+    horizontal=True,
     label_visibility="collapsed"
 )
+
+st.caption(group_options[selected_group])
 
 selected_group = [
     g for g, label in group_options.items()

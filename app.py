@@ -544,6 +544,7 @@ def rank_third_placed_teams():
 # =====================
 
 def show_group(selected_group):
+    teams = groups[selected_group]
 
 # =====================
 # Group Standings

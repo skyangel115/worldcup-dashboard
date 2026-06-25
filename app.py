@@ -391,6 +391,27 @@ def show_group(selected_group):
     table["1st Scenario %"] = [first_probabilities[team] for team in table.index]
     table["Top 2 Scenario %"] = [probabilities[team] for team in table.index]
 
+    remaining_count = (matrix.values == "⏳").sum() // 2
+
+    if remaining_count == 0:
+        st.success(f"Group {selected_group} finished")
+    else:
+        st.info(f"Group {selected_group}: {remaining_count} matches remaining")
+
+    st.markdown("### Group Summary")
+
+    top_team = table.index[0]
+    second_team = table.index[1]
+    third_team = table.index[2]
+    bottom_team = table.index[3]
+
+    c1, c2, c3, c4 = st.columns(4)
+
+    c1.metric("Leader", top_team, f"{table.loc[top_team, 'Pts']} pts")
+    c2.metric("2nd Place", second_team, f"{table.loc[second_team, 'Pts']} pts")
+    c3.metric("3rd Place", third_team, f"{table.loc[third_team, 'Pts']} pts")
+    c4.metric("Bottom", bottom_team, f"{table.loc[bottom_team, 'Pts']} pts")
+
     st.subheader(f"Group {selected_group} Standings")
     st.dataframe(
         table.reset_index().rename(columns={"index": "Team"}),
@@ -467,7 +488,7 @@ def show_group(selected_group):
     # =====================
     st.subheader(f"Group {selected_group} Top 2 Qualification Chance")
 
-    chart_col, _ = st.columns([0.65, 0.35])
+    chart_col, _ = st.columns([0.55, 0.45])
 
     with chart_col:
         chance_df = table[["Top 2 Scenario %"]].sort_values(
@@ -494,7 +515,7 @@ def show_group(selected_group):
                 unsafe_allow_html=True
             )
 
-            st.progress(prob / 100)
+            st.progress(min(max(prob / 100, 0), 1))
 
 
 

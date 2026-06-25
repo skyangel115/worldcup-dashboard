@@ -585,13 +585,42 @@ display:inline-block;
                 value = row[col]
 
                 if value == "⏳":
-                    cell_html = '<span style="background:#fff3cd; padding:4px 10px; border-radius:999px;">⏳</span>'
+                    cell_html = (
+                        '<span style="background:#FFF3CD; color:#B45309; '
+                        'padding:6px 14px; border-radius:999px; '
+                        'font-weight:700;">Upcoming</span>'
+                    )
                 elif value == "—":
-                    cell_html = '<span style="color:#9ca3af;">—</span>'
+                    cell_html = '<span style="color:#CBD5E1; font-size:18px;">—</span>'
                 elif col == "Team":
                     cell_html = f'<b>{value}</b>'
                 else:
-                    cell_html = f'<span style="background:#eef7ff; padding:4px 10px; border-radius:999px; font-weight:700;">{value}</span>'
+                    try:
+                        s1, s2 = map(int, str(value).split("-"))
+
+                        if s1 > s2:
+                            badge_bg = "#E8F6EF"
+                            badge_color = "#166534"
+                        elif s1 < s2:
+                            badge_bg = "#FFF1F2"
+                            badge_color = "#991B1B"
+                        else:
+                            badge_bg = "#FFF7E8"
+                            badge_color = "#92400E"
+
+                        cell_html = (
+                            f'<span style="'
+                            f'background:{badge_bg}; '
+                            f'color:{badge_color}; '
+                            f'padding:6px 14px; '
+                            f'border-radius:999px; '
+                            f'font-weight:800; '
+                            f'box-shadow:0 2px 6px rgba(0,0,0,.08);'
+                            f'">{value}</span>'
+                        )
+
+                    except:
+                        cell_html = str(value)
 
                 matrix_parts.append(
                     f'<td style="padding:11px 10px; text-align:center; '

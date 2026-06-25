@@ -417,12 +417,18 @@ def show_group(selected_group):
 
         gd_text = f"+{gd}" if gd > 0 else str(gd)
 
+    border_colors = ["#1f4e79", "#2a9d8f", "#f4a261", "#d62828"]
+
+        for i, (col, (label, team)) in enumerate(zip(summary_cols, summary_items)):
+            border_color = border_colors[i]
+
         with col:
             st.markdown(
                 f"""
                 <div style="
                     background:#ffffff;
                     border:1px solid #e5e7eb;
+                    border-left:6px solid {border_color};
                     border-radius:16px;
                     padding:18px;
                     box-shadow:0 4px 12px rgba(0,0,0,0.06);
@@ -446,10 +452,59 @@ def show_group(selected_group):
             )
 
     st.subheader(f"Group {selected_group} Standings")
-    st.dataframe(
-        table.reset_index().rename(columns={"index": "Team"}),
-        use_container_width=True,
-        hide_index=True
+    standings_df = table.reset_index().rename(columns={"index": "Team"})
+
+    def style_standings(df):
+        def row_style(row):
+            if row.name == 0:
+                return ["background-color: #e8f6ef; font-weight: 600"] * len(row)
+            elif row.name == 1:
+                return ["background-color: #eef7ff"] * len(row)
+            elif row.name == 2:
+                return ["background-color: #fff7e8"] * len(row)
+            else:
+                return ["background-color: #fff1f2"] * len(row)
+
+        return (
+            df.style
+            .apply(row_style, axis=1)
+            .format({
+                "1st Scenario %": "{:.1f}",
+                "Top 2 Scenario %": "{:.1f}"
+            })
+            .set_properties(**{
+                "text-align": "center",
+                "font-size": "14px",
+                "padding": "10px",
+                "border": "1px solid #e5e7eb"
+            })
+            .set_table_styles([
+                {
+                    "selector": "th",
+                    "props": [
+                        ("background-color", "#1f4e79"),
+                        ("color", "white"),
+                        ("font-weight", "700"),
+                        ("text-align", "center"),
+                        ("padding", "11px"),
+                        ("border", "1px solid #1f4e79")
+                    ]
+                },
+                {
+                    "selector": "table",
+                    "props": [
+                        ("border-collapse", "collapse"),
+                        ("border-radius", "14px"),
+                        ("overflow", "hidden"),
+                        ("box-shadow", "0 4px 14px rgba(0,0,0,0.08)")
+                    ]
+                }
+            ])
+        )
+
+    st.markdown(
+        style_standings(standings_df).to_html(),
+        unsafe_allow_html=True
     )
 
     # =====================

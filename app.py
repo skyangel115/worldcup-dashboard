@@ -49,12 +49,8 @@ headers = {
     "User-Agent": "Mozilla/5.0"
 }
 
-@st.cache_data(ttl=600)
-def load_tables():
-    html = requests.get(url, headers=headers).text
-    return pd.read_html(StringIO(html))
-
-tables = load_tables()
+html = requests.get(url, headers=headers).text
+tables = pd.read_html(StringIO(html))
 
 standing_tables = []
 

@@ -1137,7 +1137,20 @@ def show_best_third():
 
 def show_tournament():
     st.header("🏆 Tournament Overview")
-    st.info("Knockout stage will be added here later.")
+    st.caption("Projected Round of 32 based on current group standings and current best third-placed teams.")
+
+    third_df = rank_third_placed_teams()
+    best_thirds = third_df[third_df["Third Place Rank"] <= 8]
+
+    st.subheader("🌎 Current Qualified Third-Placed Teams")
+    st.write(", ".join(best_thirds["Team"].tolist()))
+
+    st.subheader("🏅 Round of 32 Placeholder")
+
+    st.info(
+        "Next step: define FIFA's official Round of 32 pairing rules, "
+        "then map 1st/2nd/3rd-place teams into each knockout slot."
+    )
 
 
 

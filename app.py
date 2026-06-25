@@ -424,7 +424,7 @@ def show_group(selected_group):
 
         with col:
             st.markdown(
-                f"""
+        f"""
         <div style="
             background:#ffffff;
             border:1px solid #e5e7eb;

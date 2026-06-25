@@ -491,43 +491,31 @@ font-weight:600;
         "#FFF1F2"   # 4th
     ]
 
-    html = """<div style="width:100%; overflow-x:auto;">
-    <table style="
-        width:100%;
-        border-collapse:separate;
-        border-spacing:0;
-        border-radius:14px;
-        overflow:hidden;
-        box-shadow:0 4px 14px rgba(0,0,0,0.08);
-        font-size:14px;
-    ">
-    <thead>
-    <tr style="background:#1f4e79;color:white;">
-    """
+    html_parts = []
+
+    html_parts.append('<div style="width:100%; overflow-x:auto;">')
+    html_parts.append(
+        '<table style="width:100%; border-collapse:separate; border-spacing:0; '
+        'border-radius:14px; overflow:hidden; '
+        'box-shadow:0 4px 14px rgba(0,0,0,0.08); font-size:14px;">'
+    )
+
+    html_parts.append('<thead>')
+    html_parts.append('<tr style="background:#1f4e79;color:white;">')
 
     for col in standings_df.columns:
-        html += f"""
-        <th style="
-            padding:12px 10px;
-            text-align:center;
-            font-weight:700;
-            border-bottom:3px solid #F4A300;
-            white-space:nowrap;
-        ">{col}</th>
-        """
+        html_parts.append(
+            f'<th style="padding:12px 10px; text-align:center; font-weight:700; '
+            f'border-bottom:3px solid #F4A300; white-space:nowrap;">{col}</th>'
+        )
 
-    html += """
-    </tr>
-    </thead>
-    <tbody>
-    """
+    html_parts.append('</tr>')
+    html_parts.append('</thead>')
+    html_parts.append('<tbody>')
 
     for i, row in standings_df.iterrows():
         bg = row_colors[i] if i < len(row_colors) else "#ffffff"
-
-        html += f"""
-        <tr style="background:{bg};">
-        """
+        html_parts.append(f'<tr style="background:{bg};">')
 
         for col in standings_df.columns:
             value = row[col]
@@ -537,26 +525,19 @@ font-weight:600;
 
             weight = "700" if col in ["Team", "Pts", "Status"] else "400"
 
-            html += f"""
-            <td style="
-                padding:12px 10px;
-                text-align:center;
-                border-bottom:1px solid #e5e7eb;
-                border-right:1px solid #e5e7eb;
-                font-weight:{weight};
-                white-space:nowrap;
-            ">{value}</td>
-            """
+            html_parts.append(
+                f'<td style="padding:12px 10px; text-align:center; '
+                f'border-bottom:1px solid #e5e7eb; border-right:1px solid #e5e7eb; '
+                f'font-weight:{weight}; white-space:nowrap;">{value}</td>'
+            )
 
-        html += """
-        </tr>
-        """
+        html_parts.append('</tr>')
 
-    html += """
-    </tbody>
-    </table>
-    </div>
-    """
+    html_parts.append('</tbody>')
+    html_parts.append('</table>')
+    html_parts.append('</div>')
+
+    html = "".join(html_parts)
 
     st.markdown(html, unsafe_allow_html=True)
 

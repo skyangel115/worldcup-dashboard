@@ -59,7 +59,18 @@ for group_label, table_idx in zip(list("ABCDEFGHIJKL"), standing_tables):
     )
 
     groups[group_label] = teams
-selected_group = st.selectbox("Group", sorted(groups.keys()))
+group_options = {
+    g: f"Group {g} — {', '.join(groups[g])}"
+    for g in sorted(groups.keys())
+}
+
+selected_group_label = st.selectbox(
+    "Group",
+    list(group_options.keys()),
+    format_func=lambda g: group_options[g]
+)
+
+selected_group = selected_group_label
 st.write("Selected group:", selected_group)
 
 # =====================
@@ -332,12 +343,7 @@ def show_group(selected_group):
 
     table = rank_with_head_to_head(table, matches, selected_group)
 
-    st.subheader(f"Group {selected_group} Standings")
-    st.dataframe(
-        table.reset_index().rename(columns={"index": "Team"}),
-        use_container_width=True,
-        hide_index=True
-    )
+    
     # =====================
     # Match Matrix
     # =====================
@@ -356,6 +362,24 @@ def show_group(selected_group):
 
         matrix.loc[team1, team2] = f"{score1}-{score2}"
         matrix.loc[team2, team1] = f"{score2}-{score1}"
+    
+    statuses, probabilities, first_probabilities = calculate_group_status_and_probability(
+    slelcted_group,
+    table,
+    matrix
+    )
+
+    table["Status"] = [statuses[team] for team in table.index]
+    table["1st Scenario %"] = [first_probabilities[team] for team in table.index]
+    table["Top 2 Scenario %"] = [probabilities[team] for team in table.index]
+
+    st.subheader(f"Group {selected_group} Standings")
+    st.dataframe(
+        table.reset_index().rename(columns={"index": "Team"}),
+        use_container_width=True,
+        hide_index=True
+    )
+    
     st.subheader(f"Group {selected_group} Match Matrix")
 
     st.dataframe(

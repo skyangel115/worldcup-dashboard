@@ -429,7 +429,7 @@ def show_group(selected_group):
 <div style="
 background:{background};
 border:1px solid #e5e7eb;
-border-top:7px solid {border_color};
+border-top:10px solid {border_color};
 border-radius:16px;
 padding:18px;
 box-shadow:0 4px 12px rgba(0,0,0,0.06);
@@ -472,6 +472,11 @@ margin:12px 0;
 <div style="
 font-size:16px;
 font-weight:600;
+background:#ffffffcc;
+border:1px solid #e5e7eb;
+border-radius:999px;
+padding:6px 12px;
+display:inline-block;
 ">
 {status}
 </div>
@@ -485,10 +490,10 @@ font-weight:600;
     standings_df = table.reset_index().rename(columns={"index": "Team"})
 
     row_colors = [
-        "#E8F6EF",  # 1st
-        "#EEF7FF",  # 2nd
-        "#FFF7E8",  # 3rd
-        "#FFF1F2"   # 4th
+        "#F5FAFF",  # 1st
+        "#F4FCF6",  # 2nd
+        "#FFFAF2",  # 3rd
+        "#FFF5F5"   # 4th
     ]
 
     html_parts = []

@@ -446,30 +446,33 @@ def show_group(selected_group):
     # =====================
     # Top 2 Scenario Chart
     # =====================
-    st.subheader(f"Group {selected_group} Top 2 Scenario Chance")
+    st.subheader(f"Group {selected_group} Top 2 Qualification Chance")
 
     chance_df = table[["Top 2 Scenario %"]].sort_values(
         "Top 2 Scenario %",
-        ascending=True
+        ascending=False
     )
 
-    fig, ax = plt.subplots(figsize=(8, 3.8))
+    for team, row in chance_df.iterrows():
+        prob = row["Top 2 Scenario %"]
 
-    chance_df.plot(
-        kind="barh",
-        legend=False,
-        ax=ax
-    )
+        st.markdown(
+            f"""
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                margin-top:12px;
+                font-size:16px;
+            ">
+                <span><b>{team}</b></span>
+                <span>{prob:.1f}%</span>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-    ax.set_xlim(0, 105)
-    ax.set_xlabel("Top 2 Scenario %")
-    ax.set_ylabel("")
-    ax.set_title(f"Group {selected_group} Top 2 Scenario Chance")
-
-    for i, value in enumerate(chance_df["Top 2 Scenario %"]):
-        ax.text(value + 1, i, f"{value:.1f}%", va="center")
-
-    st.pyplot(fig)
+        st.progress(prob / 100)
 
 
 

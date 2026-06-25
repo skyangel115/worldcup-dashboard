@@ -1137,20 +1137,91 @@ def show_best_third():
 
 def show_tournament():
     st.header("🏆 Tournament Overview")
-    st.caption("Projected Round of 32 based on current group standings and current best third-placed teams.")
-
-    third_df = rank_third_placed_teams()
-    best_thirds = third_df[third_df["Third Place Rank"] <= 8]
-
-    st.subheader("🌎 Current Qualified Third-Placed Teams")
-    st.write(", ".join(best_thirds["Team"].tolist()))
-
-    st.subheader("🏅 Round of 32 Placeholder")
-
-    st.info(
-        "Next step: define FIFA's official Round of 32 pairing rules, "
-        "then map 1st/2nd/3rd-place teams into each knockout slot."
+    st.caption(
+        "Projected Round of 32 slots based on current group standings. "
+        "Third-place opponents are shown as official slot ranges until the full FIFA mapping table is added."
     )
+
+    round32_slots = [
+        ("Match 73", "2A", "2B"),
+        ("Match 74", "1E", "3A/B/C/D/F"),
+        ("Match 75", "1F", "2C"),
+        ("Match 76", "1C", "2F"),
+        ("Match 77", "1I", "3C/D/F/G/H"),
+        ("Match 78", "2E", "2I"),
+        ("Match 79", "1A", "3C/E/F/H/I"),
+        ("Match 80", "1L", "3E/H/I/J/K"),
+        ("Match 81", "1D", "3B/E/F/I/J"),
+        ("Match 82", "1G", "3A/E/H/I/J"),
+        ("Match 83", "2K", "2L"),
+        ("Match 84", "1H", "2J"),
+        ("Match 85", "1B", "3E/F/G/I/J"),
+        ("Match 86", "1J", "2H"),
+        ("Match 87", "1K", "3D/E/I/J/L"),
+        ("Match 88", "2D", "2G"),
+    ]
+
+    def get_slot_team(slot):
+        if slot.startswith("1"):
+            group = slot[1]
+            ranked = build_group_table(group)
+            return ranked.index[0]
+
+        elif slot.startswith("2"):
+            group = slot[1]
+            ranked = build_group_table(group)
+            return ranked.index[1]
+
+        elif slot.startswith("3"):
+            return f"3rd Group {slot[1:]}"
+
+        return slot
+
+    html_parts = []
+
+    html_parts.append('<div style="width:100%; overflow-x:auto;">')
+    html_parts.append(
+        '<table style="width:100%; border-collapse:separate; border-spacing:0; '
+        'border-radius:14px; overflow:hidden; '
+        'box-shadow:0 4px 14px rgba(0,0,0,0.08); font-size:14px;">'
+    )
+
+    html_parts.append('<thead>')
+    html_parts.append('<tr style="background:#1f4e79;color:white;">')
+
+    columns = ["Match", "Team 1", "Team 2"]
+
+    for col in columns:
+        html_parts.append(
+            f'<th style="padding:12px 10px;text-align:center;font-weight:700;'
+            f'border-bottom:3px solid #F4A300;white-space:nowrap;">{col}</th>'
+        )
+
+    html_parts.append('</tr></thead><tbody>')
+
+    for i, (match, slot1, slot2) in enumerate(round32_slots):
+        bg = "#ffffff" if i % 2 == 0 else "#f8fafc"
+
+        team1 = get_slot_team(slot1)
+        team2 = get_slot_team(slot2)
+
+        html_parts.append(f'<tr style="background:{bg};">')
+
+        values = [match, team1, team2]
+
+        for value in values:
+            html_parts.append(
+                f'<td style="padding:12px 10px;text-align:center;'
+                f'border-bottom:1px solid #e5e7eb;'
+                f'border-right:1px solid #e5e7eb;'
+                f'font-weight:700;white-space:nowrap;">{value}</td>'
+            )
+
+        html_parts.append('</tr>')
+
+    html_parts.append('</tbody></table></div>')
+
+    st.markdown("".join(html_parts), unsafe_allow_html=True)
 
 
 

@@ -86,29 +86,54 @@ selected_group = st.segmented_control(
 if selected_group is None:
     selected_group = "A"
 
-team_list_html = "<br>".join(groups[selected_group])
+st.markdown("### 🏆 Group Overview")
 
-st.markdown(
-    f"""<div style="
-background:#F8FAFC;
-border-left:6px solid #1F4E79;
-padding:16px 20px;
-border-radius:12px;
-font-size:16px;
-font-weight:600;
-color:#374151;
-margin-bottom:18px;
-box-shadow:0 2px 8px rgba(0,0,0,.04);
+group_cols = st.columns(4)
+
+for idx, g in enumerate(sorted(groups.keys())):
+    col = group_cols[idx % 4]
+
+    is_selected = g == selected_group
+
+    border_color = "#1F4E79" if is_selected else "#E5E7EB"
+    border_width = "3px" if is_selected else "1px"
+    background = "#F5FAFF" if is_selected else "#FFFFFF"
+    shadow = "0 4px 14px rgba(0,0,0,.10)" if is_selected else "0 2px 8px rgba(0,0,0,.04)"
+    title_icon = "🏆" if is_selected else "⚽"
+
+    teams_html = "<br>".join(groups[g])
+
+    with col:
+        st.markdown(
+            f"""<div style="
+background:{background};
+border:{border_width} solid {border_color};
+border-radius:16px;
+padding:14px 16px;
+margin-bottom:14px;
+box-shadow:{shadow};
+min-height:170px;
 ">
-<div style="font-size:22px;font-weight:800;color:#1f2937;margin-bottom:10px;">
-🏆 Group {selected_group}
+<div style="
+font-size:22px;
+font-weight:800;
+color:#1f2937;
+margin-bottom:10px;
+">
+{title_icon} Group {g}
 </div>
-<div style="line-height:1.9;">
-{team_list_html}
+
+<div style="
+font-size:15px;
+font-weight:600;
+line-height:1.9;
+color:#374151;
+">
+{teams_html}
 </div>
 </div>""",
-    unsafe_allow_html=True
-)
+            unsafe_allow_html=True
+        )
 
 #st.write("Selected group:", selected_group)
 

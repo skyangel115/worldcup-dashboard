@@ -1155,36 +1155,38 @@ def show_tournament():
 
     for group in sorted(groups.keys()):
         ranked = build_group_table(group)
+        remaining_count = get_group_remaining_count(group)
 
-        matrix = pd.DataFrame("⏳", index=ranked.index, columns=ranked.index)
-        for team in ranked.index:
-            matrix.loc[team, team] = "—"
+        # 已完成小組：直接用最終排名判斷，不跑 simulation
+        if remaining_count == 0:
+            first_locked.append({
+                "Group": group,
+                "Team": ranked.index[0],
+                "Status": "🥇 Winner"
+            })
 
-        for g, team1, score1, team2, score2 in matches:
-            if g != group:
-                continue
-            matrix.loc[team1, team2] = f"{score1}-{score2}"
-            matrix.loc[team2, team1] = f"{score2}-{score1}"
+            eliminated.append({
+                "Group": group,
+                "Team": ranked.index[3],
+                "Status": "🔴 Eliminated"
+            })
 
-        statuses, _, _ = calculate_group_status_and_probability(
-            group,
-            ranked,
-            matrix
-        )
+        # 未完成小組：只做簡單判斷誰一定第一
+        else:
+            leader = ranked.index[0]
+            leader_pts = ranked.loc[leader, "Pts"]
 
-        for team, status in statuses.items():
-            if status == "🥇 1st Locked" or status == "🥇 Winner":
+            max_other_possible_pts = max(
+                ranked.loc[t, "Pts"] + 3 * get_group_remaining_count(group)
+                for t in ranked.index
+                if t != leader
+            )
+
+            if leader_pts > max_other_possible_pts:
                 first_locked.append({
                     "Group": group,
-                    "Team": team,
+                    "Team": leader,
                     "Status": "🥇 1st Locked"
-                })
-
-            elif status == "🔴 Eliminated" or status == "❌ Fourth Place":
-                eliminated.append({
-                    "Group": group,
-                    "Team": team,
-                    "Status": "🔴 Eliminated"
                 })
 
     col1, col2 = st.columns(2)
@@ -1212,7 +1214,6 @@ def show_tournament():
             )
         else:
             st.info("No eliminated teams yet.")
-
 
 
 

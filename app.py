@@ -10,8 +10,15 @@ st.caption(
 st.markdown("""
 <style>
 label[data-testid="stWidgetLabel"] p {
-    font-size: 22px;
-    font-weight: 800;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+div[data-testid="stSegmentedControl"] button {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    padding: 10px 22px !important;
+    min-height: 48px !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -1108,7 +1115,7 @@ def show_best_third():
         html_parts.append(f'<tr style="background:{bg};">')
 
         for col_name, value in zip(columns, values):
-            weight = "800" if col_name in ["Rank", "Team", "Pts", "Status"] else "500"
+            weight = "800" if col_name in ["Rank", "Team", "Pts", "Current Status"] else "500"
 
             html_parts.append(
                 f'<td style="padding:12px 10px;text-align:center;'
@@ -1124,6 +1131,9 @@ def show_best_third():
     html_parts.append('</div>')
 
     st.markdown("".join(html_parts), unsafe_allow_html=True)
+    st.caption(
+        "Current ranking only. Final third-place qualification may change because some groups are still in progress."
+    )
 
 def show_tournament():
     st.header("🏆 Tournament Overview")

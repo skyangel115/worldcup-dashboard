@@ -5,7 +5,7 @@ st.set_page_config(page_title="World Cup Dashboard", layout="wide")
 
 st.title("🌍 FIFA World Cup 2026 Group Dashboard")
 
-st.write("Choose a group to view standings, match matrix, and upcoming matches.")
+st.write("Track standings, qualification probabilities, and knockout progression throughout the tournament.")
 st.caption(
     "⚠ Scenario percentages are based on simulated scorelines from 0–7 goals per team and represent scenario frequency, not real-world match probabilities."
 )
@@ -18,9 +18,16 @@ label[data-testid="stWidgetLabel"] p {
 }
 
 div[data-testid="stCaptionContainer"] p{
-    font-size:19px !important;
+    font-size:16px !important;
     color:#5B6573 !important;
     line-height:1.5;
+}
+
+div.stButton > button{
+    font-size:18px !important;
+    font-weight:800 !important;
+    min-height:56px !important;
+    border-radius:14px !important;
 }
 
 div[data-testid="stSegmentedControl"]{
@@ -44,7 +51,7 @@ div[data-testid="stSegmentedControl"] button:hover{
 
 div[data-testid="stSegmentedControl"] button[aria-pressed="true"]{
     background:#E6F0FF !important;
-    color:white !important;
+    color:#1F4E79 !important;
     border:1px solid #1F4E79 !important;
     font-weight:900 !important;
     box-shadow:0 4px 12px rgba(31,78,121,.35);

@@ -1396,45 +1396,45 @@ def show_tournament():
     eliminated = []
 
     for group in sorted(groups.keys()):
-    ranked = build_group_table(group)
-    remaining_count = get_group_remaining_count(group)
+        ranked = build_group_table(group)
+        remaining_count = get_group_remaining_count(group)
 
-    if remaining_count == 0:
-        first_locked.append({
-            "Group": group,
-            "Team": ranked.index[0],
-            "Status": "🥇 Winner"
-        })
+        if remaining_count == 0:
+            first_locked.append({
+                "Group": group,
+                "Team": ranked.index[0],
+                "Status": "🥇 Winner"
+            })
 
-        eliminated.append({
-            "Group": group,
-            "Team": ranked.index[3],
-            "Status": "🔴 Eliminated"
-        })
+            eliminated.append({
+                "Group": group,
+                "Team": ranked.index[3],
+                "Status": "🔴 Eliminated"
+            })
 
-    elif remaining_count <= 2:
-        matrix = build_group_matrix(group, ranked)
+        elif remaining_count <= 2:
+            matrix = build_group_matrix(group, ranked)
 
-        statuses, _, _ = calculate_group_status_and_probability(
-            group,
-            ranked,
-            matrix
-        )
+            statuses, _, _ = calculate_group_status_and_probability(
+                group,
+                ranked,
+                matrix
+            )
 
-        for team, status in statuses.items():
-            if status in ["🥇 1st Locked", "🥇 Winner"]:
-                first_locked.append({
-                    "Group": group,
-                    "Team": team,
-                    "Status": status
-                })
+            for team, status in statuses.items():
+                if status in ["🥇 1st Locked", "🥇 Winner"]:
+                    first_locked.append({
+                        "Group": group,
+                        "Team": team,
+                        "Status": status
+                    })
 
-            elif status in ["🔴 Eliminated", "❌ Fourth Place"]:
-                eliminated.append({
-                    "Group": group,
-                    "Team": team,
-                    "Status": "🔴 Eliminated"
-                })
+                elif status in ["🔴 Eliminated", "❌ Fourth Place"]:
+                    eliminated.append({
+                        "Group": group,
+                        "Team": team,
+                        "Status": "🔴 Eliminated"
+                    })
 
 
     qualified_count = len(first_locked)

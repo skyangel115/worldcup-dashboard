@@ -1409,19 +1409,24 @@ def show_tournament():
     )
 
     if all_groups_completed:
-        st.success("✅ All groups completed. Final qualification results are shown below.")
+        st.success(
+            "🏁 Group Stage Completed\n\n"
+            "All qualification results have been finalized. "
+            "Best third-placed teams have also been confirmed."
+        )
         accurate_mode = False
     else:
         st.info(
             "⚡ **Fast Mode**\n\n"
-            "✔ Qualified teams from completed groups\n\n"
+            "✔ Qualified teams from completed groups\n"
             "✔ Eliminated teams from completed groups\n\n"
-            "🔍 **Accurate Mode** additionally detects mathematically confirmed qualification "
+            "🔍 **Accurate Mode**\n"
+            "Additionally detects mathematically confirmed qualification\n"
             "and elimination from unfinished groups."
         )
 
         accurate_mode = st.button(
-            "🔍 Run Accurate Qualification Analysis (≈3 min)",
+            "🔍 Run Accurate Analysis (≈3 min)",
             type="primary",
             use_container_width=True
         )

@@ -27,13 +27,17 @@ div[data-testid="stSegmentedControl"] button{
     padding:13px 34px !important;
     min-height:56px !important;
     border-radius:16px !important;
+    transition:all .2s ease;
 }
 
-<style>
-div[data-testid="stSegmentedControl"] button[aria-pressed="true"] {
+div[data-testid="stSegmentedControl"] button:hover{
+    transform:translateY(-2px);
+}
+
+div[data-testid="stSegmentedControl"] button[aria-pressed="true"]{
     background:#1F4E79 !important;
-    color:#92400E !important;
-    border:1px solid #F4A300 !important;
+    color:white !important;
+    border:1px solid #1F4E79 !important;
     font-weight:900 !important;
 }
 

@@ -1418,11 +1418,22 @@ def show_tournament():
     else:
         st.info(
             "⚡ **Fast Mode**\n\n"
+
             "✔ Qualified teams from completed groups\n\n"
+
             "✔ Eliminated teams from completed groups\n\n"
+
+            "---\n\n"
+
             "🔍 **Accurate Mode**\n\n"
-            "Additionally detects mathematically confirmed qualification "
-            "and elimination from unfinished groups."
+
+            "✔ Detects mathematically confirmed qualification\n\n"
+
+            "✔ Detects mathematically confirmed elimination\n"
+        )
+        
+        st.caption(
+            "Need mathematically confirmed results from unfinished groups?"
         )
 
         accurate_mode = st.button(

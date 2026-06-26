@@ -1395,6 +1395,15 @@ def show_tournament():
     first_locked = []
     eliminated = []
 
+    accurate_mode = st.button(
+        "🔍 Run Accurate Qualification Analysis (≈3 min)",
+        type="primary",
+        use_container_width=True
+    )
+
+    if accurate_mode:
+        st.info("Running accurate mode. This may take around 3 minutes.")
+
     for group in sorted(groups.keys()):
         ranked = build_group_table(group)
         remaining_count = get_group_remaining_count(group)
@@ -1412,14 +1421,15 @@ def show_tournament():
                 "Status": "🔴 Eliminated"
             })
 
-        elif remaining_count <= 2:
+        elif accurate_mode and remaining_count <= 2:
             matrix = build_group_matrix(group, ranked)
 
-            statuses, _, _ = calculate_group_status_and_probability(
-                group,
-                ranked,
-                matrix
-            )
+            with st.spinner(f"Running accurate analysis for Group {group}..."):
+                statuses, _, _ = calculate_group_status_and_probability(
+                    group,
+                    ranked,
+                    matrix
+                )
 
             for team, status in statuses.items():
                 if status in ["🥇 1st Locked", "🥇 Winner"]:
@@ -1435,6 +1445,14 @@ def show_tournament():
                         "Team": team,
                         "Status": "🔴 Eliminated"
                     })
+
+    if accurate_mode:
+        st.success("✅ Accurate qualification analysis completed.")
+    else:
+        st.info(
+            "⚡ Fast mode: Completed groups are shown immediately. "
+            "Click **Run Accurate Qualification Analysis** to include locked teams from unfinished groups."
+        )
 
 
     qualified_count = len(first_locked)

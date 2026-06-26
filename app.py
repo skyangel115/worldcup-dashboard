@@ -1462,7 +1462,7 @@ min-height:135px;
     with col1:
         render_status_table(
             pd.DataFrame(first_locked),
-            "🥇 Qualified as Group Winners",
+            "🥇 Qualified Teams",
             theme="green"
         )
 

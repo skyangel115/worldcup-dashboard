@@ -980,6 +980,7 @@ color:#B45309;
             )
 
         if run_sim:
+            st.error("NEW SIM BLOCK IS RUNNING")
             sim_table = table[["MP","W","D","L","GF","GA","GD","Pts"]].copy()
             sim_matches = matches.copy()
 

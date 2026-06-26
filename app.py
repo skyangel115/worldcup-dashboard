@@ -1371,17 +1371,17 @@ def quick_team_status_for_knockout(group, ranked):
             })
 
         # 淘汰：即使全勝，積分也無法進前二
-        higher_or_equal_max = sum(
-            1 for other in teams
-            if other != team and ranked.loc[other, "Pts"] >= max_pts
-        )
+        #higher_or_equal_max = sum(
+         #   1 for other in teams
+         #   if other != team and ranked.loc[other, "Pts"] >= max_pts
+        #)
 
-        if higher_or_equal_max >= 2:
-            eliminated.append({
-                "Group": group,
-                "Team": team,
-                "Status": "🔴 Eliminated"
-            })
+        #if higher_or_equal_max >= 2:
+         #   eliminated.append({
+         #       "Group": group,
+         #       "Team": team,
+         #       "Status": "🔴 Eliminated"
+         #   })
 
     return first_locked, eliminated
 

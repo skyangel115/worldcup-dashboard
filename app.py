@@ -1350,9 +1350,9 @@ def show_tournament():
     progress_cols = st.columns(3)
 
     progress_items = [
-        ("🏆 Qualified", f"{qualified_count} / 32", "Group winners locked", "#0057B8", "#F5FAFF"),
-        ("⏳ Still Alive", remaining_count_total, "Teams still in contention", "#2BA84A", "#F4FCF6"),
-        ("🔴 Eliminated", eliminated_count, "Teams out", "#D7263D", "#FFF5F5"),
+        ("🏆 Qualified for Round of 32", f"{qualified_count} / 32", "Confirmed teams", "#0057B8", "#F5FAFF"),
+        ("⏳ Still Alive", f"{remaining_count_total} / 48", "Teams still in contention", "#F4A300", "#FFFAF2"),
+        ("🔴 Eliminated", f"{eliminated_count} / 48", "Teams out", "#D7263D", "#FFF5F5"),
     ]
 
     for col, (label, value, note, border_color, bg_color) in zip(progress_cols, progress_items):
@@ -1376,9 +1376,10 @@ min-height:135px;
                 unsafe_allow_html=True
             )
 
+    st.markdown("#### 🏁 Road to Round of 32")
     st.progress(min(qualified_count / 32, 1.0))
-    st.caption(f"Round of 32 qualification progress: {qualified_count} / 32 teams confirmed.")
-
+    st.caption(f"{qualified_count} / 32 teams have qualified for the Round of 32.")
+    
     col1, col2 = st.columns(2)
 
     with col1:

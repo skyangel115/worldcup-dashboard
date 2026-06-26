@@ -1010,19 +1010,65 @@ color:#B45309;
 
             sim_table["GD"] = sim_table["GF"] - sim_table["GA"]
             sim_table = rank_with_head_to_head(sim_table, sim_matches, selected_group)
-
-            st.markdown("### 🧪 Simulated Final Standings")
-            st.warning("HTML simulated table version is running")
-
-            sim_df = sim_table.reset_index().rename(columns={"index": "Team"})
-
             row_colors = [
                 "#F5FAFF",
                 "#F4FCF6",
                 "#FFFAF2",
                 "#FFF5F5"
             ]
+            border_colors = [
+                "#0057B8",
+                "#2BA84A",
+                "#F4A300",
+                "#D7263D"
+            ]
 
+            st.markdown("### 📊 Simulated Final Standings")
+
+            sim_summary_items = [
+                ("🥇 Winner", sim_table.index[0]),
+                ("🥈 Runner-up", sim_table.index[1]),
+                ("🥉 Third Place", sim_table.index[2]),
+                ("❌ Eliminated", sim_table.index[3]),
+            ]
+
+            sim_cols = st.columns(4)
+
+            for i, (col, (label, team)) in enumerate(zip(sim_cols, sim_summary_items)):
+                pts = sim_table.loc[team, "Pts"]
+                gd = sim_table.loc[team, "GD"]
+                gf = sim_table.loc[team, "GF"]
+                gd_text = f"+{gd}" if gd > 0 else str(gd)
+
+                with col:
+                    st.markdown(
+                        f"""
+<div style="
+background:{row_colors[i]};
+border:1px solid #e5e7eb;
+border-top:8px solid {border_colors[i]};
+border-radius:16px;
+padding:16px;
+box-shadow:0 4px 12px rgba(0,0,0,0.06);
+min-height:145px;
+">
+<div style="font-size:14px;color:#6b7280;margin-bottom:8px;">{label}</div>
+<div style="font-size:26px;font-weight:900;color:#1f2937;margin-bottom:12px;">{team}</div>
+<div style="font-size:15px;line-height:1.8;color:#374151;">
+<b>Pts</b> {pts}<br>
+<b>GD</b> {gd_text}<br>
+<b>GF</b> {gf}
+</div>
+</div>
+""",
+                        unsafe_allow_html=True
+                    )
+
+            st.markdown("### 🧪 Simulated Final Standings")
+
+            sim_df = sim_table.reset_index().rename(columns={"index": "Team"})
+
+            
             sim_parts = []
 
             sim_parts.append('<div style="width:100%; overflow-x:auto;">')
@@ -1067,8 +1113,6 @@ color:#B45309;
             sim_parts.append('</div>')
 
             st.markdown("".join(sim_parts), unsafe_allow_html=True)
-
-
     
     # =====================
     # Top 2 Scenario Chart

@@ -3,6 +3,7 @@ import streamlit as st
 st.set_page_config(page_title="World Cup Dashboard", layout="wide")
 
 st.title("🌍 FIFA World Cup 2026 Group Dashboard")
+st.error("VERSION TEST 2026-06-26")
 st.write("Choose a group to view standings, match matrix, and upcoming matches.")
 st.caption(
     "⚠ Scenario percentages are based on simulated scorelines from 0–7 goals per team and represent scenario frequency, not real-world match probabilities."

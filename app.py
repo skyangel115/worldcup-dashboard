@@ -1,4 +1,5 @@
 import streamlit as st
+import time
 
 st.set_page_config(page_title="World Cup Dashboard", layout="wide")
 
@@ -337,6 +338,8 @@ def rank_with_head_to_head(sim, all_matches, group):
 def calculate_group_status_and_probability(group, table, matrix):
     #st.write(f"Calculating status/probability for Group {group}")
     
+
+
     teams = list(table.index)
 
     remaining_games = []
@@ -383,37 +386,36 @@ def calculate_group_status_and_probability(group, table, matrix):
 
     base_group_matches = [m for m in matches if m[0] == group]
 
+    start_time = time.time()
+
     for outcome_set in product(POSSIBLE_SCORES, repeat=len(remaining_games)):
         sim = table[["MP","W","D","L","GF","GA","GD","Pts"]].copy()
         sim_matches = base_group_matches.copy()
 
-        for (t1, t2), (s1, s2) in zip(remaining_games, outcome_set):
+        for (team1, team2), (s1, s2) in zip(remaining_games, outcome_set):
+            sim_matches.append((group, team1, s1, team2, s2))
 
-            sim_matches.append((group, t1, s1, t2, s2))
+            sim.loc[team1, "MP"] += 1
+            sim.loc[team2, "MP"] += 1
 
-            sim.loc[t1, "MP"] += 1
-            sim.loc[t2, "MP"] += 1
-
-            sim.loc[t1, "GF"] += s1
-            sim.loc[t1, "GA"] += s2
-            sim.loc[t2, "GF"] += s2
-            sim.loc[t2, "GA"] += s1
+            sim.loc[team1, "GF"] += s1
+            sim.loc[team1, "GA"] += s2
+            sim.loc[team2, "GF"] += s2
+            sim.loc[team2, "GA"] += s1
 
             if s1 > s2:
-                sim.loc[t1, "W"] += 1
-                sim.loc[t2, "L"] += 1
-                sim.loc[t1, "Pts"] += 3
-
+                sim.loc[team1, "W"] += 1
+                sim.loc[team2, "L"] += 1
+                sim.loc[team1, "Pts"] += 3
             elif s1 < s2:
-                sim.loc[t2, "W"] += 1
-                sim.loc[t1, "L"] += 1
-                sim.loc[t2, "Pts"] += 3
-
+                sim.loc[team2, "W"] += 1
+                sim.loc[team1, "L"] += 1
+                sim.loc[team2, "Pts"] += 3
             else:
-                sim.loc[t1, "D"] += 1
-                sim.loc[t2, "D"] += 1
-                sim.loc[t1, "Pts"] += 1
-                sim.loc[t2, "Pts"] += 1
+                sim.loc[team1, "D"] += 1
+                sim.loc[team2, "D"] += 1
+                sim.loc[team1, "Pts"] += 1
+                sim.loc[team2, "Pts"] += 1
 
         sim["GD"] = sim["GF"] - sim["GA"]
 
@@ -432,6 +434,9 @@ def calculate_group_status_and_probability(group, table, matrix):
 
         total_outcomes += 1
 
+    end_time = time.time()
+    st.write(f"Scenario loop time: {end_time - start_time:.2f} sec")   
+    
     probabilities = {}
     first_probabilities = {}
     statuses = {}

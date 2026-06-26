@@ -36,7 +36,7 @@ div[data-testid="stSegmentedControl"] button:hover{
 }
 
 div[data-testid="stSegmentedControl"] button[aria-pressed="true"]{
-    background:#1F4E79 !important;
+    background:#E6F0FF !important;
     color:white !important;
     border:1px solid #1F4E79 !important;
     font-weight:900 !important;

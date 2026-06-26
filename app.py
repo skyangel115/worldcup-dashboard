@@ -1012,6 +1012,7 @@ color:#B45309;
             sim_table = rank_with_head_to_head(sim_table, sim_matches, selected_group)
 
             st.markdown("### 🧪 Simulated Final Standings")
+            st.warning("HTML simulated table version is running")
 
             sim_df = sim_table.reset_index().rename(columns={"index": "Team"})
 

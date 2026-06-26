@@ -535,7 +535,7 @@ def rank_third_placed_teams():
     third_teams = []
 
     for group in sorted(groups.keys()):
-        ranked, _, _, _, _ = get_group_data(group)
+        ranked = build_group_table(group)
 
         third_team = ranked.index[2]
 

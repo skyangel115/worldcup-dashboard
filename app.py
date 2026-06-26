@@ -1396,8 +1396,8 @@ def quick_team_status_for_knockout(group, ranked):
 def show_tournament():
     st.header("🏆 Knockout Qualification")
     st.caption(
-        "Only teams that have locked first place or have been eliminated are listed here. "
-        "Teams still in contention remain under Group Stage."
+        "Qualified and eliminated teams are listed here based on confirmed tournament status. "
+        "Best third-placed teams are added after all groups are completed."
     )
 
     first_locked = []
@@ -1424,6 +1424,12 @@ def show_tournament():
                 "Group": group,
                 "Team": ranked.index[0],
                 "Status": "🥇 Winner"
+            })
+
+            first_locked.append({
+                "Group": group,
+                "Team": ranked.index[1],
+                "Status": "🥈 Runner-up"
             })
 
             eliminated.append({
@@ -1469,6 +1475,22 @@ def show_tournament():
         )
 
 
+    all_groups_completed = all(
+        get_group_remaining_count(group) == 0
+        for group in groups.keys()
+    )
+
+    if all_groups_completed:
+        third_df = rank_third_placed_teams()
+        qualified_third_df = third_df[third_df["Third Place Rank"] <= 8]
+
+        for _, row in qualified_third_df.iterrows():
+            first_locked.append({
+                "Group": row["Group"],
+                "Team": row["Team"],
+                "Status": "🥉 Best Third"
+            })
+    
     qualified_count = len(first_locked)
     eliminated_count = len(eliminated)
     remaining_count_total = 48 - qualified_count - eliminated_count
@@ -1513,7 +1535,7 @@ min-height:135px;
     with col1:
         render_status_table(
             pd.DataFrame(first_locked),
-            "🥇 Qualified Teams",
+            "🏆 Qualified Teams",
             theme="green"
         )
 

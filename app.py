@@ -1012,11 +1012,60 @@ color:#B45309;
             sim_table = rank_with_head_to_head(sim_table, sim_matches, selected_group)
 
             st.markdown("### 🧪 Simulated Final Standings")
-            st.dataframe(
-                sim_table.reset_index().rename(columns={"index": "Team"}),
-                use_container_width=True,
-                hide_index=True
+
+            sim_df = sim_table.reset_index().rename(columns={"index": "Team"})
+
+            row_colors = [
+                "#F5FAFF",
+                "#F4FCF6",
+                "#FFFAF2",
+                "#FFF5F5"
+            ]
+
+            sim_parts = []
+
+            sim_parts.append('<div style="width:100%; overflow-x:auto;">')
+            sim_parts.append(
+                '<table style="width:100%; border-collapse:separate; border-spacing:0; '
+                'border-radius:14px; overflow:hidden; '
+                'box-shadow:0 4px 14px rgba(0,0,0,0.08); font-size:14px;">'
             )
+
+            sim_parts.append('<thead>')
+            sim_parts.append('<tr style="background:#1f4e79;color:white;">')
+
+            for col in sim_df.columns:
+                sim_parts.append(
+                    f'<th style="padding:12px 10px;text-align:center;font-weight:700;'
+                    f'border-bottom:3px solid #F4A300;white-space:nowrap;">{col}</th>'
+                )
+
+            sim_parts.append('</tr>')
+            sim_parts.append('</thead>')
+            sim_parts.append('<tbody>')
+
+            for i, row in sim_df.iterrows():
+                bg = row_colors[i] if i < len(row_colors) else "#ffffff"
+                sim_parts.append(f'<tr style="background:{bg};">')
+
+                for col in sim_df.columns:
+                    value = row[col]
+                    weight = "800" if col in ["Team", "Pts"] else "400"
+
+                    sim_parts.append(
+                        f'<td style="padding:12px 10px;text-align:center;'
+                        f'border-bottom:1px solid #e5e7eb;'
+                        f'border-right:1px solid #e5e7eb;'
+                        f'font-weight:{weight};white-space:nowrap;">{value}</td>'
+                    )
+
+                sim_parts.append('</tr>')
+
+            sim_parts.append('</tbody>')
+            sim_parts.append('</table>')
+            sim_parts.append('</div>')
+
+            st.markdown("".join(sim_parts), unsafe_allow_html=True)
 
 
     

@@ -22,10 +22,10 @@ div[data-testid="stSegmentedControl"]{
 }
 
 div[data-testid="stSegmentedControl"] button{
-    font-size:18px !important;
+    font-size:19px !important;
     font-weight:850 !important;
-    padding:13px 34px !important;
-    min-height:56px !important;
+    padding:15px 38px !important;
+    min-height:60px !important;
     border-radius:16px !important;
     transition:all .2s ease;
 }

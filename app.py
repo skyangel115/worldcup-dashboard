@@ -1403,17 +1403,34 @@ def show_tournament():
     first_locked = []
     eliminated = []
 
-    accurate_mode = st.button(
-        "🔍 Run Accurate Qualification Analysis (≈3 min)",
-        type="primary",
-        use_container_width=True
+    all_groups_completed = all(
+        get_group_remaining_count(group) == 0
+        for group in groups.keys()
     )
 
-    if accurate_mode:
+    if all_groups_completed:
+        st.success("✅ All groups completed. Final qualification results are shown below.")
+        accurate_mode = False
+    else:
         st.info(
-            "🔍 Running accurate qualification analysis...\n\n"
-            "Estimated time: ~3 minutes."
+            "⚡ **Fast Mode**\n\n"
+            "✔ Qualified teams from completed groups\n\n"
+            "✔ Eliminated teams from completed groups\n\n"
+            "🔍 **Accurate Mode** additionally detects mathematically confirmed qualification "
+            "and elimination from unfinished groups."
         )
+
+        accurate_mode = st.button(
+            "🔍 Run Accurate Qualification Analysis (≈3 min)",
+            type="primary",
+            use_container_width=True
+        )
+
+        if accurate_mode:
+            st.info(
+                "🔍 Running accurate qualification analysis...\n\n"
+                "Estimated time: ~3 minutes."
+            )
 
     for group in sorted(groups.keys()):
         ranked = build_group_table(group)
@@ -1468,20 +1485,7 @@ def show_tournament():
             "✅ Accurate qualification analysis completed. "
             "Results now include mathematically confirmed qualification and elimination from unfinished groups."
         )
-    else:
-        st.info(
-            "⚡ **Fast Mode**\n\n"
-            "✔ Qualified teams from completed groups\n\n"
-            "✔ Eliminated teams from completed groups\n\n"
-            "🔍 **Accurate Mode** additionally detects mathematically confirmed qualification "
-            "and elimination from unfinished groups."
-        )
-
-
-    all_groups_completed = all(
-        get_group_remaining_count(group) == 0
-        for group in groups.keys()
-    )
+    
 
     if all_groups_completed:
         third_df = rank_third_placed_teams()

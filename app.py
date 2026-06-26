@@ -1440,8 +1440,11 @@ def show_tournament():
             "• Detect mathematically confirmed elimination"
         )
         
-        st.caption(
-            "Need mathematically confirmed qualification results?"
+        st.markdown(
+            "<div style='text-align:center;color:#6b7280;font-size:16px;margin-bottom:8px;'>"
+            "Need mathematically confirmed qualification?"
+            "</div>",
+            unsafe_allow_html=True,
         )
 
         col1, col2, col3 = st.columns([1,2,1])

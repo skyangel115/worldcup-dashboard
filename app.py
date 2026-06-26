@@ -381,9 +381,11 @@ def calculate_group_status_and_probability(group, table, matrix):
     first_count = {team: 0 for team in teams}
     total_outcomes = 0
 
+    base_group_matches = [m for m in matches if m[0] == group]
+
     for outcome_set in product(POSSIBLE_SCORES, repeat=len(remaining_games)):
         sim = table[["MP","W","D","L","GF","GA","GD","Pts"]].copy()
-        sim_matches = matches.copy()
+        sim_matches = base_group_matches.copy()
 
         for (t1, t2), (s1, s2) in zip(remaining_games, outcome_set):
 

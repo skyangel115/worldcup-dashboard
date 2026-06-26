@@ -18,7 +18,7 @@ label[data-testid="stWidgetLabel"] p {
 }
 
 div[data-testid="stCaptionContainer"] p{
-    font-size:16px !important;
+    font-size:19px !important;
     color:#5B6573 !important;
     line-height:1.5;
 }

@@ -1023,7 +1023,7 @@ color:#B45309;
                 "#D7263D"
             ]
 
-            st.markdown("### 📊 Simulated Final Standings")
+            st.markdown("### 🧪 Simulation Result")
 
             sim_summary_items = [
                 ("🥇 Winner", sim_table.index[0]),
@@ -1064,7 +1064,7 @@ min-height:145px;
                         unsafe_allow_html=True
                     )
 
-            st.markdown("### 🧪 Simulated Final Standings")
+            st.markdown("### 📊 Simulated Final Standings")
 
             sim_df = sim_table.reset_index().rename(columns={"index": "Team"})
 

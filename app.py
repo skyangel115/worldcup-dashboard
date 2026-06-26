@@ -28,6 +28,15 @@ div[data-testid="stSegmentedControl"] button{
     min-height:56px !important;
     border-radius:16px !important;
 }
+
+<style>
+div[data-testid="stSegmentedControl"] button[aria-pressed="true"] {
+    background:#1F4E79 !important;
+    color:#92400E !important;
+    border:1px solid #F4A300 !important;
+    font-weight:900 !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 

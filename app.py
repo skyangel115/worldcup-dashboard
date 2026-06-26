@@ -3,7 +3,7 @@ import streamlit as st
 st.set_page_config(page_title="World Cup Dashboard", layout="wide")
 
 st.title("🌍 FIFA World Cup 2026 Group Dashboard")
-st.error("VERSION TEST 2026-06-26")
+
 st.write("Choose a group to view standings, match matrix, and upcoming matches.")
 st.caption(
     "⚠ Scenario percentages are based on simulated scorelines from 0–7 goals per team and represent scenario frequency, not real-world match probabilities."
@@ -567,6 +567,78 @@ def rank_third_placed_teams():
 # UI Functions
 # =====================
 
+def summary_card(label, team, pts, gd, gf, border_color, background_color, badge=None):
+    gd_text = f"+{gd}" if gd > 0 else str(gd)
+
+    badge_html = ""
+    if badge is not None:
+        badge_html = f"""
+<hr style="border:none;border-top:1px solid #dddddd;margin:12px 0;">
+<div style="
+font-size:16px;
+font-weight:700;
+background:#ffffffcc;
+border:1px solid #e5e7eb;
+border-radius:999px;
+padding:6px 12px;
+display:inline-block;
+">
+{badge}
+</div>
+"""
+
+    st.markdown(
+        f"""
+<div style="
+background:{background_color};
+border:1px solid #e5e7eb;
+border-top:8px solid {border_color};
+border-radius:16px;
+padding:16px;
+box-shadow:0 4px 12px rgba(0,0,0,0.06);
+min-height:160px;
+">
+<div style="font-size:14px;color:#6b7280;margin-bottom:8px;">{label}</div>
+
+<div style="
+font-size:28px;
+font-weight:950;
+color:#1f2937;
+margin-bottom:14px;
+line-height:1.2;
+">
+{team}
+</div>
+
+<div style="
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:8px;
+margin-top:12px;
+">
+<div style="text-align:center;">
+<div style="font-size:12px;color:#6b7280;font-weight:700;">Pts</div>
+<div style="font-size:20px;font-weight:900;color:#1f2937;">{pts}</div>
+</div>
+
+<div style="text-align:center;">
+<div style="font-size:12px;color:#6b7280;font-weight:700;">GD</div>
+<div style="font-size:20px;font-weight:900;color:#1f2937;">{gd_text}</div>
+</div>
+
+<div style="text-align:center;">
+<div style="font-size:12px;color:#6b7280;font-weight:700;">GF</div>
+<div style="font-size:20px;font-weight:900;color:#1f2937;">{gf}</div>
+</div>
+</div>
+
+{badge_html}
+
+</div>
+""",
+        unsafe_allow_html=True
+    )
+
 def show_group(selected_group):
 
 # =====================
@@ -609,79 +681,22 @@ def show_group(selected_group):
     background_colors = ["#F5FAFF", "#F4FCF6", "#FFFAF2", "#FFF5F5"]
 
     for i, (col, (label, team)) in enumerate(zip(summary_cols, summary_items)):
-
-        border_color = border_colors[i]
-        background = background_colors[i]
-
         pts = table.loc[team, "Pts"]
         gd = table.loc[team, "GD"]
         gf = table.loc[team, "GF"]
         status = table.loc[team, "Status"]
 
-        gd_text = f"+{gd}" if gd > 0 else str(gd)
-
         with col:
-            card_html = f"""
-<div style="
-background:{background};
-border:1px solid #e5e7eb;
-border-top:10px solid {border_color};
-border-radius:16px;
-padding:18px;
-box-shadow:0 4px 12px rgba(0,0,0,0.06);
-min-height:170px;
-">
-
-<div style="
-font-size:14px;
-color:#6b7280;
-margin-bottom:10px;
-">
-{label}
-</div>
-
-<div style="
-font-size:32px;
-font-weight:800;
-margin-bottom:16px;
-color:#1f2937;
-line-height:1.2;
-">
-{team}
-</div>
-
-<div style="
-font-size:15px;
-line-height:2;
-color:#374151;
-">
-<b>Pts</b> {pts}<br>
-<b>GD</b> {gd_text}<br>
-<b>GF</b> {gf}
-</div>
-
-<hr style="
-border:none;
-border-top:1px solid #dddddd;
-margin:12px 0;
-">
-
-<div style="
-font-size:16px;
-font-weight:600;
-background:#ffffffcc;
-border:1px solid #e5e7eb;
-border-radius:999px;
-padding:6px 12px;
-display:inline-block;
-">
-{status}
-</div>
-
-</div>
-"""
-
-            st.markdown(card_html, unsafe_allow_html=True)
+            summary_card(
+                label,
+                team,
+                pts,
+                gd,
+                gf,
+                border_colors[i],
+                background_colors[i],
+                badge=status
+            )
 
     st.subheader(f"Group {selected_group} Standings")
     standings_df = table.reset_index().rename(columns={"index": "Team"})
@@ -981,7 +996,6 @@ color:#B45309;
             )
 
         if run_sim:
-            st.error("NEW SIM BLOCK IS RUNNING")
             sim_table = table[["MP","W","D","L","GF","GA","GD","Pts"]].copy()
             sim_matches = matches.copy()
 
@@ -1043,27 +1057,14 @@ color:#B45309;
                 gd_text = f"+{gd}" if gd > 0 else str(gd)
 
                 with col:
-                    st.markdown(
-                        f"""
-<div style="
-background:{row_colors[i]};
-border:1px solid #e5e7eb;
-border-top:8px solid {border_colors[i]};
-border-radius:16px;
-padding:16px;
-box-shadow:0 4px 12px rgba(0,0,0,0.06);
-min-height:145px;
-">
-<div style="font-size:14px;color:#6b7280;margin-bottom:8px;">{label}</div>
-<div style="font-size:26px;font-weight:900;color:#1f2937;margin-bottom:12px;">{team}</div>
-<div style="font-size:15px;line-height:1.8;color:#374151;">
-<b>Pts</b> {pts}<br>
-<b>GD</b> {gd_text}<br>
-<b>GF</b> {gf}
-</div>
-</div>
-""",
-                        unsafe_allow_html=True
+                    summary_card(
+                        label,
+                        team,
+                        pts,
+                        gd,
+                        gf,
+                        border_colors[i],
+                        row_colors[i]
                     )
 
             st.markdown("### 📊 Simulated Final Standings")

@@ -1466,12 +1466,15 @@ def show_tournament():
     if accurate_mode:
         st.success(
             "✅ Accurate qualification analysis completed. "
-            "Results now include locked and eliminated teams from unfinished groups."
+            "Results now include mathematically confirmed qualification and elimination from unfinished groups."
         )
     else:
         st.info(
-            "⚡ Fast mode: Completed groups are shown immediately. "
-            "Click **Run Accurate Qualification Analysis** to include locked teams from unfinished groups."
+            "⚡ **Fast Mode**\n\n"
+            "✔ Qualified teams from completed groups\n\n"
+            "✔ Eliminated teams from completed groups\n\n"
+            "🔍 **Accurate Mode** additionally detects mathematically confirmed qualification "
+            "and elimination from unfinished groups."
         )
 
 

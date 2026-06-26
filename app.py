@@ -273,6 +273,7 @@ view = st.segmented_control(
 )
 
 from itertools import product
+POSSIBLE_SCORES = [(a, b) for a in range(8) for b in range(8)]
 
 def rank_with_head_to_head(sim, all_matches, group):
     ranking = sim.copy()
@@ -281,6 +282,10 @@ def rank_with_head_to_head(sim, all_matches, group):
         ["Pts", "GD", "GF"],
         ascending=False
     )
+
+    # 沒有同分直接回傳
+    if ranking["Pts"].is_unique:
+        return ranking
 
     final_order = []
 
@@ -330,7 +335,7 @@ def rank_with_head_to_head(sim, all_matches, group):
     return ranked
 
 def calculate_group_status_and_probability(group, table, matrix):
-    st.write(f"Calculating status/probability for Group {group}")
+    #st.write(f"Calculating status/probability for Group {group}")
     
     teams = list(table.index)
 
@@ -371,18 +376,12 @@ def calculate_group_status_and_probability(group, table, matrix):
 
         return statuses, probabilities, first_probabilities
 
-    possible_scores = []
-
-    for a in range(8):
-        for b in range(8):
-            possible_scores.append((a,b))
-
     top2_count = {team: 0 for team in teams}
     third_count = {team: 0 for team in teams}
     first_count = {team: 0 for team in teams}
     total_outcomes = 0
 
-    for outcome_set in product(possible_scores, repeat=len(remaining_games)):
+    for outcome_set in product(POSSIBLE_SCORES, repeat=len(remaining_games)):
         sim = table[["MP","W","D","L","GF","GA","GD","Pts"]].copy()
         sim_matches = matches.copy()
 

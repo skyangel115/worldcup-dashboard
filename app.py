@@ -1325,7 +1325,6 @@ def show_tournament():
         ranked, matrix, statuses, _, _ = get_group_data(group)
         remaining_count = (matrix.values == "⏳").sum() // 2
 
-        # 剩餘比賽不多時，直接用原本完整 simulation 判斷，包含 H2H
         if remaining_count <= 2:
             for team, status in statuses.items():
                 if status in ["🥇 1st Locked", "🥇 Winner"]:
@@ -1342,6 +1341,44 @@ def show_tournament():
                         "Status": "🔴 Eliminated"
                     })
 
+    qualified_count = len(first_locked)
+    eliminated_count = len(eliminated)
+    remaining_count_total = 48 - qualified_count - eliminated_count
+
+    st.markdown("### 📊 Qualification Progress")
+
+    progress_cols = st.columns(3)
+
+    progress_items = [
+        ("🏆 Qualified", f"{qualified_count} / 32", "Group winners locked", "#0057B8", "#F5FAFF"),
+        ("⏳ Still Alive", remaining_count_total, "Teams still in contention", "#2BA84A", "#F4FCF6"),
+        ("🔴 Eliminated", eliminated_count, "Teams out", "#D7263D", "#FFF5F5"),
+    ]
+
+    for col, (label, value, note, border_color, bg_color) in zip(progress_cols, progress_items):
+        with col:
+            st.markdown(
+                f"""
+<div style="
+background:{bg_color};
+border:1px solid #e5e7eb;
+border-top:8px solid {border_color};
+border-radius:16px;
+padding:18px;
+box-shadow:0 4px 12px rgba(0,0,0,0.06);
+min-height:135px;
+">
+<div style="font-size:15px;color:#6b7280;font-weight:700;margin-bottom:8px;">{label}</div>
+<div style="font-size:34px;font-weight:950;color:#1f2937;line-height:1.2;">{value}</div>
+<div style="font-size:14px;color:#6b7280;margin-top:10px;">{note}</div>
+</div>
+""",
+                unsafe_allow_html=True
+            )
+
+    st.progress(min(qualified_count / 32, 1.0))
+    st.caption(f"Round of 32 qualification progress: {qualified_count} / 32 teams confirmed.")
+
     col1, col2 = st.columns(2)
 
     with col1:
@@ -1357,7 +1394,6 @@ def show_tournament():
             "🔴 Eliminated Teams",
             theme="red"
         )
-
 
 if view == "🌍 Group Stage":
     show_group(selected_group)

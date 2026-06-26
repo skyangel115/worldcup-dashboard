@@ -1416,21 +1416,19 @@ def show_tournament():
         )
         accurate_mode = False
     else:
-        st.info(
-            "⚡ **Fast Mode**\n\n"
+        st.info("""
+            **⚡ Fast Analysis**
 
-            "✔ Qualified teams from completed groups\n\n"
+            Completed groups:
+            • Qualified teams
+            • Eliminated teams
 
-            "✔ Eliminated teams from completed groups\n\n"
+            **🔍 Accurate Analysis**
 
-            "---\n\n"
-
-            "🔍 **Accurate Mode**\n\n"
-
-            "✔ Detects mathematically confirmed qualification\n\n"
-
-            "✔ Detects mathematically confirmed elimination\n"
-        )
+            Unfinished groups:
+            • Detect mathematically confirmed qualification
+            • Detect mathematically confirmed elimination
+            """)
         
         st.caption(
             "Need mathematically confirmed results from unfinished groups?"

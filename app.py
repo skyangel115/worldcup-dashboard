@@ -1326,6 +1326,65 @@ def render_status_table(df, title, theme="green"):
 
     st.markdown("".join(html_parts), unsafe_allow_html=True)
 
+def get_remaining_matches_for_team(group, team):
+    count = 0
+    teams = groups[group]
+
+    for opponent in teams:
+        if opponent == team:
+            continue
+
+        match_key = tuple(sorted([team, opponent]))
+
+        if match_key in match_info and match_info[match_key]["Status"] == "Remaining":
+            count += 1
+
+    return count
+
+
+def quick_team_status_for_knockout(group, ranked):
+    first_locked = []
+    eliminated = []
+
+    teams = list(ranked.index)
+
+    for team in teams:
+        pts = ranked.loc[team, "Pts"]
+        remaining = get_remaining_matches_for_team(group, team)
+        max_pts = pts + remaining * 3
+
+        other_max_pts = []
+
+        for other in teams:
+            if other == team:
+                continue
+
+            other_remaining = get_remaining_matches_for_team(group, other)
+            other_max_pts.append(ranked.loc[other, "Pts"] + other_remaining * 3)
+
+        # 第一名鎖定：其他所有隊最高分都追不上
+        if team == ranked.index[0] and pts > max(other_max_pts):
+            first_locked.append({
+                "Group": group,
+                "Team": team,
+                "Status": "🥇 1st Locked"
+            })
+
+        # 淘汰：即使全勝，積分也無法進前二
+        higher_or_equal_max = sum(
+            1 for other in teams
+            if other != team and ranked.loc[other, "Pts"] >= max_pts
+        )
+
+        if higher_or_equal_max >= 2:
+            eliminated.append({
+                "Group": group,
+                "Team": team,
+                "Status": "🔴 Eliminated"
+            })
+
+    return first_locked, eliminated
+
 def show_tournament():
     st.header("🏆 Knockout Qualification")
     st.caption(
@@ -1337,24 +1396,27 @@ def show_tournament():
     eliminated = []
 
     for group in sorted(groups.keys()):
-        ranked, matrix, statuses, _, _ = get_group_data(group)
-        remaining_count = (matrix.values == "⏳").sum() // 2
+        ranked = build_group_table(group)
+        remaining_count = get_group_remaining_count(group)
 
-        if remaining_count <= 2:
-            for team, status in statuses.items():
-                if status in ["🥇 1st Locked", "🥇 Winner"]:
-                    first_locked.append({
-                        "Group": group,
-                        "Team": team,
-                        "Status": status
-                    })
+        if remaining_count == 0:
+            first_locked.append({
+                "Group": group,
+                "Team": ranked.index[0],
+                "Status": "🥇 Winner"
+            })
 
-                elif status in ["🔴 Eliminated", "❌ Fourth Place"]:
-                    eliminated.append({
-                        "Group": group,
-                        "Team": team,
-                        "Status": "🔴 Eliminated"
-                    })
+            eliminated.append({
+                "Group": group,
+                "Team": ranked.index[3],
+                "Status": "🔴 Eliminated"
+            })
+
+        else:
+            locked_fast, eliminated_fast = quick_team_status_for_knockout(group, ranked)
+
+            first_locked.extend(locked_fast)
+            eliminated.extend(eliminated_fast)
 
     qualified_count = len(first_locked)
     eliminated_count = len(eliminated)

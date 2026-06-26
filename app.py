@@ -26,7 +26,7 @@ div[data-testid="stCaptionContainer"] p{
 div.stButton > button{
     font-size:18px !important;
     font-weight:800 !important;
-    min-height:56px !important;
+    min-height:48px !important;
     border-radius:14px !important;
 }
 
@@ -1429,29 +1429,30 @@ def show_tournament():
         )
         accurate_mode = False
     else:
-        st.info("""
-            **⚡ Fast Analysis**
-
-            Completed groups:
-            • Qualified teams
-            • Eliminated teams
-
-            **🔍 Accurate Analysis**
-
-            Unfinished groups:
-            • Detect mathematically confirmed qualification
-            • Detect mathematically confirmed elimination
-            """)
+        st.info(
+            "**⚡ Fast Analysis**\n\n"
+            "Completed groups:\n"
+            "• Qualified teams\n"
+            "• Eliminated teams\n\n"
+            "**🔍 Accurate Analysis**\n\n"
+            "Unfinished groups:\n"
+            "• Detect mathematically confirmed qualification\n"
+            "• Detect mathematically confirmed elimination"
+        )
         
         st.caption(
-            "Need mathematically confirmed results from unfinished groups?"
+            "Need mathematically confirmed qualification results?"
         )
 
-        accurate_mode = st.button(
-            "🔍 Run Accurate Analysis (≈3 min)",
-            type="primary",
-            use_container_width=True
-        )
+        col1, col2, col3 = st.columns([1,2,1])
+
+        with col2:
+
+            accurate_mode = st.button(
+                "🔍 Run Accurate Analysis (≈3 min)",
+                type="primary",
+                use_container_width=True
+            )
 
         if accurate_mode:
             st.info(

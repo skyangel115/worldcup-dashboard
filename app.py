@@ -1402,7 +1402,10 @@ def show_tournament():
     )
 
     if accurate_mode:
-        st.info("Running accurate mode. This may take around 3 minutes.")
+        st.info(
+            "🔍 Running accurate qualification analysis...\n\n"
+            "Estimated time: ~3 minutes."
+        )
 
     for group in sorted(groups.keys()):
         ranked = build_group_table(group)
@@ -1424,7 +1427,7 @@ def show_tournament():
         elif accurate_mode and remaining_count <= 2:
             matrix = build_group_matrix(group, ranked)
 
-            with st.spinner(f"Running accurate analysis for Group {group}..."):
+            with st.spinner(f"Running Group {group}..."):
                 statuses, _, _ = calculate_group_status_and_probability(
                     group,
                     ranked,
@@ -1447,7 +1450,10 @@ def show_tournament():
                     })
 
     if accurate_mode:
-        st.success("✅ Accurate qualification analysis completed.")
+        st.success(
+            "✅ Accurate qualification analysis completed. "
+            "Results now include locked and eliminated teams from unfinished groups."
+        )
     else:
         st.info(
             "⚡ Fast mode: Completed groups are shown immediately. "

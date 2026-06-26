@@ -32,6 +32,7 @@ div[data-testid="stSegmentedControl"] button{
 
 div[data-testid="stSegmentedControl"] button:hover{
     transform:translateY(-2px);
+    box-shadow:0 4px 10px rgba(0,0,0,.12);
 }
 
 div[data-testid="stSegmentedControl"] button[aria-pressed="true"]{
@@ -39,6 +40,7 @@ div[data-testid="stSegmentedControl"] button[aria-pressed="true"]{
     color:white !important;
     border:1px solid #1F4E79 !important;
     font-weight:900 !important;
+    box-shadow:0 4px 12px rgba(31,78,121,.35);
 }
 
 </style>

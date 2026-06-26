@@ -435,7 +435,7 @@ def calculate_group_status_and_probability(group, table, matrix):
         total_outcomes += 1
 
     end_time = time.time()
-    st.write(f"Scenario loop time: {end_time - start_time:.2f} sec")   
+    #st.write(f"Scenario loop time: {end_time - start_time:.2f} sec")   
     
     probabilities = {}
     first_probabilities = {}

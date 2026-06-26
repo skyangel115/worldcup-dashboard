@@ -958,7 +958,8 @@ color:#B45309;
             sim_scores = []
 
             for idx, (t1, t2) in enumerate(remaining_games):
-                st.markdown(f"#### {t1} vs {t2}")
+                if idx > 0:
+                    st.divider()
 
                 c1, c2, c3 = st.columns([1, 0.2, 1])
 
@@ -991,7 +992,8 @@ color:#B45309;
                 sim_scores.append((t1, int(s1), t2, int(s2)))
 
             run_sim = st.form_submit_button(
-                "Run Simulation",
+                "⚽ Simulate Matches",
+                type="primary",
                 use_container_width=True
             )
 

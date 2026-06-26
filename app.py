@@ -17,6 +17,12 @@ label[data-testid="stWidgetLabel"] p {
     margin-bottom:8px;
 }
 
+div[data-testid="stCaptionContainer"] p{
+    font-size:16px !important;
+    color:#5B6573 !important;
+    line-height:1.5;
+}
+
 div[data-testid="stSegmentedControl"]{
     margin-top:8px;
     margin-bottom:28px;

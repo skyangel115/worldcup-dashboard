@@ -7,44 +7,70 @@ st.title("🌍 FIFA World Cup 2026 Dashboard")
 
 st.write("Track standings, qualification probabilities, and knockout progression throughout the tournament.")
 
-tournament_stage = "Round of 32"
 
 # ---------- Hero ----------
+group_matches_completed = 72 if tournament_stage == "Round of 32" else "In Progress"
+group_status = "Completed" if tournament_stage == "Round of 32" else "Ongoing"
+
 st.markdown(
     f"""
 <div style="
 background:linear-gradient(135deg,#F5FAFF,#EEF6FF);
 border:1px solid #D8E6F5;
 border-radius:18px;
-padding:22px 28px;
+padding:22px 26px;
 margin-top:18px;
 margin-bottom:26px;
 box-shadow:0 4px 14px rgba(0,0,0,0.05);
 ">
 
-<div style="font-size:28px;font-weight:800;color:#1f2937;margin-bottom:18px;">
-Interactive dashboard for standings, qualification analysis, and knockout tracking.
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;">
+
+<div style="
+background:white;
+border:1px solid #D8E6F5;
+border-radius:16px;
+padding:22px;
+box-shadow:0 4px 12px rgba(0,0,0,0.04);
+">
+<div style="font-size:16px;color:#6b7280;font-weight:700;">📊 Groups</div>
+<div style="font-size:34px;font-weight:900;color:#1F4E79;margin-top:10px;">12</div>
 </div>
 
-<div style="display:flex;gap:40px;flex-wrap:wrap;">
-
-<div>
-<div style="font-size:15px;color:#6b7280;">📊 Groups</div>
-<div style="font-size:24px;font-weight:700;">12</div>
+<div style="
+background:white;
+border:1px solid #D6EFE2;
+border-radius:16px;
+padding:22px;
+box-shadow:0 4px 12px rgba(0,0,0,0.04);
+">
+<div style="font-size:16px;color:#6b7280;font-weight:700;">⚽ Group Matches</div>
+<div style="font-size:34px;font-weight:900;color:#16834A;margin-top:10px;">{group_matches_completed} / 72</div>
 </div>
 
-<div>
-<div style="font-size:15px;color:#6b7280;">🏆 Teams</div>
-<div style="font-size:24px;font-weight:700;">48</div>
+<div style="
+background:white;
+border:1px solid #E6D8FF;
+border-radius:16px;
+padding:22px;
+box-shadow:0 4px 12px rgba(0,0,0,0.04);
+">
+<div style="font-size:16px;color:#6b7280;font-weight:700;">🏁 Group Status</div>
+<div style="font-size:30px;font-weight:900;color:#7C3AED;margin-top:10px;">{group_status}</div>
 </div>
 
-<div>
-<div style="font-size:15px;color:#6b7280;">🏟️ Tournament Stage</div>
-<div style="font-size:24px;font-weight:700;">{tournament_stage}</div>
+<div style="
+background:white;
+border:1px solid #F7DFA8;
+border-radius:16px;
+padding:22px;
+box-shadow:0 4px 12px rgba(0,0,0,0.04);
+">
+<div style="font-size:16px;color:#6b7280;font-weight:700;">🏟️ Tournament</div>
+<div style="font-size:30px;font-weight:900;color:#B7791F;margin-top:10px;">{tournament_stage}</div>
 </div>
 
 </div>
-
 </div>
 """,
     unsafe_allow_html=True,

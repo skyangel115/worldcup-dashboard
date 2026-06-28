@@ -1,12 +1,13 @@
-# v1.0-group-dashboard
+**v1.0.0**
 A dashboard that automatically fetches 2026 FIFA World Cup group stage data from Wikipedia.
 
 Features
 - Group standings
 - Match matrix
 - Remaining matches
+- Score Simulator
 - Qualification status
 - Head-to-head ranking
-- First-place scenario probability
-- Top-2 qualification probability
-- Interactive dashboard
+- Qualification Probability
+- Best Third Ranking
+- Knockout Qualification

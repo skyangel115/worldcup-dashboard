@@ -9,36 +9,36 @@ st.write("Track standings, qualification probabilities, and knockout progression
 
 st.markdown(
     """
-    <div style="
-        background:linear-gradient(135deg,#F5FAFF,#EEF6FF);
-        border:1px solid #D8E6F5;
-        border-radius:18px;
-        padding:22px 26px;
-        margin-top:14px;
-        margin-bottom:28px;
-        box-shadow:0 4px 14px rgba(0,0,0,0.05);
-    ">
-        <div style="font-size:20px;font-weight:700;color:#1f2937;margin-bottom:16px;">
-            Interactive dashboard for group standings, qualification analysis, and knockout tracking.
-        </div>
+<div style="
+    background:linear-gradient(135deg,#F5FAFF,#EEF6FF);
+    border:1px solid #D8E6F5;
+    border-radius:18px;
+    padding:22px 26px;
+    margin-top:14px;
+    margin-bottom:28px;
+    box-shadow:0 4px 14px rgba(0,0,0,0.05);
+">
+<div style="font-size:20px;font-weight:700;color:#1f2937;margin-bottom:16px;">
+    Interactive dashboard for group standings, qualification analysis, and knockout tracking.
+</div>
 
-        <div style="display:flex;gap:22px;flex-wrap:wrap;">
-            <div style="font-size:16px;color:#374151;">
-                📅 <b>Last Updated</b><br>
-                2026-06-28 21:15 UTC
-            </div>
+<div style="display:flex;gap:22px;flex-wrap:wrap;">
+<div style="font-size:16px;color:#374151;">
+        📅 <b>Last Updated</b><br>
+        2026-06-28 21:15 UTC
+</div>
 
-            <div style="font-size:16px;color:#374151;">
-                🌐 <b>Data Source</b><br>
-                Wikipedia
-            </div>
+<div style="font-size:16px;color:#374151;">
+    🌐 <b>Data Source</b><br>
+        Wikipedia
+</div>
 
-            <div style="font-size:16px;color:#374151;">
-                ⚽ <b>Matches Completed</b><br>
-                56 / 72
-            </div>
-        </div>
-    </div>
+<div style="font-size:16px;color:#374151;">
+    ⚽ <b>Matches Completed</b><br>
+    56 / 72
+</div>
+</div>
+</div>
     """,
     unsafe_allow_html=True
 )

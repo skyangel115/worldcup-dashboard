@@ -1528,6 +1528,17 @@ def show_tournament():
                 "Team": row["Team"],
                 "Status": "🥉 Best Third"
             })
+
+        unqualified_third_df = third_df[
+            third_df["Third Place Rank"] > 8
+        ]
+
+        for _, row in unqualified_third_df.iterrows():
+            eliminated.append({
+                "Group": row["Group"],
+                "Team": row["Team"],
+                "Status": "🔴 Eliminated"
+            })
     
     qualified_count = len(first_locked)
     eliminated_count = len(eliminated)
@@ -1537,11 +1548,18 @@ def show_tournament():
 
     progress_cols = st.columns(3)
 
-    progress_items = [
-        ("🏆 Qualified for Round of 32", f"{qualified_count} / 32", "Confirmed teams", "#0057B8", "#F5FAFF"),
-        ("⏳ Still Alive", f"{remaining_count_total} / 48", "Teams still in contention", "#F4A300", "#FFFAF2"),
-        ("🔴 Eliminated", f"{eliminated_count} / 48", "Teams out", "#D7263D", "#FFF5F5"),
+    if all_groups_completed:
+        progress_items = [
+            ("🏆 Qualified for Round of 32", f"{qualified_count} / 32", "Confirmed teams", "#0057B8", "#F5FAFF"),
+            ("✅ Tournament Status", "Completed", "Group stage finalized", "#2BA84A", "#F4FCF6"),
+            ("🔴 Eliminated", f"{eliminated_count} / 48", "Teams out", "#D7263D", "#FFF5F5"),
     ]
+    else:
+        progress_items = [
+            ("🏆 Qualified for Round of 32", f"{qualified_count} / 32", "Confirmed teams", "#0057B8", "#F5FAFF"),
+            ("⏳ Still Alive", f"{remaining_count_total} / 48", "Teams still in contention", "#F4A300", "#FFFAF2"),
+            ("🔴 Eliminated", f"{eliminated_count} / 48", "Teams out", "#D7263D", "#FFF5F5"),
+        ]
 
     for col, (label, value, note, border_color, bg_color) in zip(progress_cols, progress_items):
         with col:

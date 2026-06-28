@@ -52,7 +52,6 @@ Interactive dashboard for standings, qualification analysis, and knockout tracki
 st.caption(
     "⚠ Scenario percentages are based on simulated scorelines from 0–7 goals per team and represent scenario frequency, not real-world match probabilities."
 )
-```
 
 st.markdown("""
 <style>

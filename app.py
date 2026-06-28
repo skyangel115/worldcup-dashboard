@@ -7,6 +7,7 @@ st.title("🌍 FIFA World Cup 2026 Dashboard")
 
 st.write("Track standings, qualification probabilities, and knockout progression throughout the tournament.")
 
+tournament_stage = "Round of 32"
 
 # ---------- Hero ----------
 st.markdown(
@@ -38,8 +39,8 @@ Interactive dashboard for standings, qualification analysis, and knockout tracki
 </div>
 
 <div>
-<div style="font-size:15px;color:#6b7280;">⚽ Matches</div>
-<div style="font-size:24px;font-weight:700;">72</div>
+<div style="font-size:15px;color:#6b7280;">🏟️ Tournament Stage</div>
+<div style="font-size:24px;font-weight:700;">{tournament_stage}</div>
 </div>
 
 </div>

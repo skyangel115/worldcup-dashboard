@@ -9,72 +9,72 @@ st.write("Track standings, qualification probabilities, and knockout progression
 
 
 # ---------- Hero ----------
-group_matches_completed = 72 if tournament_stage == "Round of 32" else "In Progress"
-group_status = "Completed" if tournament_stage == "Round of 32" else "Ongoing"
+#group_matches_completed = 72 if tournament_stage == "Round of 32" else "In Progress"
+#group_status = "Completed" if tournament_stage == "Round of 32" else "Ongoing"
 
-st.markdown(
-    f"""
-<div style="
-background:linear-gradient(135deg,#F5FAFF,#EEF6FF);
-border:1px solid #D8E6F5;
-border-radius:18px;
-padding:22px 26px;
-margin-top:18px;
-margin-bottom:26px;
-box-shadow:0 4px 14px rgba(0,0,0,0.05);
-">
+#st.markdown(
+#    f"""
+#<div style="
+#background:linear-gradient(135deg,#F5FAFF,#EEF6FF);
+#border:1px solid #D8E6F5;
+#border-radius:18px;
+#padding:22px 26px;
+#margin-top:18px;
+#margin-bottom:26px;
+#box-shadow:0 4px 14px rgba(0,0,0,0.05);
+#">
 
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;">
+#<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;">
 
-<div style="
-background:white;
-border:1px solid #D8E6F5;
-border-radius:16px;
-padding:22px;
-box-shadow:0 4px 12px rgba(0,0,0,0.04);
-">
-<div style="font-size:16px;color:#6b7280;font-weight:700;">📊 Groups</div>
-<div style="font-size:34px;font-weight:900;color:#1F4E79;margin-top:10px;">12</div>
-</div>
+#<div style="
+#background:white;
+#border:1px solid #D8E6F5;
+#border-radius:16px;
+#padding:22px;
+#box-shadow:0 4px 12px rgba(0,0,0,0.04);
+#">
+#<div style="font-size:16px;color:#6b7280;font-weight:700;">📊 Groups</div>
+#<div style="font-size:34px;font-weight:900;color:#1F4E79;margin-top:10px;">12</div>
+#</div>
 
-<div style="
-background:white;
-border:1px solid #D6EFE2;
-border-radius:16px;
-padding:22px;
-box-shadow:0 4px 12px rgba(0,0,0,0.04);
-">
-<div style="font-size:16px;color:#6b7280;font-weight:700;">⚽ Group Matches</div>
-<div style="font-size:34px;font-weight:900;color:#16834A;margin-top:10px;">{group_matches_completed} / 72</div>
-</div>
+#<div style="
+#background:white;
+#border:1px solid #D6EFE2;
+#border-radius:16px;
+#padding:22px;
+#box-shadow:0 4px 12px rgba(0,0,0,0.04);
+#">
+#<div style="font-size:16px;color:#6b7280;font-weight:700;">⚽ Group Matches</div>
+#<div style="font-size:34px;font-weight:900;color:#16834A;margin-top:10px;">{group_matches_completed} / 72</div>
+#</div>
 
-<div style="
-background:white;
-border:1px solid #E6D8FF;
-border-radius:16px;
-padding:22px;
-box-shadow:0 4px 12px rgba(0,0,0,0.04);
-">
-<div style="font-size:16px;color:#6b7280;font-weight:700;">🏁 Group Status</div>
-<div style="font-size:30px;font-weight:900;color:#7C3AED;margin-top:10px;">{group_status}</div>
-</div>
+#<div style="
+#background:white;
+#border:1px solid #E6D8FF;
+#border-radius:16px;
+#padding:22px;
+#box-shadow:0 4px 12px rgba(0,0,0,0.04);
+#">
+#<div style="font-size:16px;color:#6b7280;font-weight:700;">🏁 Group Status</div>
+#<div style="font-size:30px;font-weight:900;color:#7C3AED;margin-top:10px;">{group_status}</div>
+#</div>
 
-<div style="
-background:white;
-border:1px solid #F7DFA8;
-border-radius:16px;
-padding:22px;
-box-shadow:0 4px 12px rgba(0,0,0,0.04);
-">
-<div style="font-size:16px;color:#6b7280;font-weight:700;">🏟️ Tournament</div>
-<div style="font-size:30px;font-weight:900;color:#B7791F;margin-top:10px;">{tournament_stage}</div>
-</div>
+#<div style="
+#background:white;
+#border:1px solid #F7DFA8;
+#border-radius:16px;
+#padding:22px;
+#box-shadow:0 4px 12px rgba(0,0,0,0.04);
+#">
+#<div style="font-size:16px;color:#6b7280;font-weight:700;">🏟️ Tournament</div>
+#<div style="font-size:30px;font-weight:900;color:#B7791F;margin-top:10px;">{tournament_stage}</div>
+#</div>
 
-</div>
-</div>
-""",
-    unsafe_allow_html=True,
-)
+#</div>
+#</div>
+#""",
+#    unsafe_allow_html=True,
+#)
 
 st.caption(
     "⚠ Scenario percentages are based on simulated scorelines from 0–7 goals per team and represent scenario frequency, not real-world match probabilities."

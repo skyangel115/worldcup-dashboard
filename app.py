@@ -154,27 +154,6 @@ headers = {
 html = requests.get(url, headers=headers).text
 tables = pd.read_html(StringIO(html))
 
-soup = BeautifulSoup(html, "html.parser")
-
-header = soup.find(id="Round_of_32")
-
-match_divs = []
-
-for tag in header.find_all_next("div"):
-
-    text = tag.get_text(" | ", strip=True)
-
-    # 一場比賽一定都有 Report
-    if "Report" in text:
-
-        # 有隊名、有球場，才是真正的完整match
-        if "Attendance" in text or "Referee" in text:
-            match_divs.append(text)
-
-    if len(match_divs) == 16:
-        break
-
-
 standing_tables = []
 
 for i, table in enumerate(tables):
@@ -340,6 +319,10 @@ def load_knockout_matches(tables, soup):
 
 
 knockout_matches = load_knockout_matches(tables, soup)
+debug = pd.DataFrame(knockout_matches["Round of 32"])
+
+st.dataframe(debug)
+
 
 # =====================
 # Data Preparation

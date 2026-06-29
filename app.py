@@ -1809,7 +1809,6 @@ font-size:13px;color:#6b7280;font-weight:800;margin-bottom:10px;">
 📅 {date}<br>
 🕒 {time} ({timezone})<br>
 🏟️ {stadium if stadium else "-"}
-🏟️ {stadium if stadium else "-"}
 </div>
 
 </div>

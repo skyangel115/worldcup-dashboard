@@ -158,12 +158,9 @@ soup = BeautifulSoup(html, "html.parser")
 
 round32_header = soup.find(id="Round_of_32")
 
-round32_section = []
-
-table = round32_header.find_next("table")
-
-for s in table.stripped_strings:
-    st.write(s)
+for i, tag in enumerate(round32_header.find_all_next(["div", "table"], limit=30)):
+    st.markdown(f"### tag {i}: {tag.name}")
+    st.write(tag.get_text(" | ", strip=True))
 
 
 standing_tables = []

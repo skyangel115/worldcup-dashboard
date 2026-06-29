@@ -1770,12 +1770,20 @@ def render_knockout_round(round_name, matches, expanded=True):
             if status == "Completed":
                 score_numbers = re.findall(r"\d+", score)
 
-                if len(score_numbers) >= 2:
-                    s1, s2 = int(score_numbers[0]), int(score_numbers[1])
-                else:
-                    s1, s2 = 0, 0
+                # 正規時間/延長賽
+                s1 = int(score_numbers[0])
+                s2 = int(score_numbers[1])
 
-                if s1 > s2:
+                pk1 = pk2 = None
+
+                if len(score_numbers) >= 4:
+                    pk1 = int(score_numbers[2])
+                    pk2 = int(score_numbers[3])
+                    winner_team1 = pk1 > pk2
+                else:
+                    winner_team1 = s1 > s2
+
+                if winner_team1:
                     team1_bg = "#F0FDF4"
                     team2_bg = "#FFFFFF"
                     team1_icon = "🏆 "

@@ -1726,6 +1726,10 @@ def render_knockout_round(round_name, matches, expanded=True):
             team2 = match["team2"]
             status = match["status"]
             score = match["score"]
+            date = match.get("date", "-")
+            time = match.get("time", "-")
+            timezone = match.get("timezone", "UTC+8")
+            stadium = match.get("stadium")
 
             if status == "Completed":
                 s1, s2 = map(int, score.replace("–", "-").split("-"))
@@ -1805,7 +1809,8 @@ font-size:13px;color:#6b7280;font-weight:800;margin-bottom:10px;">
 📅 {date}<br>
 🕒 {time} ({timezone})<br>
 🏟️ {stadium if stadium else "-"}
-
+🏟️ {stadium if stadium else "-"}
+</div>
 
 </div>
 """,

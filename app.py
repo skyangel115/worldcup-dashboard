@@ -163,10 +163,8 @@ round32_section = []
 for tag in round32_header.find_all_next():
     if tag.name == "h2":
         break
-    round32_section.append(tag.get_text(" ", strip=True))
 
-for line in round32_section[:40]:
-    print(line)
+    st.write(tag.name)
 
 
 standing_tables = []

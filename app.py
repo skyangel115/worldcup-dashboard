@@ -161,6 +161,18 @@ for i, table in enumerate(tables):
     if any("Team" in str(c) for c in cols) and any("Pts" in str(c) for c in cols):
         standing_tables.append(i)
 
+DEBUG = True
+
+def load_round32_matches(tables):
+
+    if DEBUG:
+        for idx in range(96, 112):
+            st.markdown(f"### Table {idx}")
+            st.dataframe(tables[idx], use_container_width=True)
+
+    return []
+
+round32_matches = load_round32_matches(tables)
 # =====================
 # Data Preparation
 # =====================

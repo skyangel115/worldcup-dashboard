@@ -1733,13 +1733,13 @@ def render_knockout_round(round_name, matches, expanded=True):
 
             if status == "Completed":
                 status_badge = """
-            <span style="background:#DCFCE7;color:#166534;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:800;">
+            <span style="font-size:12px;font-weight:900;color:#166534;">
             Final
             </span>
             """
             else:
                 status_badge = """
-            <span style="background:#FEF3C7;color:#92400E;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:800;">
+            <span style="font-size:12px;font-weight:900;color:#6B7280;">
             NS
             </span>
             """
@@ -1785,8 +1785,16 @@ def render_knockout_round(round_name, matches, expanded=True):
 {team1}
 </div>
 
-<div style="text-align:center;font-size:14px;font-weight:900;color:#B45309;background:#FFF7E8;border-radius:999px;padding:5px 12px;margin:12px 0;">
+<div style="display:flex;align-items:center;justify-content:center;margin:12px 0;">
+
+<hr style="flex:1;border:none;border-top:1px solid #F3E8C8;">
+
+<span style="margin:0 10px;font-size:12px;font-weight:800;color:#B45309;">
 VS
+</span>
+
+<hr style="flex:1;border:none;border-top:1px solid #F3E8C8;">
+
 </div>
 
 <div style="font-size:18px;font-weight:900;color:#1f2937;line-height:1.5;">
@@ -1811,14 +1819,14 @@ min-height:150px;
 <div style="display:flex;justify-content:space-between;align-items:center;
 font-size:13px;color:#6b7280;font-weight:800;margin-bottom:10px;">
 <span>⚽ {match_no}</span>
-<span>{status_badge}</span>
+{status_badge}
 </div>
 
 {body_html}
 
 <hr style="margin:12px 0;border:none;border-top:1px solid #eee;">
 
-<div style="font-size:12px;color:#6b7280;line-height:1.6;">
+<div style="font-size:11px;color:#9CA3AF;line-height:1.6;">
 📅 {date}<br>
 🕒 {time} ({timezone})<br>
 🏟️ {stadium if stadium else "-"}

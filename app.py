@@ -1789,20 +1789,17 @@ min-height:135px;
                         team2_extra = "🏆"
 
                     body_html = f"""
-<div style="display:flex;justify-content:space-between;align-items:center;
-background:{team1_bg};border-radius:12px;padding:9px 12px;margin-bottom:8px;">
+<div style="display:flex;justify-content:space-between;align-items:center;background:{team1_bg};border-radius:12px;padding:9px 12px;margin-bottom:8px;">
 <span style="font-size:17px;font-weight:900;color:#1f2937;">{team1}</span>
 <span style="font-size:18px;font-weight:950;color:#1f2937;">{s1} {team1_extra}</span>
 </div>
 
-<div style="display:flex;justify-content:space-between;align-items:center;
-background:{team2_bg};border-radius:12px;padding:9px 12px;">
+<div style="display:flex;justify-content:space-between;align-items:center;background:{team2_bg};border-radius:12px;padding:9px 12px;">
 <span style="font-size:17px;font-weight:900;color:#1f2937;">{team2}</span>
 <span style="font-size:18px;font-weight:950;color:#1f2937;">{s2} {team2_extra}</span>
 </div>
 """
-
-                        card_border = "#16A34A"
+                    card_border = "#16A34A"
 
                 else:
                     body_html = f"""
@@ -1810,16 +1807,7 @@ background:{team2_bg};border-radius:12px;padding:9px 12px;">
 {team1}
 </div>
 
-<div style="
-text-align:center;
-font-size:14px;
-font-weight:900;
-color:#B45309;
-background:#FFF7E8;
-border-radius:999px;
-padding:5px 12px;
-margin:12px 0;
-">
+<div style="text-align:center;font-size:14px;font-weight:900;color:#B45309;background:#FFF7E8;border-radius:999px;padding:5px 12px;margin:12px 0;">
 VS
 </div>
 
@@ -1842,8 +1830,7 @@ margin-bottom:16px;
 box-shadow:0 3px 10px rgba(0,0,0,0.06);
 min-height:150px;
 ">
-<div style="display:flex;justify-content:space-between;align-items:center;
-font-size:13px;color:#6b7280;font-weight:800;margin-bottom:12px;">
+<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#6b7280;font-weight:800;margin-bottom:12px;">
 <span>⚽ {match_no}</span>
 <span>{'FT' if status == 'Completed' else ''}</span>
 </div>
@@ -1854,7 +1841,6 @@ font-size:13px;color:#6b7280;font-weight:800;margin-bottom:12px;">
 """,
                         unsafe_allow_html=True
                     )
-
 
 
 if view == "🌍 Group Stage":

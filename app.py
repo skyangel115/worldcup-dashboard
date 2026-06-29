@@ -215,7 +215,7 @@ def get_match_metadata_by_round(soup):
 
             match_no = f"Match {report_match.group(1)}"
 
-            date = next((p for p in parts if ", 2026" in p), None)
+            date = next((p for p in parts if "2026" in p and "-" not in p), None)
             time_text = next((p for p in parts if "p.m." in p or "a.m." in p), None)
             timezone = next((p for p in parts if p.startswith("UTC")), None)
 

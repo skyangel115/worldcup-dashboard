@@ -370,9 +370,6 @@ def load_knockout_matches(tables, soup):
 
 
 knockout_matches = load_knockout_matches(tables, soup)
-debug = pd.DataFrame(knockout_matches["Round of 32"])
-
-st.dataframe(debug)
 
 
 # =====================
@@ -1794,12 +1791,21 @@ margin-bottom:16px;
 box-shadow:0 3px 10px rgba(0,0,0,0.06);
 min-height:150px;
 ">
-<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#6b7280;font-weight:800;margin-bottom:12px;">
+<div style="display:flex;justify-content:space-between;align-items:center;
+font-size:13px;color:#6b7280;font-weight:800;margin-bottom:10px;">
 <span>⚽ {match_no}</span>
 <span>{'FT' if status == 'Completed' else ''}</span>
 </div>
 
 {body_html}
+
+<hr style="margin:12px 0;border:none;border-top:1px solid #eee;">
+
+<div style="font-size:12px;color:#6b7280;line-height:1.6;">
+📅 {date}<br>
+🕒 {time} ({timezone})<br>
+🏟️ {stadium if stadium else "-"}
+
 
 </div>
 """,

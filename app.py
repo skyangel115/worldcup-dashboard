@@ -1738,8 +1738,12 @@ def render_knockout_round(round_name, matches, expanded=True):
             if status == "Completed":
                 status_label = "Final"
                 status_color = "#166534"
+                status_bg = "#F0FDF4"
+                status_border = "#BBF7D0"
             else:
                 status_color = "#6B7280"
+                status_bg = "#F9FAFB"
+                status_border = "#E5E7EB"
 
                 try:
                     match_date = datetime.strptime(date, "%Y/%m/%d").date()

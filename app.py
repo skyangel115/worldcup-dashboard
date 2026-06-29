@@ -1695,7 +1695,10 @@ min-height:135px;
     if all_groups_completed:
         st.markdown("---")
 
-        with st.expander("⚽ Round of 32 Matchups", expanded=True):
+        with st.expander(
+            f"⚽ Round of 32 · {completed_matches}/16 Completed",
+            expanded=True
+        ):
             round32_matches = [
                 ("Match 1", "South Africa", "Canada"),
                 ("Match 2", "Brazil", "Japan"),

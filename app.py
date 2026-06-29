@@ -161,7 +161,7 @@ for i, table in enumerate(tables):
     if any("Team" in str(c) for c in cols) and any("Pts" in str(c) for c in cols):
         standing_tables.append(i)
 
-DEBUG = True
+DEBUG = False
 
 def load_round32_matches(tables):
 

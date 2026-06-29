@@ -189,10 +189,13 @@ def convert_to_utc8(date_text, time_text, timezone_text):
         .replace("p.m", "PM")
     )
 
-    dt = datetime.strptime(
-        f"{date_text} {clean_time}",
-        "%B %d, %Y %I:%M %p"
-    )
+    try:
+        dt = datetime.strptime(
+            f"{date_text} {clean_time}",
+            "%B %d, %Y %I:%M %p"
+        )
+    except ValueError:
+        return date_text, time_text, timezone_text
 
     dt += timedelta(hours=8 - offset)
 

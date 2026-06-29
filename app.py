@@ -1732,17 +1732,11 @@ def render_knockout_round(round_name, matches, expanded=True):
             stadium = match.get("stadium")
 
             if status == "Completed":
-                status_badge = """
-            <span style="font-size:12px;font-weight:900;color:#166534;">
-            Final
-            </span>
-            """
+                status_text = "Final"
+                status_color = "#166534"
             else:
-                status_badge = """
-            <span style="font-size:12px;font-weight:900;color:#6B7280;">
-            NS
-            </span>
-            """
+                status_text = "NS"
+                status_color = "#6B7280"
 
             if status == "Completed":
                 s1, s2 = map(int, score.replace("–", "-").split("-"))
@@ -1819,7 +1813,13 @@ min-height:150px;
 <div style="display:flex;justify-content:space-between;align-items:center;
 font-size:13px;color:#6b7280;font-weight:800;margin-bottom:10px;">
 <span>⚽ {match_no}</span>
-{status_badge}
+<span style="
+font-size:12px;
+font-weight:900;
+color:{status_color};
+">
+{status_text}
+</span>
 </div>
 
 {body_html}

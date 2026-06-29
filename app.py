@@ -189,14 +189,20 @@ def load_knockout_matches(tables):
             middle = str(table.columns[1]).strip()
             team2 = str(table.columns[2]).strip()
 
+            report_text = str(table.iloc[0, 1]).strip()
+            report_match = re.search(r"Report\s*(\d+)", report_text)
+
+            if report_match:
+                match_no = f"Match {report_match.group(1)}"
+            else:
+                match_no = middle if middle.startswith("Match") else f"Match {idx}"
+
             if middle.startswith("Match"):
                 status = "Upcoming"
                 score = None
-                match_no = middle
             else:
                 status = "Completed"
                 score = middle
-                match_no = f"Match {idx}"
 
             round_matches.append({
                 "match_no": match_no,
@@ -1544,6 +1550,108 @@ def quick_team_status_for_knockout(group, ranked):
 
     return first_locked, eliminated
 
+def render_knockout_round(round_name, matches, expanded=True):
+    completed_matches = sum(
+        1 for match in matches
+        if match["status"] == "Completed"
+    )
+
+    total_matches = len(matches)
+
+    if completed_matches == total_matches:
+        title = f"⚽ {round_name} ✅ Completed"
+    else:
+        title = f"⚽ {round_name} ({completed_matches}/{total_matches})"        
+   
+    with st.expander(title, expanded=expanded):
+        st.progress(completed_matches / total_matches)
+        st.caption(f"{completed_matches} / {total_matches} matches completed.")
+
+        match_cols = st.columns(4)
+
+        for idx, match in enumerate(matches):
+            match_no = match["match_no"]
+            team1 = match["team1"]
+            team2 = match["team2"]
+            status = match["status"]
+            score = match["score"]
+
+            if status == "Completed":
+                s1, s2 = map(int, score.replace("–", "-").split("-"))
+
+                if s1 > s2:
+                    team1_bg = "#DCFCE7"
+                    team2_bg = "#FFFFFF"
+                    team1_icon = "🏆 " 
+                    team2_icon =  ""
+                else:
+                    team1_bg = "#FFFFFF"
+                    team2_bg = "#DCFCE7"
+                    team1_icon = ""
+                    team2_icon = "🏆 "
+
+                body_html = f"""
+<div style="display:flex;justify-content:space-between;align-items:center;background:{team1_bg};border-radius:12px;padding:9px 12px;margin-bottom:8px;">
+<span style="font-size:17px;font-weight:900;color:#1f2937;">
+{team1_icon}{team1}
+</span>
+<span style="font-size:18px;font-weight:950;color:#1f2937;">
+{s1}
+</span>
+</div>
+
+<div style="display:flex;justify-content:space-between;align-items:center;background:{team2_bg};border-radius:12px;padding:9px 12px;">
+<span style="font-size:17px;font-weight:900;color:#1f2937;">
+{team2_icon}{team2}
+</span>
+<span style="font-size:18px;font-weight:950;color:#1f2937;">
+{s2}
+</span>
+</div>
+"""
+                card_border = "#16A34A"
+
+            else:
+                body_html = f"""
+<div style="font-size:18px;font-weight:900;color:#1f2937;line-height:1.5;">
+{team1}
+</div>
+
+<div style="text-align:center;font-size:14px;font-weight:900;color:#B45309;background:#FFF7E8;border-radius:999px;padding:5px 12px;margin:12px 0;">
+VS
+</div>
+
+<div style="font-size:18px;font-weight:900;color:#1f2937;line-height:1.5;">
+{team2}
+</div>
+"""
+                card_border = "#e5e7eb"
+
+            with match_cols[idx % 4]:
+                st.markdown(
+                    f"""
+<div style="
+background:white;
+border:1px solid #e5e7eb;
+border-left:5px solid {card_border};
+border-radius:16px;
+padding:16px;
+margin-bottom:16px;
+box-shadow:0 3px 10px rgba(0,0,0,0.06);
+min-height:150px;
+">
+<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#6b7280;font-weight:800;margin-bottom:12px;">
+<span>⚽ {match_no}</span>
+<span>{'FT' if status == 'Completed' else ''}</span>
+</div>
+
+{body_html}
+
+</div>
+""",
+                    unsafe_allow_html=True
+                 )
+
 def show_tournament():
     st.header("🏆 Knockout Qualification")
     st.caption(
@@ -1745,112 +1853,48 @@ min-height:135px;
             "🔴 Eliminated Teams",
             theme="red"
         )
-        
+
     if all_groups_completed:
+
         st.markdown("---")
 
-        round32_matches = knockout_matches["Round of 32"]
-
-        completed_matches = sum(
-            1 for match in round32_matches
-            if match["status"] == "Completed"
+        render_knockout_round(
+            "Round of 32",
+            knockout_matches["Round of 32"],
+            expanded=True
         )
 
-        total_matches = len(round32_matches)
+        render_knockout_round(
+            "Round of 16",
+            knockout_matches["Round of 16"],
+            expanded=False
+        )
 
-        if completed_matches == total_matches:
-            title = "⚽ Round of 32 ✅ Completed"
-        else:
-            title = f"⚽ Round of 32 ({completed_matches}/{total_matches})"
+        render_knockout_round(
+            "Quarter-finals",
+            knockout_matches["Quarter-finals"],
+            expanded=False
+        )
 
-        with st.expander(title, expanded=True):
-            st.progress(completed_matches / total_matches)
-            st.caption(f"{completed_matches} / {total_matches} matches completed.")
+        render_knockout_round(
+            "Semi-finals",
+            knockout_matches["Semi-finals"],
+            expanded=False
+        )
 
-            match_cols = st.columns(4)
+        render_knockout_round(
+            "Third-place match",
+            knockout_matches["Third-place match"],
+            expanded=False
+        )
 
-            for idx, match in enumerate(round32_matches):
-                match_no = match["match_no"]
-                team1 = match["team1"]
-                team2 = match["team2"]
-                status = match["status"]
-                score = match["score"]
+        render_knockout_round(
+            "Final",
+            knockout_matches["Final"],
+            expanded=False
+        )
 
-                if status == "Completed":
-                    s1, s2 = map(int, score.replace("–", "-").split("-"))
 
-                    if s1 > s2:
-                        team1_bg = "#DCFCE7"
-                        team2_bg = "#FFFFFF"
-                        team1_icon = "🏆 " 
-                        team2_icon =  ""
-                    else:
-                        team1_bg = "#FFFFFF"
-                        team2_bg = "#DCFCE7"
-                        team1_icon = ""
-                        team2_icon = "🏆 "
-
-                    body_html = f"""
-<div style="display:flex;justify-content:space-between;align-items:center;background:{team1_bg};border-radius:12px;padding:9px 12px;margin-bottom:8px;">
-<span style="font-size:17px;font-weight:900;color:#1f2937;">
-{team1_icon}{team1}
-</span>
-<span style="font-size:18px;font-weight:950;color:#1f2937;">
-{s1}
-</span>
-</div>
-
-<div style="display:flex;justify-content:space-between;align-items:center;background:{team2_bg};border-radius:12px;padding:9px 12px;">
-<span style="font-size:17px;font-weight:900;color:#1f2937;">
-{team2_icon}{team2}
-</span>
-<span style="font-size:18px;font-weight:950;color:#1f2937;">
-{s2}
-</span>
-</div>
-"""
-                    card_border = "#16A34A"
-
-                else:
-                    body_html = f"""
-<div style="font-size:18px;font-weight:900;color:#1f2937;line-height:1.5;">
-{team1}
-</div>
-
-<div style="text-align:center;font-size:14px;font-weight:900;color:#B45309;background:#FFF7E8;border-radius:999px;padding:5px 12px;margin:12px 0;">
-VS
-</div>
-
-<div style="font-size:18px;font-weight:900;color:#1f2937;line-height:1.5;">
-{team2}
-</div>
-"""
-                    card_border = "#e5e7eb"
-
-                with match_cols[idx % 4]:
-                    st.markdown(
-                        f"""
-<div style="
-background:white;
-border:1px solid #e5e7eb;
-border-left:5px solid {card_border};
-border-radius:16px;
-padding:16px;
-margin-bottom:16px;
-box-shadow:0 3px 10px rgba(0,0,0,0.06);
-min-height:150px;
-">
-<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#6b7280;font-weight:800;margin-bottom:12px;">
-<span>⚽ {match_no}</span>
-<span>{'FT' if status == 'Completed' else ''}</span>
-</div>
-
-{body_html}
-
-</div>
-""",
-                        unsafe_allow_html=True
-                    )
 
 
 if view == "🌍 Group Stage":

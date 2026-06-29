@@ -204,6 +204,8 @@ def load_knockout_matches(tables):
                 "team2": team2,
                 "status": status,
                 "score": score,
+                "date": None,
+                "stadium": None,
             })
 
         knockout_matches[round_name] = round_matches

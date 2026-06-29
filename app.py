@@ -1769,7 +1769,12 @@ def render_knockout_round(round_name, matches, expanded=True):
                     status_label = "Scheduled"
 
             if status == "Completed":
-                s1, s2 = map(int, score.replace("–", "-").split("-"))
+                score_numbers = re.findall(r"\d+", score)
+
+                if len(score_numbers) >= 2:
+                    s1, s2 = int(score_numbers[0]), int(score_numbers[1])
+                else:
+                    s1, s2 = 0, 0
 
                 if s1 > s2:
                     team1_bg = "#F0FDF4"

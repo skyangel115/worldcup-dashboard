@@ -1822,7 +1822,16 @@ color:{status_color};
 </span>
 </div>
 
+<div style="
+min-height:120px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+">
+
 {body_html}
+
+</div>
 
 <hr style="margin:12px 0;border:none;border-top:1px solid #eee;">
 

@@ -1731,6 +1731,10 @@ def render_knockout_round(round_name, matches, expanded=True):
             timezone = match.get("timezone", "UTC+8")
             stadium = match.get("stadium")
 
+            from datetime import datetime
+
+            status_label = "Final"
+            
             if status == "Completed":
                 status_text = "Final"
                 status_color = "#166534"
@@ -1738,21 +1742,39 @@ def render_knockout_round(round_name, matches, expanded=True):
                 status_text = "NS"
                 status_color = "#6B7280"
 
+                try:
+                    match_date = datetime.strptime(date, "%Y/%m/%d").date()
+                    today = datetime.now().date()
+
+                    diff = (match_date - today).days
+
+                    if diff == 0:
+                        status_label = "Today"
+                    elif diff == 1:
+                        status_label = "Tomorrow"
+                    elif 2 <= diff <= 6:
+                        status_label = match_date.strftime("%a")   # Mon Tue Wed ...
+                    else:
+                        status_label = match_date.strftime("%b %-d")   # Jul 3
+                except:
+                    status_label = "Scheduled"
+            
+
             if status == "Completed":
                 s1, s2 = map(int, score.replace("–", "-").split("-"))
 
-                if s1 > s2:
-                    team1_bg = "#ECFDF5"
-                    team2_bg = "#FFFFFF"
-                    team1_icon = "🏆 " 
-                    team2_icon =  ""
-                else:
-                    team1_bg = "#FFFFFF"
-                    team2_bg = "#ECFDF5"
-                    team1_icon = ""
-                    team2_icon = "🏆 "
+            if s1 > s2:
+                team1_bg = "#F0FDF4"
+                team2_bg = "#FFFFFF"
+                team1_icon = "🏆 " 
+                team2_icon =  ""
+            else:
+                team1_bg = "#FFFFFF"
+                team2_bg = "#F0FDF4"
+                team1_icon = ""
+                team2_icon = "🏆 "
 
-                body_html = f"""
+            body_html = f"""
 <div style="display:flex;justify-content:space-between;align-items:center;background:{team1_bg};border-radius:12px;padding:9px 12px;margin-bottom:8px;">
 <span style="font-size:17px;font-weight:900;color:#1f2937;">
 {team1_icon}{team1}
@@ -1771,10 +1793,10 @@ def render_knockout_round(round_name, matches, expanded=True):
 </span>
 </div>
 """
-                card_border = "#16A34A"
+            card_border = "#16A34A"
 
-            else:
-                body_html = f"""
+        else:
+            body_html = f"""
 <div style="font-size:18px;font-weight:900;color:#1f2937;line-height:1.5;margin-bottom:22px;">
 {team1}
 </div>
@@ -1784,11 +1806,11 @@ def render_knockout_round(round_name, matches, expanded=True):
 </div>
 """
 
-                card_border = "#e5e7eb"
+            card_border = "#e5e7eb"
 
-            with match_cols[idx % 4]:
-                st.markdown(
-                    f"""
+        with match_cols[idx % 4]:
+            st.markdown(
+                f"""
 <div style="
 background:white;
 border:1px solid #e5e7eb;
@@ -1804,10 +1826,10 @@ font-size:13px;color:#6b7280;font-weight:800;margin-bottom:10px;">
 <span>⚽ {match_no}</span>
 <span style="
 font-size:12px;
-font-weight:900;
+font-weight:800;
 color:{status_color};
 ">
-{status_text}
+{status_label}
 </span>
 </div>
 
@@ -1834,8 +1856,8 @@ justify-content:center;
 
 </div>
 """,
-                    unsafe_allow_html=True
-                 )
+                unsafe_allow_html=True
+                )
 
 def show_tournament():
     st.header("🏆 Knockout Qualification")

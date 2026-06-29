@@ -161,18 +161,58 @@ for i, table in enumerate(tables):
     if any("Team" in str(c) for c in cols) and any("Pts" in str(c) for c in cols):
         standing_tables.append(i)
 
+# =====================
+# Knockout parser
+# =====================
 DEBUG = False
 
-def load_round32_matches(tables):
 
-    if DEBUG:
-        for idx in range(96, 112):
-            st.markdown(f"### Table {idx}")
-            st.dataframe(tables[idx], use_container_width=True)
+def load_knockout_matches(tables):
+    knockout_rounds = {
+        "Round of 32": range(96, 112),
+        "Round of 16": range(112, 120),
+        "Quarter-finals": range(120, 124),
+        "Semi-finals": range(124, 126),
+        "Third-place match": range(126, 127),
+        "Final": range(127, 128),
+    }
 
-    return []
+    knockout_matches = {}
 
-round32_matches = load_round32_matches(tables)
+    for round_name, table_range in knockout_rounds.items():
+        round_matches = []
+
+        for idx in table_range:
+            table = tables[idx]
+
+            team1 = str(table.columns[0]).strip()
+            middle = str(table.columns[1]).strip()
+            team2 = str(table.columns[2]).strip()
+
+            if middle.startswith("Match"):
+                status = "Upcoming"
+                score = None
+                match_no = middle
+            else:
+                status = "Completed"
+                score = middle
+                match_no = f"Match {idx}"
+
+            round_matches.append({
+                "match_no": match_no,
+                "team1": team1,
+                "team2": team2,
+                "status": status,
+                "score": score,
+            })
+
+        knockout_matches[round_name] = round_matches
+
+    return knockout_matches
+
+
+knockout_matches = load_knockout_matches(tables)
+
 # =====================
 # Data Preparation
 # =====================
@@ -1706,42 +1746,38 @@ min-height:135px;
         
     if all_groups_completed:
         st.markdown("---")
-        
-        round32_matches = [
-            ("Match 1", "South Africa", "Canada"),
-            ("Match 2", "Brazil", "Japan"),
-            ("Match 3", "Germany", "Paraguay"),
-            ("Match 4", "Netherlands", "Morocco"),
-            ("Match 5", "Ivory Coast", "Norway"),
-            ("Match 6", "France", "Sweden"),
-            ("Match 7", "Mexico", "Ecuador"),
-            ("Match 8", "England", "DR Congo"),
-            ("Match 9", "Belgium", "Senegal"),
-            ("Match 10", "United States", "Bosnia and Herzegovina"),
-            ("Match 11", "Spain", "Austria"),
-            ("Match 12", "Portugal", "Croatia"),
-            ("Match 13", "Switzerland", "Algeria"),
-            ("Match 14", "Australia", "Egypt"),
-            ("Match 15", "Argentina", "Cape Verde"),
-            ("Match 16", "Colombia", "Ghana"),
-        ]
 
-        completed_matches = 0
-        
-        if completed_matches == 16:
+        round32_matches = knockout_matches["Round of 32"]
+
+        completed_matches = sum(
+            1 for match in round32_matches
+            if match["status"] == "Completed"
+        )
+
+        total_matches = len(round32_matches)
+
+        if completed_matches == total_matches:
             title = "⚽ Round of 32 ✅ Completed"
         else:
-            title = f"⚽ Round of 32 ({completed_matches}/16)"
+            title = f"⚽ Round of 32 ({completed_matches}/{total_matches})"
 
-        with st.expander(title, expanded=True):    
-            st.progress(completed_matches / 16)
-            st.caption(
-                f"{completed_matches} / 16 matches completed."
-            )
-            
+        with st.expander(title, expanded=True):
+            st.progress(completed_matches / total_matches)
+            st.caption(f"{completed_matches} / {total_matches} matches completed.")
+
             match_cols = st.columns(4)
 
-            for idx, (match_no, team1, team2) in enumerate(round32_matches):
+            for idx, match in enumerate(round32_matches):
+                match_no = match["match_no"]
+                team1 = match["team1"]
+                team2 = match["team2"]
+                status = match["status"]
+                score = match["score"]
+
+                middle_text = score if status == "Completed" else "VS"
+                middle_bg = "#DCFCE7" if status == "Completed" else "#FFF7E8"
+                middle_color = "#166534" if status == "Completed" else "#B45309"
+
                 with match_cols[idx % 4]:
                     st.markdown(
                         f"""
@@ -1766,13 +1802,13 @@ min-height:150px;
 text-align:center;
 font-size:14px;
 font-weight:900;
-color:#B45309;
-background:#FFF7E8;
+color:{middle_color};
+background:{middle_bg};
 border-radius:999px;
 padding:5px 12px;
 margin:12px 0;
 ">
-VS
+{middle_text}
 </div>
 
 <div style="font-size:18px;font-weight:900;color:#1f2937;line-height:1.5;">

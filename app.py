@@ -1694,30 +1694,34 @@ min-height:135px;
         
     if all_groups_completed:
         st.markdown("---")
+        
+        round32_matches = [
+            ("Match 1", "South Africa", "Canada"),
+            ("Match 2", "Brazil", "Japan"),
+            ("Match 3", "Germany", "Paraguay"),
+            ("Match 4", "Netherlands", "Morocco"),
+            ("Match 5", "Ivory Coast", "Norway"),
+            ("Match 6", "France", "Sweden"),
+            ("Match 7", "Mexico", "Ecuador"),
+            ("Match 8", "England", "DR Congo"),
+            ("Match 9", "Belgium", "Senegal"),
+            ("Match 10", "United States", "Bosnia and Herzegovina"),
+            ("Match 11", "Spain", "Austria"),
+            ("Match 12", "Portugal", "Croatia"),
+            ("Match 13", "Switzerland", "Algeria"),
+            ("Match 14", "Australia", "Egypt"),
+            ("Match 15", "Argentina", "Cape Verde"),
+            ("Match 16", "Colombia", "Ghana"),
+        ]
 
-        with st.expander(
-            f"⚽ Round of 32 · {completed_matches}/16 Completed",
-            expanded=True
-        ):
-            round32_matches = [
-                ("Match 1", "South Africa", "Canada"),
-                ("Match 2", "Brazil", "Japan"),
-                ("Match 3", "Germany", "Paraguay"),
-                ("Match 4", "Netherlands", "Morocco"),
-                ("Match 5", "Ivory Coast", "Norway"),
-                ("Match 6", "France", "Sweden"),
-                ("Match 7", "Mexico", "Ecuador"),
-                ("Match 8", "England", "DR Congo"),
-                ("Match 9", "Belgium", "Senegal"),
-                ("Match 10", "United States", "Bosnia and Herzegovina"),
-                ("Match 11", "Spain", "Austria"),
-                ("Match 12", "Portugal", "Croatia"),
-                ("Match 13", "Switzerland", "Algeria"),
-                ("Match 14", "Australia", "Egypt"),
-                ("Match 15", "Argentina", "Cape Verde"),
-                ("Match 16", "Colombia", "Ghana"),
-            ]
+        completed_matches = 0
+        
+        if completed_matches == 16:
+            title = "⚽ Round of 32 ✅ Completed"
+        else:
+            title = f"⚽ Round of 32 ({completed_matches}/16)"
 
+        with st.expander(title, expanded=True):    
             match_cols = st.columns(4)
 
             for idx, (match_no, team1, team2) in enumerate(round32_matches):

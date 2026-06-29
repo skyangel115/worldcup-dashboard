@@ -1793,16 +1793,22 @@ def render_knockout_round(round_name, matches, expanded=True):
                     team2_bg = "#F0FDF4"
                     team1_icon = ""
                     team2_icon = "🏆 "
+                if pk1 is not None:
+                    s1_display = f"{s1} [{pk1}]"
+                    s2_display = f"{s2} [{pk2}]"
+                else:
+                    s1_display = str(s1)
+                    s2_display = str(s2)
 
                 body_html = f"""
 <div style="display:flex;justify-content:space-between;align-items:center;background:{team1_bg};border-radius:12px;padding:9px 12px;margin-bottom:8px;">
 <span style="font-size:17px;font-weight:900;color:#1f2937;">{team1_icon}{team1}</span>
-<span style="font-size:18px;font-weight:950;color:#1f2937;">{s1}</span>
+<span style="font-size:18px;font-weight:950;color:#1f2937;">{s1_display}</span>
 </div>
 
 <div style="display:flex;justify-content:space-between;align-items:center;background:{team2_bg};border-radius:12px;padding:9px 12px;">
 <span style="font-size:17px;font-weight:900;color:#1f2937;">{team2_icon}{team2}</span>
-<span style="font-size:18px;font-weight:950;color:#1f2937;">{s2}</span>
+<span style="font-size:18px;font-weight:950;color:#1f2937;">{s2_display}</span>
 </div>
 """
                 card_border = "#16A34A"

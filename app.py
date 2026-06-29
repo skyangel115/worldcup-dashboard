@@ -214,18 +214,25 @@ DEBUG = False
 
 def get_match_metadata_by_round(soup):
     round_ids = {
-        "Round of 32": "Round_of_32",
-        "Round of 16": "Round_of_16",
-        "Quarter-finals": "Quarter-finals",
-        "Semi-finals": "Semi-finals",
-        "Third-place match": "Third-place_match",
-        "Final": "Final",
+        "Round of 32": ["Round_of_32"],
+        "Round of 16": ["Round_of_16"],
+        "Quarter-finals": ["Quarterfinals", "Quarter-finals", "Quarter_finals"],
+        "Semi-finals": ["Semifinals", "Semi-finals", "Semi_finals"],
+        "Third-place match": ["Match_for_third_place", "Third-place_match", "Third_place_match"],
+        "Final": ["Final"],
     }
 
     metadata = {}
 
     for round_name, round_id in round_ids.items():
-        header = soup.find(id=round_id)
+        header = None
+        active_round_id = None
+
+        for possible_id in round_id:
+            header = soup.find(id=possible_id)
+            if header is not None:
+                active_round_id = possible_id
+                break
         metadata[round_name] = {}
 
         if header is None:
@@ -234,7 +241,7 @@ def get_match_metadata_by_round(soup):
         for tag in header.find_all_next("div"):
             # 遇到下一個 h2 就停止
             prev_h2 = tag.find_previous("h2")
-            if prev_h2 and prev_h2.find(id=True) and prev_h2.find(id=True).get("id") != round_id:
+            if prev_h2 and prev_h2.find(id=True) and prev_h2.find(id=True).get("id") != active_round_id:
                 break
 
             text = tag.get_text(" | ", strip=True)

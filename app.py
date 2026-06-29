@@ -139,6 +139,7 @@ import pandas as pd
 import requests
 import re
 from io import StringIO
+from bs4 import BeautifulSoup
 
 # =====================
 #Load data from Wikipedia
@@ -152,6 +153,21 @@ headers = {
 
 html = requests.get(url, headers=headers).text
 tables = pd.read_html(StringIO(html))
+
+soup = BeautifulSoup(html, "html.parser")
+
+round32_header = soup.find(id="Round_of_32")
+
+round32_section = []
+
+for tag in round32_header.find_all_next():
+    if tag.name == "h2":
+        break
+    round32_section.append(tag.get_text(" ", strip=True))
+
+for line in round32_section[:40]:
+    print(line)
+
 
 standing_tables = []
 

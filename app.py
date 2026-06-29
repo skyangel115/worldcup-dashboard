@@ -317,11 +317,9 @@ Completed
 </span>
 """
 
-    ranked = build_group_table(g)
-
     team_lines = []
 
-    for i, team in enumerate(ranked.index):
+    for i, team in enumerate(ranked_teams):
         if i == 0:
             team_lines.append(f"🥇 {team}")
         elif i == 1:

@@ -1696,7 +1696,68 @@ min-height:135px;
         st.markdown("---")
 
         with st.expander("⚽ Round of 32 Matchups", expanded=True):
-            st.info("Round of 32 match cards will be shown here.")
+            round32_matches = [
+                ("Match 1", "South Africa", "Canada"),
+                ("Match 2", "Brazil", "Japan"),
+                ("Match 3", "Germany", "Paraguay"),
+                ("Match 4", "Netherlands", "Morocco"),
+                ("Match 5", "Ivory Coast", "Norway"),
+                ("Match 6", "France", "Sweden"),
+                ("Match 7", "Mexico", "Ecuador"),
+                ("Match 8", "England", "DR Congo"),
+                ("Match 9", "Belgium", "Senegal"),
+                ("Match 10", "United States", "Bosnia and Herzegovina"),
+                ("Match 11", "Spain", "Austria"),
+                ("Match 12", "Portugal", "Croatia"),
+                ("Match 13", "Switzerland", "Algeria"),
+                ("Match 14", "Australia", "Egypt"),
+                ("Match 15", "Argentina", "Cape Verde"),
+                ("Match 16", "Colombia", "Ghana"),
+            ]
+
+            match_cols = st.columns(4)
+
+            for idx, (match_no, team1, team2) in enumerate(round32_matches):
+                with match_cols[idx % 4]:
+                    st.markdown(
+                        f"""
+<div style="
+background:white;
+border:1px solid #e5e7eb;
+border-radius:16px;
+padding:16px;
+margin-bottom:16px;
+box-shadow:0 3px 10px rgba(0,0,0,0.06);
+min-height:150px;
+">
+<div style="font-size:13px;color:#6b7280;font-weight:800;margin-bottom:12px;">
+⚽ {match_no}
+</div>
+
+<div style="font-size:18px;font-weight:900;color:#1f2937;line-height:1.5;">
+{team1}
+</div>
+
+<div style="
+text-align:center;
+font-size:14px;
+font-weight:900;
+color:#B45309;
+background:#FFF7E8;
+border-radius:999px;
+padding:5px 12px;
+margin:12px 0;
+">
+VS
+</div>
+
+<div style="font-size:18px;font-weight:900;color:#1f2937;line-height:1.5;">
+{team2}
+</div>
+</div>
+""",
+                        unsafe_allow_html=True
+                    )
 
 
 

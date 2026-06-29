@@ -200,7 +200,7 @@ def get_match_metadata_by_round(soup):
             if "Report" not in text:
                 continue
 
-            if not re.search(r"\b[A-Z][a-z]+ \d{1,2}, 2026\b", text):
+            if not ("2026" in text and ("p.m." in text or "a.m." in text)):
                 continue
 
             parts = [p.strip() for p in text.split("|") if p.strip()]
@@ -215,7 +215,7 @@ def get_match_metadata_by_round(soup):
 
             match_no = f"Match {report_match.group(1)}"
 
-            date = parts[0] if len(parts) > 0 else None
+            date = next((p for p in parts if ", 2026" in p), None)
             time_text = next((p for p in parts if "p.m." in p or "a.m." in p), None)
             timezone = next((p for p in parts if p.startswith("UTC")), None)
 

@@ -317,7 +317,21 @@ Completed
 </span>
 """
 
-    teams_html = "<br>".join(groups[g])
+    ranked = build_group_table(g)
+
+    team_lines = []
+
+    for i, team in enumerate(ranked.index):
+        if i == 0:
+            team_lines.append(f"🥇 {team}")
+        elif i == 1:
+            team_lines.append(f"🥈 {team}")
+        elif i == 2:
+            team_lines.append(f"🥉 {team}")
+        else:
+            team_lines.append(f"❌ {team}")
+
+    teams_html = "<br>".join(team_lines)
 
     with col:
         st.markdown(

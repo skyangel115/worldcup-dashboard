@@ -160,11 +160,10 @@ round32_header = soup.find(id="Round_of_32")
 
 round32_section = []
 
-for tag in round32_header.find_all_next():
-    if tag.name == "h2":
-        break
+table = round32_header.find_next("table")
 
-    st.write(tag.name)
+for s in table.stripped_strings:
+    st.write(s)
 
 
 standing_tables = []

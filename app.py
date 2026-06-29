@@ -269,27 +269,29 @@ def get_match_metadata_by_round(soup):
 
             if referee_idx is not None:
                 before_referee = parts[:referee_idx]
+            else:
+                before_referee = parts
 
-                attendance_idx = next(
-                    (i for i, p in enumerate(before_referee) if p.startswith("Attendance:")),
-                    None
-                )
+            attendance_idx = next(
+                (i for i, p in enumerate(before_referee) if p.startswith("Attendance:")),
+                None
+            )
 
-                if attendance_idx is not None:
-                    attendance = before_referee[attendance_idx].replace("Attendance:", "").strip()
-                    venue_parts = before_referee[attendance_idx - 3:attendance_idx]
-                else:
-                    venue_parts = before_referee[-3:]
+            if attendance_idx is not None:
+                attendance = before_referee[attendance_idx].replace("Attendance:", "").strip()
+                venue_parts = before_referee[attendance_idx - 3:attendance_idx]
+            else:
+                venue_parts = before_referee[-3:]
 
-                venue_parts = [
-                    p for p in venue_parts
-                    if p not in [",", "[", "]"] and not p.startswith("Report")
-                ]
+            venue_parts = [
+                p for p in venue_parts
+                if p not in [",", "[", "]"] and not p.startswith("Report")
+            ]
 
-                if len(venue_parts) >= 2:
-                    stadium = f"{venue_parts[-2]}, {venue_parts[-1]}"
-                elif len(venue_parts) == 1:
-                    stadium = venue_parts[0]
+            if len(venue_parts) >= 2:
+                stadium = f"{venue_parts[-2]}, {venue_parts[-1]}"
+            elif len(venue_parts) == 1:
+                stadium = venue_parts[0]
 
             date, time_text, timezone = convert_to_utc8(
                 date,

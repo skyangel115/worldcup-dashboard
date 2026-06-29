@@ -1813,9 +1813,14 @@ min-height:150px;
 font-size:13px;color:#6b7280;font-weight:800;margin-bottom:10px;">
 <span>⚽ {match_no}</span>
 <span style="
-font-size:12px;
-font-weight:800;
+display:inline-block;
+padding:2px 8px;
+border-radius:999px;
+font-size:11px;
+font-weight:700;
 color:{status_color};
+background:{status_bg};
+border:1px solid {status_border};
 ">
 {status_label}
 </span>

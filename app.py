@@ -1780,23 +1780,31 @@ min-height:135px;
                     if s1 > s2:
                         team1_bg = "#DCFCE7"
                         team2_bg = "#FFFFFF"
-                        team1_extra = "🏆"
-                        team2_extra = ""
+                        team1_icon = "🏆 " 
+                        team2_icon =  ""
                     else:
                         team1_bg = "#FFFFFF"
                         team2_bg = "#DCFCE7"
-                        team1_extra = ""
-                        team2_extra = "🏆"
+                        team1_icon = ""
+                        team2_icon = "🏆 "
 
                     body_html = f"""
 <div style="display:flex;justify-content:space-between;align-items:center;background:{team1_bg};border-radius:12px;padding:9px 12px;margin-bottom:8px;">
-<span style="font-size:17px;font-weight:900;color:#1f2937;">{team1}</span>
-<span style="font-size:18px;font-weight:950;color:#1f2937;">{s1} {team1_extra}</span>
+<span style="font-size:17px;font-weight:900;color:#1f2937;">
+{team1_icon}{team1}
+</span>
+<span style="font-size:18px;font-weight:950;color:#1f2937;">
+{s1}
+</span>
 </div>
 
 <div style="display:flex;justify-content:space-between;align-items:center;background:{team2_bg};border-radius:12px;padding:9px 12px;">
-<span style="font-size:17px;font-weight:900;color:#1f2937;">{team2}</span>
-<span style="font-size:18px;font-weight:950;color:#1f2937;">{s2} {team2_extra}</span>
+<span style="font-size:17px;font-weight:900;color:#1f2937;">
+{team2_icon}{team2}
+</span>
+<span style="font-size:18px;font-weight:950;color:#1f2937;">
+{s2}
+</span>
 </div>
 """
                     card_border = "#16A34A"

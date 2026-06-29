@@ -140,6 +140,7 @@ import requests
 import re
 from io import StringIO
 from bs4 import BeautifulSoup
+from datetime import datetime, timedelta
 
 # =====================
 #Load data from Wikipedia
@@ -163,6 +164,37 @@ for i, table in enumerate(tables):
 
     if any("Team" in str(c) for c in cols) and any("Pts" in str(c) for c in cols):
         standing_tables.append(i)
+
+# ========================
+# Time and date converting
+# ========================
+def convert_to_utc8(date_text, time_text, timezone_text):
+    if not (date_text and time_text and timezone_text):
+        return date_text, time_text, timezone_text
+
+    match = re.search(r"UTC([+−-])(\d+)", timezone_text)
+
+    if match is None:
+        return date_text, time_text, timezone_text
+
+    sign = match.group(1)
+    hours = int(match.group(2))
+
+    offset = hours if sign == "+" else -hours
+
+    dt = datetime.strptime(
+        f"{date_text} {time_text}",
+        "%B %d, %Y %I:%M %p"
+    )
+
+    dt += timedelta(hours=8 - offset)
+
+    return (
+        dt.strftime("%Y/%m/%d"),
+        dt.strftime("%H:%M"),
+        "UTC+8"
+    )
+
 
 # =====================
 # Knockout parser
@@ -249,6 +281,11 @@ def get_match_metadata_by_round(soup):
                 elif len(venue_parts) == 1:
                     stadium = venue_parts[0]
 
+            date, time_text, timezone = convert_to_utc8(
+                date,
+                time_text,
+                timezone
+            )
             metadata[round_name][match_no] = {
                 "date": date,
                 "time": time_text,

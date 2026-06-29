@@ -1775,26 +1775,15 @@ def render_knockout_round(round_name, matches, expanded=True):
 
             else:
                 body_html = f"""
-<div style="font-size:18px;font-weight:900;color:#1f2937;line-height:1.5;">
+<div style="font-size:18px;font-weight:900;color:#1f2937;line-height:1.5;margin-bottom:22px;">
 {team1}
-</div>
-
-<div style="display:flex;align-items:center;justify-content:center;margin:12px 0;">
-
-<hr style="flex:1;border:none;border-top:1px solid #F3E8C8;">
-
-<span style="margin:0 10px;font-size:12px;font-weight:800;color:#B45309;">
-VS
-</span>
-
-<hr style="flex:1;border:none;border-top:1px solid #F3E8C8;">
-
 </div>
 
 <div style="font-size:18px;font-weight:900;color:#1f2937;line-height:1.5;">
 {team2}
 </div>
 """
+
                 card_border = "#e5e7eb"
 
             with match_cols[idx % 4]:
@@ -1823,7 +1812,7 @@ color:{status_color};
 </div>
 
 <div style="
-min-height:145px;
+min-height:110px;
 display:flex;
 flex-direction:column;
 justify-content:center;

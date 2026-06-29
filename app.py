@@ -173,17 +173,24 @@ def convert_to_utc8(date_text, time_text, timezone_text):
         return date_text, time_text, timezone_text
 
     match = re.search(r"UTC([+−-])(\d+)", timezone_text)
-
     if match is None:
         return date_text, time_text, timezone_text
 
     sign = match.group(1)
     hours = int(match.group(2))
-
     offset = hours if sign == "+" else -hours
 
+    # 12:00 p.m. -> 12:00 PM
+    clean_time = (
+        time_text
+        .replace("a.m.", "AM")
+        .replace("p.m.", "PM")
+        .replace("a.m", "AM")
+        .replace("p.m", "PM")
+    )
+
     dt = datetime.strptime(
-        f"{date_text} {time_text}",
+        f"{date_text} {clean_time}",
         "%B %d, %Y %I:%M %p"
     )
 
@@ -247,10 +254,8 @@ def get_match_metadata_by_round(soup):
 
             match_no = f"Match {report_match.group(1)}"
 
-            date = next(
-                (p for p in parts if re.match(r"^[A-Za-z]+ \d{1,2}, 2026$", p)),
-                None
-            )
+            date_match = re.search(r"[A-Za-z]+ \d{1,2}, 2026", text)
+            date = date_match.group(0) if date_match else None
             time_text = next((p for p in parts if "p.m." in p or "a.m." in p), None)
             timezone = next((p for p in parts if p.startswith("UTC")), None)
 

@@ -1823,7 +1823,7 @@ color:{status_color};
 </div>
 
 <div style="
-min-height:120px;
+min-height:145px;
 display:flex;
 flex-direction:column;
 justify-content:center;

@@ -1722,6 +1722,11 @@ min-height:135px;
             title = f"⚽ Round of 32 ({completed_matches}/16)"
 
         with st.expander(title, expanded=True):    
+            st.progress(completed_matches / 16)
+            st.caption(
+                f"{completed_matches} / 16 matches completed."
+            )
+            
             match_cols = st.columns(4)
 
             for idx, (match_no, team1, team2) in enumerate(round32_matches):

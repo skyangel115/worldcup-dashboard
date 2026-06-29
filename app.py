@@ -1732,6 +1732,19 @@ def render_knockout_round(round_name, matches, expanded=True):
             stadium = match.get("stadium")
 
             if status == "Completed":
+                status_badge = """
+            <span style="background:#DCFCE7;color:#166534;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:800;">
+            Final
+            </span>
+            """
+            else:
+                status_badge = """
+            <span style="background:#FEF3C7;color:#92400E;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:800;">
+            NS
+            </span>
+            """
+
+            if status == "Completed":
                 s1, s2 = map(int, score.replace("–", "-").split("-"))
 
                 if s1 > s2:
@@ -1798,7 +1811,7 @@ min-height:150px;
 <div style="display:flex;justify-content:space-between;align-items:center;
 font-size:13px;color:#6b7280;font-weight:800;margin-bottom:10px;">
 <span>⚽ {match_no}</span>
-<span>{'FT' if status == 'Completed' else ''}</span>
+{status_badge}
 </div>
 
 {body_html}

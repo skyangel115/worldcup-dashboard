@@ -1742,13 +1742,13 @@ def render_knockout_round(round_name, matches, expanded=True):
                 s1, s2 = map(int, score.replace("–", "-").split("-"))
 
                 if s1 > s2:
-                    team1_bg = "#DCFCE7"
+                    team1_bg = "#ECFDF5"
                     team2_bg = "#FFFFFF"
                     team1_icon = "🏆 " 
                     team2_icon =  ""
                 else:
                     team1_bg = "#FFFFFF"
-                    team2_bg = "#DCFCE7"
+                    team2_bg = "#ECFDF5"
                     team1_icon = ""
                     team2_icon = "🏆 "
 
@@ -1824,9 +1824,11 @@ justify-content:center;
 
 <hr style="margin:12px 0;border:none;border-top:1px solid #eee;">
 
-<div style="font-size:11px;color:#9CA3AF;line-height:1.6;">
-📅 {date}<br>
-🕒 {time} ({timezone})<br>
+<div style="font-size:12px;color:#6B7280;line-height:1.7;">
+<div style="font-size:13px;font-weight:800;color:#374151;margin-bottom:2px;">
+📅 {date} · {time} ({timezone})
+</div>
+<div style="font-size:12px;color:#9CA3AF;">
 🏟️ {stadium if stadium else "-"}
 </div>
 

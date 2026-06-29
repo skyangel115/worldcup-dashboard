@@ -154,6 +154,8 @@ headers = {
 html = requests.get(url, headers=headers).text
 tables = pd.read_html(StringIO(html))
 
+soup = BeautifulSoup(html, "html.parser")
+
 standing_tables = []
 
 for i, table in enumerate(tables):

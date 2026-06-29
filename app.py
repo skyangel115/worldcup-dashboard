@@ -1804,8 +1804,8 @@ background:{team2_bg};border-radius:12px;padding:9px 12px;">
 
                         card_border = "#16A34A"
 
-                    else:
-                        body_html = f"""
+                else:
+                    body_html = f"""
 <div style="font-size:18px;font-weight:900;color:#1f2937;line-height:1.5;">
 {team1}
 </div>
@@ -1827,11 +1827,11 @@ VS
 {team2}
 </div>
 """
-                        card_border = "#e5e7eb"
+                    card_border = "#e5e7eb"
 
-                    with match_cols[idx % 4]:
-                        st.markdown(
-                            f"""
+                with match_cols[idx % 4]:
+                    st.markdown(
+                        f"""
 <div style="
 background:white;
 border:1px solid #e5e7eb;

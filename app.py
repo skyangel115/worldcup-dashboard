@@ -317,6 +317,7 @@ Completed
 </span>
 """
 
+    ranked_teams = groups[g]
     team_lines = []
 
     for i, team in enumerate(ranked_teams):

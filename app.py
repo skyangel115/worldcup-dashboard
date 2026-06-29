@@ -319,13 +319,13 @@ def get_match_metadata_by_round(soup):
 
 def load_knockout_matches(tables, soup):
     knockout_rounds = {
-        "Round of 32": range(96, 112),
-        "Round of 16": range(112, 120),
-        "Quarter-finals": range(120, 124),
-        "Semi-finals": range(124, 126),
-        "Third-place match": range(126, 127),
-        "Final": range(127, 128),
-    }
+        "Round of 32": range(97, 113)
+        "Round of 16": range(113, 121)
+        "Quarter-finals": range(121, 125)
+        "Semi-finals": range(125, 127)
+        "Third-place match": range(127, 128)
+        "Final": range(128, 129)
+            }
 
     knockout_metadata = get_match_metadata_by_round(soup)
     knockout_matches = {}
@@ -377,7 +377,6 @@ def load_knockout_matches(tables, soup):
 
 
 knockout_matches = load_knockout_matches(tables, soup)
-
 
 # =====================
 # Data Preparation

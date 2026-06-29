@@ -1811,7 +1811,7 @@ min-height:150px;
 <div style="display:flex;justify-content:space-between;align-items:center;
 font-size:13px;color:#6b7280;font-weight:800;margin-bottom:10px;">
 <span>⚽ {match_no}</span>
-{status_badge}
+<span>{status_badge}</span>
 </div>
 
 {body_html}

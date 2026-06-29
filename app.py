@@ -156,11 +156,23 @@ tables = pd.read_html(StringIO(html))
 
 soup = BeautifulSoup(html, "html.parser")
 
-round32_header = soup.find(id="Round_of_32")
+header = soup.find(id="Round_of_32")
 
-for i, tag in enumerate(round32_header.find_all_next(["div", "table"], limit=30)):
-    st.markdown(f"### tag {i}: {tag.name}")
-    st.write(tag.get_text(" | ", strip=True))
+match_divs = []
+
+for tag in header.find_all_next("div"):
+
+    text = tag.get_text(" | ", strip=True)
+
+    # 一場比賽一定都有 Report
+    if "Report" in text:
+
+        # 有隊名、有球場，才是真正的完整match
+        if "Attendance" in text or "Referee" in text:
+            match_divs.append(text)
+
+    if len(match_divs) == 16:
+        break
 
 
 standing_tables = []
@@ -177,7 +189,98 @@ for i, table in enumerate(tables):
 DEBUG = False
 
 
-def load_knockout_matches(tables):
+def get_match_metadata_by_round(soup):
+    round_ids = {
+        "Round of 32": "Round_of_32",
+        "Round of 16": "Round_of_16",
+        "Quarter-finals": "Quarter-finals",
+        "Semi-finals": "Semi-finals",
+        "Third-place match": "Third-place_match",
+        "Final": "Final",
+    }
+
+    metadata = {}
+
+    for round_name, round_id in round_ids.items():
+        header = soup.find(id=round_id)
+        metadata[round_name] = {}
+
+        if header is None:
+            continue
+
+        for tag in header.find_all_next("div"):
+            # 遇到下一個 h2 就停止
+            prev_h2 = tag.find_previous("h2")
+            if prev_h2 and prev_h2.find(id=True) and prev_h2.find(id=True).get("id") != round_id:
+                break
+
+            text = tag.get_text(" | ", strip=True)
+
+            if "Report" not in text:
+                continue
+
+            if "Referee" not in text:
+                continue
+
+            parts = [p.strip() for p in text.split("|") if p.strip()]
+
+            report_text = next((p for p in parts if "Report" in p), None)
+            if report_text is None:
+                continue
+
+            report_match = re.search(r"Report\s*(\d+)", report_text)
+            if report_match is None:
+                continue
+
+            match_no = f"Match {report_match.group(1)}"
+
+            date = parts[0] if len(parts) > 0 else None
+            time_text = parts[2] if len(parts) > 2 else None
+            timezone = parts[3] if len(parts) > 3 else None
+
+            referee_idx = parts.index("Referee:") if "Referee:" in parts else None
+            referee = parts[referee_idx + 1] if referee_idx is not None and referee_idx + 1 < len(parts) else None
+
+            stadium = None
+            attendance = None
+
+            if referee_idx is not None:
+                before_referee = parts[:referee_idx]
+
+                attendance_idx = next(
+                    (i for i, p in enumerate(before_referee) if p.startswith("Attendance:")),
+                    None
+                )
+
+                if attendance_idx is not None:
+                    attendance = before_referee[attendance_idx].replace("Attendance:", "").strip()
+                    venue_parts = before_referee[attendance_idx - 3:attendance_idx]
+                else:
+                    venue_parts = before_referee[-3:]
+
+                venue_parts = [
+                    p for p in venue_parts
+                    if p not in [",", "[", "]"] and not p.startswith("Report")
+                ]
+
+                if len(venue_parts) >= 2:
+                    stadium = f"{venue_parts[-2]}, {venue_parts[-1]}"
+                elif len(venue_parts) == 1:
+                    stadium = venue_parts[0]
+
+            metadata[round_name][match_no] = {
+                "date": date,
+                "time": time_text,
+                "timezone": timezone,
+                "stadium": stadium,
+                "attendance": attendance,
+                "referee": referee,
+            }
+
+    return metadata
+
+
+def load_knockout_matches(tables, soup):
     knockout_rounds = {
         "Round of 32": range(96, 112),
         "Round of 16": range(112, 120),
@@ -187,6 +290,7 @@ def load_knockout_matches(tables):
         "Final": range(127, 128),
     }
 
+    knockout_metadata = get_match_metadata_by_round(soup)
     knockout_matches = {}
 
     for round_name, table_range in knockout_rounds.items():
@@ -214,14 +318,20 @@ def load_knockout_matches(tables):
                 status = "Completed"
                 score = middle
 
+            meta = knockout_metadata.get(round_name, {}).get(match_no, {})
+
             round_matches.append({
                 "match_no": match_no,
                 "team1": team1,
                 "team2": team2,
                 "status": status,
                 "score": score,
-                "date": None,
-                "stadium": None,
+                "date": meta.get("date"),
+                "time": meta.get("time"),
+                "timezone": meta.get("timezone"),
+                "stadium": meta.get("stadium"),
+                "attendance": meta.get("attendance"),
+                "referee": meta.get("referee"),
             })
 
         knockout_matches[round_name] = round_matches
@@ -229,7 +339,7 @@ def load_knockout_matches(tables):
     return knockout_matches
 
 
-knockout_matches = load_knockout_matches(tables)
+knockout_matches = load_knockout_matches(tables, soup)
 
 # =====================
 # Data Preparation

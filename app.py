@@ -1691,6 +1691,14 @@ min-height:135px;
             "🔴 Eliminated Teams",
             theme="red"
         )
+        
+    if all_groups_completed:
+        st.markdown("---")
+
+        with st.expander("⚽ Round of 32 Matchups", expanded=True):
+            st.info("Round of 32 match cards will be shown here.")
+
+
 
 if view == "🌍 Group Stage":
     show_group(selected_group)

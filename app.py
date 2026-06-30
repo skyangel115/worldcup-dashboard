@@ -211,7 +211,6 @@ def convert_to_utc8(date_text, time_text, timezone_text):
 # =====================
 DEBUG = False
 
-
 def get_match_metadata_by_round(soup):
     round_ids = {
         "Round of 32": ["Round_of_32"],
@@ -469,7 +468,7 @@ box-shadow:0 4px 12px rgba(0,0,0,0.04);
 <div style="font-size:13px;color:#6b7280;font-weight:800;margin-top:10px;text-transform:uppercase;letter-spacing:.06em;">
 Current Stage
 </div>
-<div style="font-size:30px;font-weight:950;color:#1F4E79;margin-top:4px;">⚽ {current_round}</div>
+<div style="font-size:30px;font-weight:950;color:#1F4E79;margin-top:4px;">{current_round}</div>
 
 <div style="background:#E5E7EB;border-radius:999px;height:12px;margin-top:14px;overflow:hidden;">
 <div style="background:#1F4E79;width:{progress*100:.1f}%;height:12px;border-radius:999px;"></div>
@@ -485,6 +484,7 @@ Current Stage
 """,
         unsafe_allow_html=True
     )
+
 
 # =====================
 # Data Preparation
@@ -599,68 +599,68 @@ def get_group_remaining_count(group):
 
     return remaining_count
 
-render_tournament_hero(knockout_matches)
 
-st.markdown("### 🌍 Select Group")
+def show_group_stage_dashboard():
+    st.markdown("### 🌍 Select Group")
+    
+    selected_group = st.segmented_control(
+        "Group",
+        options=sorted(groups.keys()),
+        label_visibility="collapsed"
+    )
 
-selected_group = st.segmented_control(
-    "Group",
-    options=sorted(groups.keys()),
-    label_visibility="collapsed"
-)
-
-if selected_group is None:
-    selected_group = "A"
+    if selected_group is None:
+        selected_group = "A"
 
 
-st.markdown("### 🏆 Group Overview")
+    st.markdown("### 🏆 Group Overview")
 
-group_cols = st.columns(4)
+    group_cols = st.columns(4)
 
-for idx, g in enumerate(sorted(groups.keys())):
-    col = group_cols[idx % 4]
+    for idx, g in enumerate(sorted(groups.keys())):
+        col = group_cols[idx % 4]
 
-    is_selected = g == selected_group
+        is_selected = g == selected_group
 
-    border_color = "#1F4E79" if is_selected else "#E5E7EB"
-    border_width = "3px" if is_selected else "1px"
-    background = "#F5FAFF" if is_selected else "#FFFFFF"
-    shadow = "0 4px 14px rgba(0,0,0,.10)" if is_selected else "0 2px 8px rgba(0,0,0,.04)"
-    title_icon = "🏆" if is_selected else "⚽"
+        border_color = "#1F4E79" if is_selected else "#E5E7EB"
+        border_width = "3px" if is_selected else "1px"
+        background = "#F5FAFF" if is_selected else "#FFFFFF"
+        shadow = "0 4px 14px rgba(0,0,0,.10)" if is_selected else "0 2px 8px rgba(0,0,0,.04)"
+        title_icon = "🏆" if is_selected else "⚽"
 
-    remaining_in_group = get_group_remaining_count(g)
+        remaining_in_group = get_group_remaining_count(g)
 
-    if remaining_in_group == 0:
-        group_status_badge = """
+        if remaining_in_group == 0:
+            group_status_badge = """
 <span style="background:#DCFCE7;color:#166534;padding:5px 10px;border-radius:999px;font-size:13px;font-weight:800;">
 Completed
 </span>
 """
-    else:
-        group_status_badge = f"""
+        else:
+            group_status_badge = f"""
 <span style="background:#DBEAFE;color:#1D4ED8;padding:5px 10px;border-radius:999px;font-size:13px;font-weight:800;">
 {remaining_in_group} left
 </span>
 """
 
-    ranked_teams = groups[g]
-    team_lines = []
+        ranked_teams = groups[g]
+        team_lines = []
 
-    for i, team in enumerate(ranked_teams):
-        if i == 0:
-            team_lines.append(f"🥇 {team}")
-        elif i == 1:
-            team_lines.append(f"🥈 {team}")
-        elif i == 2:
-            team_lines.append(f"🥉 {team}")
-        else:
-            team_lines.append(f"❌ {team}")
+        for i, team in enumerate(ranked_teams):
+            if i == 0:
+                team_lines.append(f"🥇 {team}")
+            elif i == 1:
+                team_lines.append(f"🥈 {team}")
+            elif i == 2:
+                team_lines.append(f"🥉 {team}")
+            else:
+                team_lines.append(f"❌ {team}")
 
-    teams_html = "<br>".join(team_lines)
+        teams_html = "<br>".join(team_lines)
 
-    with col:
-        st.markdown(
-            f"""<div style="
+        with col:
+            st.markdown(
+                f"""<div style="
 background:{background};
 border:{border_width} solid {border_color};
 border-radius:16px;
@@ -680,22 +680,30 @@ min-height:150px;
 {teams_html}
 </div>
 </div>""",
-            unsafe_allow_html=True
-        )
+                unsafe_allow_html=True
+            )
 
-st.markdown("---")
+    st.markdown("---")
 
-view = st.segmented_control(
-    "Navigation",
-    options=[
-        "🌍 Group Stage",
-        "🥉 Best Third-Placed Teams",
-        "🏆 Knockout Qualification",
-        "🏟️ Knockout Stage",
-    ],
-    label_visibility="collapsed",
-    default="🌍 Group Stage"
-)
+    view = st.segmented_control(
+        "Navigation",
+        options=[
+            "🌍 Group Stage",
+            "🥉 Best Third-Placed Teams",
+            "🏆 Knockout Qualification",
+        ],
+        label_visibility="collapsed",
+        default="🌍 Group Stage"
+    )
+
+    if view == "🌍 Group Stage":
+        show_group(selected_group)
+
+    elif view == "🥉 Best Third-Placed Teams":
+        show_best_third()
+
+    elif view == "🏆 Knockout Qualification":
+        show_knockout_qualification()
 
 from itertools import product
 POSSIBLE_SCORES = [(a, b) for a in range(8) for b in range(8)]
@@ -760,9 +768,7 @@ def rank_with_head_to_head(sim, all_matches, group):
     return ranked
 
 def calculate_group_status_and_probability(group, table, matrix):
-    #st.write(f"Calculating status/probability for Group {group}")
-    
-
+    #st.write(f"Calculating status/probability for Group {group}")    
 
     teams = list(table.index)
 
@@ -2234,17 +2240,22 @@ def show_knockout_stage():
 
 
 
-if view == "🌍 Group Stage":
-    show_group(selected_group)
+render_tournament_hero(knockout_matches)
 
-elif view == "🥉 Best Third-Placed Teams":
-    show_best_third()
+main_view = st.segmented_control(
+    "Main Navigation",
+    options=[
+        "🌍 Group Stage",
+        "🏟️ Knockout Stage"
+    ],
+    label_visibility="collapsed",
+    default="🌍 Group Stage"
+)
 
-elif view == "🏆 Knockout Qualification":
-    show_knockout_qualification()
+if main_view == "🌍 Group Stage":
+    show_group_stage_dashboard()
 
-elif view == "🏟️ Knockout Stage":
+elif main_view == "🏟️ Knockout Stage":
     show_knockout_stage()
-
 
 

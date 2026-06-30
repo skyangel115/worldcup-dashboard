@@ -637,74 +637,54 @@ def render_upcoming_match_bar(knockout_matches):
 <div style="
 background:white;
 border:1px solid #D8E6F5;
-border-radius:16px;
-padding:16px 24px;
-margin-top:-12px;
-margin-bottom:24px;
-box-shadow:0 4px 12px rgba(0,0,0,0.04);
+border-radius:14px;
+padding:14px 22px;
+margin-top:-10px;
+margin-bottom:22px;
+box-shadow:0 3px 10px rgba(0,0,0,0.04);
 ">
+
 <div style="
 display:flex;
 justify-content:space-between;
 align-items:center;
-gap:20px;
+gap:18px;
+flex-wrap:wrap;
 ">
 
-<div>
-
-<div style="
+<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+<span style="
 font-size:13px;
 font-weight:900;
 color:#1F4E79;
 letter-spacing:.05em;
 text-transform:uppercase;
-margin-bottom:10px;
+white-space:nowrap;
 ">
 ⏭️ Upcoming Match
-</div>
-
-<div style="
-font-size:26px;
-font-weight:950;
-color:#1F2937;
-line-height:1.3;
-">
-{get_flag(next_match["team1"])} {next_match["team1"]}
-
-<span style="
-font-size:18px;
-color:#9CA3AF;
-font-weight:700;
-margin:0 10px;
-">
-VS
 </span>
 
+<span style="
+font-size:20px;
+font-weight:950;
+color:#1F2937;
+white-space:nowrap;
+">
+{get_flag(next_match["team1"])} {next_match["team1"]}
+<span style="color:#9CA3AF;font-size:16px;font-weight:800;margin:0 8px;">VS</span>
 {get_flag(next_match["team2"])} {next_match["team2"]}
-</div>
-
+</span>
 </div>
 
 <div style="
-text-align:right;
-">
-
-<div style="
-font-size:18px;
-font-weight:900;
+font-size:16px;
+font-weight:850;
 color:#1F4E79;
+white-space:nowrap;
 ">
-🗓 {match_day}
+🗓 {match_day} • {match_time} ({timezone})
 </div>
 
-<div style="
-font-size:17px;
-font-weight:700;
-color:#6B7280;
-margin-top:4px;
-">
-{match_time} ({timezone})
-</div>
 </div>
 </div>
 """,

@@ -614,9 +614,6 @@ Current Stage
 <div style="font-size:14px;color:#6b7280;margin-top:8px;">
 {completed} / {total} matches completed
 </div>
-
-{next_match_html}
-
 </div>
 
 </div>
@@ -625,6 +622,61 @@ Current Stage
         unsafe_allow_html=True
     )
 
+def render_upcoming_match_bar(knockout_matches):
+    next_round, next_match = get_next_knockout_match(knockout_matches)
+
+    if next_match is None:
+        return
+
+    match_day = format_match_day(next_match.get("date"))
+    match_time = next_match.get("time", "-")
+    timezone = next_match.get("timezone", "UTC+8")
+
+    st.markdown(
+        f"""
+<div style="
+background:white;
+border:1px solid #D8E6F5;
+border-radius:16px;
+padding:16px 24px;
+margin-top:-12px;
+margin-bottom:24px;
+box-shadow:0 4px 12px rgba(0,0,0,0.04);
+">
+<div style="font-size:13px;color:#6b7280;font-weight:900;margin-bottom:8px;">
+⏭️ Upcoming Match
+</div>
+
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:18px;
+flex-wrap:wrap;
+">
+<div style="font-size:20px;font-weight:950;color:#1f2937;">
+{get_flag(next_match["team1"])} {next_match["team1"]}
+<span style="color:#6b7280;font-weight:800;"> vs </span>
+{get_flag(next_match["team2"])} {next_match["team2"]}
+</div>
+
+<div style="
+font-size:16px;
+font-weight:850;
+color:#1F4E79;
+background:#EEF6FF;
+border:1px solid #D8E6F5;
+border-radius:999px;
+padding:7px 14px;
+white-space:nowrap;
+">
+🗓 {match_day} • {match_time} ({timezone})
+</div>
+</div>
+</div>
+""",
+        unsafe_allow_html=True
+    )
 
 # =====================
 # Data Preparation
@@ -2381,6 +2433,7 @@ def show_knockout_stage():
 
 
 render_tournament_hero(knockout_matches)
+render_upcoming_match_bar(knockout_matches)
 
 main_view = st.segmented_control(
     "Main Navigation",

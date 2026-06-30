@@ -358,13 +358,14 @@ def load_knockout_matches(tables, soup):
 
             if status == "Completed":
                 table_text = " ".join(
-                    table.astype(str).fillna("").values.flatten()
+                    [str(c) for c in table.columns] +
+                    list(table.astype(str).fillna("").values.flatten())
                 )
 
                 scores = re.findall(r"\d+\s*[–-]\s*\d+", table_text)
 
-            if "Penalties" in table_text and len(scores) >= 2:
-                pk_score = scores[-1]
+                if "Penalties" in table_text and len(scores) >= 1:
+                    pk_score = scores[-1]
 
             meta = knockout_metadata.get(round_name, {}).get(match_no, {})
 

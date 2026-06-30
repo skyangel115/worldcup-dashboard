@@ -693,15 +693,36 @@ VS
 </div>
 
 <div style="
-font-size:16px;
-font-weight:850;
-color:#1F4E79;
-white-space:nowrap;
 border-left:1px solid #E5E7EB;
-padding-left:24px;
-margin-left:24px;
+padding-left:26px;
+margin-left:26px;
 ">
-🗓 {match_day} • {match_time} ({timezone})
+
+<div style="
+background:#EEF6FF;
+border:1px solid #D8E6F5;
+border-radius:999px;
+padding:8px 16px;
+display:inline-block;
+">
+
+<div style="
+font-size:17px;
+font-weight:900;
+color:#1F4E79;
+line-height:1.2;
+">
+🗓 {match_day}
+</div>
+
+<div style="
+font-size:13px;
+font-weight:700;
+color:#6B7280;
+margin-top:3px;
+text-align:center;
+">
+{match_time} ({timezone})
 </div>
 
 </div>

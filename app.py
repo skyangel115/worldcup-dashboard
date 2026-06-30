@@ -400,6 +400,84 @@ def load_knockout_matches(tables, soup):
 
 knockout_matches = load_knockout_matches(tables, soup)
 
+def get_current_knockout_stage(knockout_matches):
+    round_order = [
+        "Round of 32",
+        "Round of 16",
+        "Quarter-finals",
+        "Semi-finals",
+        "Third-place match",
+        "Final",
+    ]
+
+    for round_name in round_order:
+        matches = knockout_matches.get(round_name, [])
+        total = len(matches)
+        completed = sum(1 for m in matches if m["status"] == "Completed")
+
+        if total > 0 and completed < total:
+            return round_name, completed, total
+
+    return "Completed", 1, 1
+
+# =====================
+# Hero
+# =====================
+def render_tournament_hero(knockout_matches):
+    current_round, completed, total = get_current_knockout_stage(knockout_matches)
+
+    progress = completed / total if total else 0
+
+    st.markdown(
+        f"""
+<div style="
+background:linear-gradient(135deg,#F5FAFF,#EEF6FF);
+border:1px solid #D8E6F5;
+border-radius:18px;
+padding:22px 26px;
+margin-top:18px;
+margin-bottom:26px;
+box-shadow:0 4px 14px rgba(0,0,0,0.05);
+">
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+
+<div style="
+background:white;
+border:1px solid #D6EFE2;
+border-radius:16px;
+padding:22px;
+box-shadow:0 4px 12px rgba(0,0,0,0.04);
+">
+<div style="font-size:16px;color:#6b7280;font-weight:800;">🌍 Group Stage</div>
+<div style="font-size:32px;font-weight:950;color:#166534;margin-top:10px;">Completed</div>
+<div style="font-size:14px;color:#6b7280;margin-top:8px;">72 / 72 matches completed</div>
+</div>
+
+<div style="
+background:white;
+border:1px solid #D8E6F5;
+border-radius:16px;
+padding:22px;
+box-shadow:0 4px 12px rgba(0,0,0,0.04);
+">
+<div style="font-size:16px;color:#6b7280;font-weight:800;">🏆 Knockout Stage</div>
+<div style="font-size:32px;font-weight:950;color:#1F4E79;margin-top:10px;">{current_round}</div>
+
+<div style="background:#E5E7EB;border-radius:999px;height:12px;margin-top:14px;overflow:hidden;">
+<div style="background:#1F4E79;width:{progress*100:.1f}%;height:12px;border-radius:999px;"></div>
+</div>
+
+<div style="font-size:14px;color:#6b7280;margin-top:8px;">
+{completed} / {total} matches completed
+</div>
+</div>
+
+</div>
+</div>
+""",
+        unsafe_allow_html=True
+    )
 
 # =====================
 # Data Preparation
@@ -514,7 +592,7 @@ def get_group_remaining_count(group):
 
     return remaining_count
 
-
+render_tournament_hero(knockout_matches)
 st.markdown("### 🌍 Select Group")
 
 selected_group = st.segmented_control(

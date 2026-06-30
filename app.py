@@ -639,7 +639,7 @@ background:white;
 border:1px solid #D8E6F5;
 border-left:6px solid #1F4E79;
 border-radius:14px;
-padding:14px 22px;
+padding:14px 26px;
 margin-top:-10px;
 margin-bottom:22px;
 box-shadow:0 3px 10px rgba(0,0,0,0.04);
@@ -665,7 +665,7 @@ color:#1F4E79;
 letter-spacing:.05em;
 white-space:nowrap;
 ">
-⏭️ Upcoming Match
+⏭️ Next Kick-off
 </span>
 
 <span style="

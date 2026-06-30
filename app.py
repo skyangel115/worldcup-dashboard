@@ -440,6 +440,10 @@ margin-bottom:26px;
 box-shadow:0 4px 14px rgba(0,0,0,0.05);
 ">
 
+<div style="font-size:22px;font-weight:950;color:#1f2937;margin-bottom:16px;">
+🏁 Tournament Progress
+</div>
+
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
 
 <div style="
@@ -450,7 +454,7 @@ padding:22px;
 box-shadow:0 4px 12px rgba(0,0,0,0.04);
 ">
 <div style="font-size:16px;color:#6b7280;font-weight:800;">🌍 Group Stage</div>
-<div style="font-size:32px;font-weight:950;color:#166534;margin-top:10px;">Completed</div>
+<div style="font-size:30px;font-weight:950;color:#166534;margin-top:10px;">Completed ✅</div>
 <div style="font-size:14px;color:#6b7280;margin-top:8px;">72 / 72 matches completed</div>
 </div>
 
@@ -462,7 +466,10 @@ padding:22px;
 box-shadow:0 4px 12px rgba(0,0,0,0.04);
 ">
 <div style="font-size:16px;color:#6b7280;font-weight:800;">🏆 Knockout Stage</div>
-<div style="font-size:32px;font-weight:950;color:#1F4E79;margin-top:10px;">⚽ {current_round}</div>
+<div style="font-size:13px;color:#6b7280;font-weight:800;margin-top:10px;text-transform:uppercase;letter-spacing:.06em;">
+Current Stage
+</div>
+<div style="font-size:30px;font-weight:950;color:#1F4E79;margin-top:4px;">⚽ {current_round}</div>
 
 <div style="background:#E5E7EB;border-radius:999px;height:12px;margin-top:14px;overflow:hidden;">
 <div style="background:#1F4E79;width:{progress*100:.1f}%;height:12px;border-radius:999px;"></div>
@@ -478,7 +485,6 @@ box-shadow:0 4px 12px rgba(0,0,0,0.04);
 """,
         unsafe_allow_html=True
     )
-
 
 # =====================
 # Data Preparation

@@ -1763,6 +1763,11 @@ def render_knockout_round(round_name, matches, expanded=True):
             from datetime import datetime
 
             status_label = "Final"
+
+            if status == "Completed":
+                header_left = ""
+            else:
+                header_left = f"⚽ {match_no}"
             
             if status == "Completed":
                 status_label = "Final"
@@ -1866,7 +1871,7 @@ min-height:150px;
 ">
 <div style="display:flex;justify-content:space-between;align-items:center;
 font-size:13px;color:#6b7280;font-weight:800;margin-bottom:10px;">
-<span>⚽ {match_no}</span>
+<span>{header_left}</span>
 <span style="
 display:inline-block;
 padding:2px 8px;

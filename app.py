@@ -354,6 +354,17 @@ def load_knockout_matches(tables, soup):
             else:
                 status = "Completed"
                 score = middle
+            pk_score = None
+
+            if status == "Completed":
+                table_text = " ".join(
+                    table.astype(str).fillna("").values.flatten()
+                )
+
+                scores = re.findall(r"\d+\s*[–-]\s*\d+", table_text)
+
+            if "Penalties" in table_text and len(scores) >= 2:
+                pk_score = scores[-1]
 
             meta = knockout_metadata.get(round_name, {}).get(match_no, {})
 
@@ -363,6 +374,7 @@ def load_knockout_matches(tables, soup):
                 "team2": team2,
                 "status": status,
                 "score": score,
+                "pk_score": pk_score,
                 "date": meta.get("date"),
                 "time": meta.get("time"),
                 "timezone": meta.get("timezone"),
@@ -377,6 +389,7 @@ def load_knockout_matches(tables, soup):
 
 
 knockout_matches = load_knockout_matches(tables, soup)
+
 
 # =====================
 # Data Preparation
@@ -1769,17 +1782,20 @@ def render_knockout_round(round_name, matches, expanded=True):
 
             if status == "Completed":
                 score_numbers = re.findall(r"\d+", score)
-
-                # 正規時間/延長賽
                 s1 = int(score_numbers[0])
                 s2 = int(score_numbers[1])
 
+                pk_score = match.get("pk_score")
                 pk1 = pk2 = None
 
-                if len(score_numbers) >= 4:
-                    pk1 = int(score_numbers[2])
-                    pk2 = int(score_numbers[3])
-                    winner_team1 = pk1 > pk2
+                if pk_score:
+                    pk_numbers = re.findall(r"\d+", pk_score)
+                    if len(pk_numbers) >= 2:
+                        pk1 = int(pk_numbers[0])
+                        pk2 = int(pk_numbers[1])
+                        winner_team1 = pk1 > pk2
+                    else:
+                        winner_team1 = s1 > s2
                 else:
                     winner_team1 = s1 > s2
 

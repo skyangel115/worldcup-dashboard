@@ -1755,7 +1755,7 @@ def render_knockout_round(round_name, matches, expanded=True):
             "Quarter-finals": "QF",
             "Semi-finals": "SF",
             "Third-place match": "3rd Place",
-            "Final": "Final",
+            "Final": "F",
         }.get(round_name, round_name)
 
         for idx, match in enumerate(matches):
@@ -1774,7 +1774,7 @@ def render_knockout_round(round_name, matches, expanded=True):
             status_label = "Final"
 
             if status == "Completed":
-                header_left = f"⚽ {round_short}"
+                header_left = f"🏆 {round_short}"
             else:
                 header_left = f"⚽ {match_no}"
             

@@ -462,7 +462,7 @@ padding:22px;
 box-shadow:0 4px 12px rgba(0,0,0,0.04);
 ">
 <div style="font-size:16px;color:#6b7280;font-weight:800;">🏆 Knockout Stage</div>
-<div style="font-size:32px;font-weight:950;color:#1F4E79;margin-top:10px;">{current_round}</div>
+<div style="font-size:32px;font-weight:950;color:#1F4E79;margin-top:10px;">⚽ {current_round}</div>
 
 <div style="background:#E5E7EB;border-radius:999px;height:12px;margin-top:14px;overflow:hidden;">
 <div style="background:#1F4E79;width:{progress*100:.1f}%;height:12px;border-radius:999px;"></div>

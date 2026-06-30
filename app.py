@@ -1748,6 +1748,15 @@ def render_knockout_round(round_name, matches, expanded=True):
         st.caption(f"{completed_matches} / {total_matches} matches completed.")
 
         match_cols = st.columns(4)
+        
+        round_short = {
+            "Round of 32": "R32",
+            "Round of 16": "R16",
+            "Quarter-finals": "QF",
+            "Semi-finals": "SF",
+            "Third-place match": "3rd Place",
+            "Final": "Final",
+        }.get(round_name, round_name)
 
         for idx, match in enumerate(matches):
             match_no = match["match_no"]
@@ -1765,7 +1774,7 @@ def render_knockout_round(round_name, matches, expanded=True):
             status_label = "Final"
 
             if status == "Completed":
-                header_left = ""
+                header_left = f"⚽ {round_short}"
             else:
                 header_left = f"⚽ {match_no}"
             

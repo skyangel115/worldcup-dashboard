@@ -368,7 +368,7 @@ def load_knockout_matches(tables, soup):
                     pk_score = scores[-1]
 
             report_key = f"Match {report_match.group(1)}" if report_match else None
-            display_match_no = middle if middle.startswith("Match") else (report_key or match_no)
+            display_match_no = report_key or match_no
             meta = knockout_metadata.get(round_name, {}).get(report_key, {})
 
             round_matches.append({
@@ -1813,8 +1813,8 @@ def render_knockout_round(round_name, matches, expanded=True):
                     team1_icon = ""
                     team2_icon = "🏆 "
                 if pk1 is not None:
-                    s1_display = f"{s1} [{pk1}]"
-                    s2_display = f"{s2} [{pk2}]"
+                    s1_display = f"{s1} ({pk1})"
+                    s2_display = f"{s2} ({pk2})"
                 else:
                     s1_display = str(s1)
                     s2_display = str(s2)

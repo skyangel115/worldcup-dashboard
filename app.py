@@ -663,7 +663,6 @@ font-size:13px;
 font-weight:900;
 color:#1F4E79;
 letter-spacing:.05em;
-text-transform:uppercase;
 white-space:nowrap;
 ">
 ⏭️ Upcoming Match
@@ -679,10 +678,10 @@ white-space:nowrap;
 <span style="
 background:#EEF6FF;
 border:1px solid #D8E6F5;
-padding:2px 8px;
+padding:1px 6px;
 border-radius:999px;
-font-size:12px;
-font-weight:900;
+font-size:11px;
+font-weight:800;
 color:#1F4E79;
 margin:0 10px;
 ">
@@ -702,27 +701,14 @@ margin-left:26px;
 background:#EEF6FF;
 border:1px solid #D8E6F5;
 border-radius:999px;
-padding:8px 16px;
+padding:10px 18px;
 display:inline-block;
-">
-
-<div style="
-font-size:17px;
+font-size:16px;
 font-weight:900;
 color:#1F4E79;
-line-height:1.2;
+white-space:nowrap;
 ">
-🗓 {match_day}
-</div>
-
-<div style="
-font-size:13px;
-font-weight:700;
-color:#6B7280;
-margin-top:3px;
-text-align:center;
-">
-{match_time} ({timezone})
+🗓 {match_day} • {match_time} ({timezone})
 </div>
 
 </div>

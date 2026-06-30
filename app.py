@@ -479,6 +479,7 @@ box-shadow:0 4px 12px rgba(0,0,0,0.04);
         unsafe_allow_html=True
     )
 
+
 # =====================
 # Data Preparation
 # =====================
@@ -593,6 +594,7 @@ def get_group_remaining_count(group):
     return remaining_count
 
 render_tournament_hero(knockout_matches)
+
 st.markdown("### 🌍 Select Group")
 
 selected_group = st.segmented_control(
@@ -682,7 +684,8 @@ view = st.segmented_control(
     options=[
         "🌍 Group Stage",
         "🥉 Best Third-Placed Teams",
-        "🏆 Knockout Stage"
+        "🏆 Knockout Qualification",
+        "🏟️ Knockout Stage",
     ],
     label_visibility="collapsed",
     default="🌍 Group Stage"
@@ -1999,7 +2002,8 @@ justify-content:center;
                     unsafe_allow_html=True
                     )
 
-def show_tournament():
+
+def show_knockout_qualification():
     st.header("🏆 Knockout Qualification")
     st.caption(
         "Qualified and eliminated teams are listed here based on confirmed tournament status. "
@@ -2201,45 +2205,25 @@ min-height:135px;
             theme="red"
         )
 
-    if all_groups_completed:
+def show_knockout_stage():
+    st.header("🏆 Knockout Stage")
 
-        st.markdown("---")
+    all_groups_completed = all(
+        get_group_remaining_count(group) == 0
+        for group in groups.keys()
+    )
 
-        render_knockout_round(
-            "Round of 32",
-            knockout_matches["Round of 32"],
-            expanded=True
-        )
+    if not all_groups_completed:
+        st.info("Knockout stage will be displayed after all group stage matches are completed.")
+        return
 
-        render_knockout_round(
-            "Round of 16",
-            knockout_matches["Round of 16"],
-            expanded=False
-        )
+    render_knockout_round("Round of 32", knockout_matches["Round of 32"], expanded=True)
+    render_knockout_round("Round of 16", knockout_matches["Round of 16"], expanded=False)
+    render_knockout_round("Quarter-finals", knockout_matches["Quarter-finals"], expanded=False)
+    render_knockout_round("Semi-finals", knockout_matches["Semi-finals"], expanded=False)
+    render_knockout_round("Third-place match", knockout_matches["Third-place match"], expanded=False)
+    render_knockout_round("Final", knockout_matches["Final"], expanded=False)
 
-        render_knockout_round(
-            "Quarter-finals",
-            knockout_matches["Quarter-finals"],
-            expanded=False
-        )
-
-        render_knockout_round(
-            "Semi-finals",
-            knockout_matches["Semi-finals"],
-            expanded=False
-        )
-
-        render_knockout_round(
-            "Third-place match",
-            knockout_matches["Third-place match"],
-            expanded=False
-        )
-
-        render_knockout_round(
-            "Final",
-            knockout_matches["Final"],
-            expanded=False
-        )
 
 
 
@@ -2250,6 +2234,11 @@ if view == "🌍 Group Stage":
 elif view == "🥉 Best Third-Placed Teams":
     show_best_third()
 
-elif view == "🏆 Knockout Stage":
-    show_tournament()
+elif view == "🏆 Knockout Qualification":
+    show_knockout_qualification()
+
+elif view == "🏟️ Knockout Stage":
+    show_knockout_stage()
+
+
 

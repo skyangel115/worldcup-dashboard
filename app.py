@@ -368,11 +368,18 @@ def load_knockout_matches(tables, soup):
                     pk_score = scores[-1]
 
             report_key = f"Match {report_match.group(1)}" if report_match else None
-            display_match_no = report_key or match_no
+
+            bracket_match_no = middle if middle.startswith("Match") else report_key
+            official_match_no = report_key or bracket_match_no
+
+            display_match_no = bracket_match_no
+
             meta = knockout_metadata.get(round_name, {}).get(report_key, {})
 
             round_matches.append({
                 "match_no": display_match_no,
+                "bracket_match_no": bracket_match_no,
+                "official_match_no": official_match_no,
                 "team1": team1,
                 "team2": team2,
                 "status": status,

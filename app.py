@@ -132,6 +132,87 @@ div[data-testid="stSegmentedControl"] button[aria-pressed="true"]{
 """, unsafe_allow_html=True)
 
 # =====================
+# Country Flags
+# =====================
+
+country_flags = {
+    "Algeria": "🇩🇿",
+    "Argentina": "🇦🇷",
+    "Australia": "🇦🇺",
+    "Austria": "🇦🇹",
+    "Belgium": "🇧🇪",
+    "Bolivia": "🇧🇴",
+    "Bosnia and Herzegovina": "🇧🇦",
+    "Brazil": "🇧🇷",
+    "Bulgaria": "🇧🇬",
+    "Cameroon": "🇨🇲",
+    "Canada": "🇨🇦",
+    "Cape Verde": "🇨🇻",
+    "Chile": "🇨🇱",
+    "China": "🇨🇳",
+    "Colombia": "🇨🇴",
+    "Costa Rica": "🇨🇷",
+    "Croatia": "🇭🇷",
+    "Czech Republic": "🇨🇿",
+    "Denmark": "🇩🇰",
+    "DR Congo": "🇨🇩",
+    "Ecuador": "🇪🇨",
+    "Egypt": "🇪🇬",
+    "England": "🏴",
+    "Finland": "🇫🇮",
+    "France": "🇫🇷",
+    "Germany": "🇩🇪",
+    "Ghana": "🇬🇭",
+    "Greece": "🇬🇷",
+    "Honduras": "🇭🇳",
+    "Hungary": "🇭🇺",
+    "Iceland": "🇮🇸",
+    "India": "🇮🇳",
+    "Iran": "🇮🇷",
+    "Iraq": "🇮🇶",
+    "Ireland": "🇮🇪",
+    "Israel": "🇮🇱",
+    "Italy": "🇮🇹",
+    "Ivory Coast": "🇨🇮",
+    "Japan": "🇯🇵",
+    "Mexico": "🇲🇽",
+    "Morocco": "🇲🇦",
+    "Netherlands": "🇳🇱",
+    "New Zealand": "🇳🇿",
+    "Nigeria": "🇳🇬",
+    "North Macedonia": "🇲🇰",
+    "Norway": "🇳🇴",
+    "Panama": "🇵🇦",
+    "Paraguay": "🇵🇾",
+    "Peru": "🇵🇪",
+    "Poland": "🇵🇱",
+    "Portugal": "🇵🇹",
+    "Qatar": "🇶🇦",
+    "Romania": "🇷🇴",
+    "Saudi Arabia": "🇸🇦",
+    "Scotland": "🏴",
+    "Senegal": "🇸🇳",
+    "Serbia": "🇷🇸",
+    "Slovakia": "🇸🇰",
+    "Slovenia": "🇸🇮",
+    "South Africa": "🇿🇦",
+    "South Korea": "🇰🇷",
+    "Spain": "🇪🇸",
+    "Sweden": "🇸🇪",
+    "Switzerland": "🇨🇭",
+    "Tunisia": "🇹🇳",
+    "Turkey": "🇹🇷",
+    "Ukraine": "🇺🇦",
+    "United States": "🇺🇸",
+    "Uruguay": "🇺🇾",
+    "Venezuela": "🇻🇪",
+    "Wales": "🏴",
+}
+
+def get_flag(team):
+    return country_flags.get(team, "🏳️")
+
+# =====================
 # Load Libraries
 # =====================
 
@@ -422,7 +503,7 @@ def get_current_knockout_stage(knockout_matches):
 # =====================
 # Hero
 # =====================
-def render_tournament_hero(knockout_matches):
+def render_tournament_hero(knockout_matches):  
     current_round, completed, total = get_current_knockout_stage(knockout_matches)
 
     progress = completed / total if total else 0
@@ -648,13 +729,13 @@ Completed
 
         for i, team in enumerate(ranked_teams):
             if i == 0:
-                team_lines.append(f"🥇 {team}")
+                team_lines.append(f"🥇 {get_flag(team)} {team}")
             elif i == 1:
-                team_lines.append(f"🥈 {team}")
+                team_lines.append(f"🥈 {get_flag(team)} {team}")
             elif i == 2:
-                team_lines.append(f"🥉 {team}")
+                team_lines.append(f"🥉 {get_flag(team)} {team}")
             else:
-                team_lines.append(f"❌ {team}")
+                team_lines.append(f"❌ {get_flag(team)} {team}")
 
         teams_html = "<br>".join(team_lines)
 
@@ -1060,7 +1141,7 @@ color:#1f2937;
 margin-bottom:14px;
 line-height:1.2;
 ">
-{team}
+{get_flag(team)} {team}
 </div>
 
 <div style="
@@ -1590,7 +1671,7 @@ color:#B45309;
                 st.markdown(
                     f"""
 <div style="display:flex;justify-content:space-between;margin-top:12px;font-size:16px;">
-<span><b>{team}</b></span>
+<span><b>{get_flag(team)} {team}</b></span>
 <span>{prob:.1f}%</span>
 </div>
 """,
@@ -1935,12 +2016,12 @@ def render_knockout_round(round_name, matches, expanded=True):
 
                 body_html = f"""
 <div style="display:flex;justify-content:space-between;align-items:center;background:{team1_bg};border-radius:12px;padding:9px 12px;margin-bottom:8px;">
-<span style="font-size:17px;font-weight:900;color:#1f2937;">{team1_icon}{team1}</span>
+<span style="font-size:17px;font-weight:900;color:#1f2937;">{team1_icon}{get_flag(team1)} {team1}</span>
 <span style="font-size:18px;font-weight:950;color:#1f2937;">{s1_display}</span>
 </div>
 
 <div style="display:flex;justify-content:space-between;align-items:center;background:{team2_bg};border-radius:12px;padding:9px 12px;">
-<span style="font-size:17px;font-weight:900;color:#1f2937;">{team2_icon}{team2}</span>
+<span style="font-size:17px;font-weight:900;color:#1f2937;">{team2_icon}{get_flag(team2)} {team2}</span>
 <span style="font-size:18px;font-weight:950;color:#1f2937;">{s2_display}</span>
 </div>
 """
@@ -1949,11 +2030,11 @@ def render_knockout_round(round_name, matches, expanded=True):
             else:
                 body_html = f"""
 <div style="font-size:18px;font-weight:900;color:#1f2937;line-height:1.5;margin-bottom:22px;">
-{team1}
+{get_flag(team1)} {team1}
 </div>
 
 <div style="font-size:18px;font-weight:900;color:#1f2937;line-height:1.5;">
-{team2}
+{get_flag(team2)} {team2}
 </div>
 """
                 card_border = "#e5e7eb"

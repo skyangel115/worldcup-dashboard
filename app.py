@@ -643,34 +643,67 @@ margin-top:-12px;
 margin-bottom:24px;
 box-shadow:0 4px 12px rgba(0,0,0,0.04);
 ">
-<div style="font-size:13px;color:#6b7280;font-weight:900;margin-bottom:8px;">
-⏭️ Upcoming Match
-</div>
-
 <div style="
 display:flex;
 justify-content:space-between;
 align-items:center;
-gap:18px;
-flex-wrap:wrap;
+gap:20px;
 ">
-<div style="font-size:20px;font-weight:950;color:#1f2937;">
-{get_flag(next_match["team1"])} {next_match["team1"]}
-<span style="color:#6b7280;font-weight:800;"> vs </span>
-{get_flag(next_match["team2"])} {next_match["team2"]}
+
+<div>
+
+<div style="
+font-size:13px;
+font-weight:900;
+color:#1F4E79;
+letter-spacing:.05em;
+text-transform:uppercase;
+margin-bottom:10px;
+">
+⏭️ Upcoming Match
 </div>
 
 <div style="
-font-size:16px;
-font-weight:850;
-color:#1F4E79;
-background:#EEF6FF;
-border:1px solid #D8E6F5;
-border-radius:999px;
-padding:7px 14px;
-white-space:nowrap;
+font-size:26px;
+font-weight:950;
+color:#1F2937;
+line-height:1.3;
 ">
-🗓 {match_day} • {match_time} ({timezone})
+{get_flag(next_match["team1"])} {next_match["team1"]}
+
+<span style="
+font-size:18px;
+color:#9CA3AF;
+font-weight:700;
+margin:0 10px;
+">
+VS
+</span>
+
+{get_flag(next_match["team2"])} {next_match["team2"]}
+</div>
+
+</div>
+
+<div style="
+text-align:right;
+">
+
+<div style="
+font-size:18px;
+font-weight:900;
+color:#1F4E79;
+">
+🗓 {match_day}
+</div>
+
+<div style="
+font-size:17px;
+font-weight:700;
+color:#6B7280;
+margin-top:4px;
+">
+{match_time} ({timezone})
 </div>
 </div>
 </div>

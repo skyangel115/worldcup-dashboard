@@ -2249,7 +2249,8 @@ main_view = st.segmented_control(
         "🏟️ Knockout Stage"
     ],
     label_visibility="collapsed",
-    default="🌍 Group Stage"
+    default="🌍 Group Stage",
+    width="stretch",
 )
 
 if main_view == "🌍 Group Stage":

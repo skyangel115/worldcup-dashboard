@@ -500,6 +500,39 @@ def get_current_knockout_stage(knockout_matches):
 
     return "Completed", 1, 1
 
+def get_next_knockout_match(knockout_matches):
+    round_order = [
+        "Round of 32",
+        "Round of 16",
+        "Quarter-finals",
+        "Semi-finals",
+        "Third-place match",
+        "Final",
+    ]
+
+    for round_name in round_order:
+        for match in knockout_matches.get(round_name, []):
+            if match["status"] != "Completed":
+                return round_name, match
+
+    return None, None
+
+
+def format_match_day(date_text):
+    try:
+        match_date = datetime.strptime(date_text, "%Y/%m/%d").date()
+        today = datetime.now().date()
+        diff = (match_date - today).days
+
+        if diff == 0:
+            return "Today"
+        elif diff == 1:
+            return "Tomorrow"
+        else:
+            return match_date.strftime("%b %d").replace(" 0", " ")
+    except:
+        return date_text or "-"
+
 # =====================
 # Hero
 # =====================
@@ -507,6 +540,29 @@ def render_tournament_hero(knockout_matches):
     current_round, completed, total = get_current_knockout_stage(knockout_matches)
 
     progress = completed / total if total else 0
+
+    next_round, next_match = get_next_knockout_match(knockout_matches)
+
+    if next_match is not None:
+        next_match_html = f"""
+<hr style="margin:14px 0;border:none;border-top:1px solid #E5E7EB;">
+
+<div style="font-size:13px;color:#6b7280;font-weight:800;margin-bottom:6px;">
+⏭️ Next Match
+</div>
+
+<div style="font-size:17px;font-weight:900;color:#1f2937;line-height:1.5;">
+{get_flag(next_match["team1"])} {next_match["team1"]} 
+<span style="color:#6b7280;font-weight:800;">vs</span> 
+{get_flag(next_match["team2"])} {next_match["team2"]}
+</div>
+
+<div style="font-size:14px;color:#6b7280;margin-top:4px;">
+{format_match_day(next_match.get("date"))} • {next_match.get("time", "-")}
+</div>
+"""
+    else:
+        next_match_html = ""
 
     st.markdown(
         f"""
@@ -558,6 +614,9 @@ Current Stage
 <div style="font-size:14px;color:#6b7280;margin-top:8px;">
 {completed} / {total} matches completed
 </div>
+
+{next_match_html}
+
 </div>
 
 </div>

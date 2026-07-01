@@ -420,8 +420,10 @@ def load_knockout_matches(tables, soup):
             middle = str(table.columns[1]).strip()
             team2 = str(table.columns[2]).strip()
 
-            report_text = str(table.iloc[0, 1]).strip()
+            report_text = str(table.iloc[0, 1]).strip() if table.shape[0] > 0 else ""
             report_match = re.search(r"Report\s*(\d+)", report_text)
+
+            pk_score = None
 
             if report_match:
                 match_no = f"Match {report_match.group(1)}"

@@ -428,13 +428,14 @@ def load_knockout_matches(tables, soup):
             else:
                 match_no = middle if middle.startswith("Match") else f"Match {idx}"
 
-            if middle.startswith("Match"):
-                status = "Upcoming"
-                score = None
-            else:
+            score_pattern = r"\d+\s*[–-]\s*\d+"
+
+            if re.search(score_pattern, middle):
                 status = "Completed"
                 score = middle
-            pk_score = None
+            else:
+                status = "Upcoming"
+                score = None
 
             if status == "Completed":
                 table_text = " ".join(

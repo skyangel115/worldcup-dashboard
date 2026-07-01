@@ -636,11 +636,11 @@ def render_upcoming_match_bar(knockout_matches):
         f"""
 <div style="
 background:linear-gradient(135deg,#0B2F6B,#123F86);
-border-radius:14px;
-padding:16px 22px;
+border-radius:12px;
+padding:12px 20px;
 margin-top:18px;
 margin-bottom:24px;
-box-shadow:0 6px 18px rgba(11,47,107,0.25);
+box-shadow:0 4px 12px rgba(11,47,107,.18);
 color:white;
 ">
 
@@ -660,13 +660,13 @@ flex-wrap:wrap;
 ">
 
 <div style="
-font-size:15px;
-font-weight:950;
-letter-spacing:.06em;
+font-size:14px;
+font-weight:900;
+letter-spacing:.08em;
 text-transform:uppercase;
 white-space:nowrap;
 ">
-📣 Next Kick-off
+⚽ Next Kick-off
 </div>
 
 <div style="
@@ -676,17 +676,17 @@ background:rgba(255,255,255,.35);
 "></div>
 
 <div style="
-font-size:22px;
+font-size:25px;
 font-weight:950;
 white-space:nowrap;
 ">
 {get_flag(next_match["team1"])} {next_match["team1"]}
 <span style="
-background:rgba(255,255,255,.16);
-border:1px solid rgba(255,255,255,.28);
-padding:3px 10px;
+background:rgba(255,255,255,.15);
+border:1px solid rgba(255,255,255,.25);
+padding:5px 12px;
 border-radius:999px;
-font-size:12px;
+font-size:13px;
 font-weight:900;
 margin:0 12px;
 ">
@@ -707,12 +707,13 @@ white-space:nowrap;
 ">
 
 <div style="
-width:1px;
-height:28px;
-background:rgba(255,255,255,.35);
-"></div>
-
-<div>
+background:rgba(255,255,255,.12);
+border:1px solid rgba(255,255,255,.18);
+padding:8px 18px;
+border-radius:999px;
+font-size:18px;
+font-weight:900;
+">
 🗓 {match_day} • {match_time} ({timezone})
 </div>
 

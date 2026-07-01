@@ -635,80 +635,87 @@ def render_upcoming_match_bar(knockout_matches):
     st.markdown(
         f"""
 <div style="
-background:white;
-border:1px solid #D8E6F5;
-border-left:6px solid #1F4E79;
+background:linear-gradient(135deg,#0B2F6B,#123F86);
 border-radius:14px;
-padding:14px 26px;
-margin-top:-10px;
-margin-bottom:22px;
-box-shadow:0 3px 10px rgba(0,0,0,0.04);
+padding:16px 22px;
+margin-top:18px;
+margin-bottom:24px;
+box-shadow:0 6px 18px rgba(11,47,107,0.25);
+color:white;
 ">
 
 <div style="
 display:flex;
+align-items:center;
 justify-content:space-between;
-align-items:center;
 gap:22px;
+flex-wrap:wrap;
 ">
 
 <div style="
 display:flex;
 align-items:center;
-gap:14px;
-flex:1;
+gap:18px;
+flex-wrap:wrap;
 ">
-<span style="
-font-size:13px;
-font-weight:900;
-color:#1F4E79;
-letter-spacing:.05em;
+
+<div style="
+font-size:15px;
+font-weight:950;
+letter-spacing:.06em;
+text-transform:uppercase;
 white-space:nowrap;
 ">
-⏭️ Next Kick-off
-</span>
+📣 Next Kick-off
+</div>
 
-<span style="
-font-size:20px;
+<div style="
+width:1px;
+height:28px;
+background:rgba(255,255,255,.35);
+"></div>
+
+<div style="
+font-size:22px;
 font-weight:950;
-color:#1F2937;
 white-space:nowrap;
 ">
 {get_flag(next_match["team1"])} {next_match["team1"]}
 <span style="
-background:#EEF6FF;
-border:1px solid #D8E6F5;
-padding:1px 6px;
+background:rgba(255,255,255,.16);
+border:1px solid rgba(255,255,255,.28);
+padding:3px 10px;
 border-radius:999px;
-font-size:11px;
-font-weight:800;
-color:#1F4E79;
-margin:0 10px;
+font-size:12px;
+font-weight:900;
+margin:0 12px;
 ">
 VS
 </span>
 {get_flag(next_match["team2"])} {next_match["team2"]}
-</span>
+</div>
+
 </div>
 
 <div style="
-border-left:1px solid #E5E7EB;
-padding-left:26px;
-margin-left:26px;
+display:flex;
+align-items:center;
+gap:18px;
+font-size:17px;
+font-weight:900;
+white-space:nowrap;
 ">
 
 <div style="
-background:#EEF6FF;
-border:1px solid #D8E6F5;
-border-radius:999px;
-padding:10px 18px;
-display:inline-block;
-font-size:16px;
-font-weight:900;
-color:#1F4E79;
-white-space:nowrap;
-">
+width:1px;
+height:28px;
+background:rgba(255,255,255,.35);
+"></div>
+
+<div>
 🗓 {match_day} • {match_time} ({timezone})
+</div>
+
 </div>
 
 </div>
@@ -2470,9 +2477,9 @@ def show_knockout_stage():
 
 
 
-
-render_tournament_hero(knockout_matches)
 render_upcoming_match_bar(knockout_matches)
+render_tournament_hero(knockout_matches)
+
 
 main_view = st.segmented_control(
     "Main Navigation",

@@ -596,7 +596,7 @@ def parse_footballbox(box):
 
         match_label_idx = next(
             (i for i, p in enumerate(parts) if p.startswith("Match")),
-                one
+            None
         )
 
         if match_label_idx is not None:

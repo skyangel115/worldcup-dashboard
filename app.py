@@ -619,16 +619,34 @@ def parse_footballbox(box):
         None
     )
 
+    referee_idx = parts.index("Referee:") if "Referee:" in parts else None
+
+    report_idx = next(
+        (i for i, p in enumerate(parts) if "Report" in p),
+        None
+    )
+
     if attendance_idx is not None:
         venue_parts = parts[attendance_idx - 3:attendance_idx]
-    else:
-        ri = parts.index("Referee:") if "Referee:" in parts else None
-        venue_parts = parts[ri - 3:ri] if ri is not None else []
 
-    venue_parts = [p for p in venue_parts if p != ","]
+    elif referee_idx is not None:
+        venue_parts = parts[referee_idx - 3:referee_idx]
+
+    elif report_idx is not None:
+        venue_parts = parts[report_idx + 2:report_idx + 5]
+
+    else:
+        venue_parts = []
+
+    venue_parts = [
+        p for p in venue_parts
+        if p not in [",", "[", "]"]
+    ]
 
     if len(venue_parts) >= 2:
         stadium = f"{venue_parts[-2]}, {venue_parts[-1]}"
+    elif len(venue_parts) == 1:
+        stadium = venue_parts[0]
 
     date, time_converted, timezone_converted = convert_to_utc8(
         date_text,

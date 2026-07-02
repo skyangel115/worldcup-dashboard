@@ -687,7 +687,14 @@ def load_knockout_matches_v2(soup):
 knockout_matches = load_knockout_matches(tables, soup)
 
 knockout_matches_v2_data = load_knockout_matches_v2(soup)
+st.write("Completed normal match:")
 st.write(knockout_matches_v2_data["Round of 32"][0])
+
+st.write("Penalty match:")
+st.write(knockout_matches_v2_data["Round of 32"][2])
+
+st.write("Upcoming match:")
+st.write(knockout_matches_v2_data["Round of 32"][10])
 
 def get_current_knockout_stage(knockout_matches):
     round_order = [

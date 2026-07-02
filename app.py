@@ -397,7 +397,7 @@ def get_match_metadata_by_round(soup):
     return metadata
 
 # =====================
-# Knockout Parser
+# Knockout Parser v2
 # =====================
 
 def get_footballboxes_by_round(soup, start_id, next_ids):
@@ -573,7 +573,7 @@ def parse_footballbox(box):
     report_match = re.search(r"Report\s*(\d+)", report_text or "")
     match_no = f"Match {report_match.group(1)}" if report_match else None
 
-    score_pattern = r"\d+\s*[–-]\s*\d+"
+    score_pattern = r"^\d{1,2}\s*[–-]\s*\d{1,2}$"
 
     score_idx = next(
         (i for i, p in enumerate(parts) if re.match(score_pattern, p)),

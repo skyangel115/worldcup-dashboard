@@ -573,9 +573,14 @@ def parse_footballbox(box):
     report_match = re.search(r"Report\s*(\d+)", report_text or "")
     match_no = f"Match {report_match.group(1)}" if report_match else None
 
-    if match_no == "Match 83":
-        for i, p in enumerate(parts):
-            st.write(i, p)
+    match_label_idx = next(
+        (i for i, p in enumerate(parts) if p.startswith("Match")),
+        None
+    )
+
+    bracket_match_no = parts[match_label_idx] if match_label_idx is not None else match_no
+    official_match_no = match_no
+    display_match_no = bracket_match_no
 
     score_pattern = r"^\d{1,2}\s*[–-]\s*\d{1,2}$"
 
@@ -593,11 +598,6 @@ def parse_footballbox(box):
             team2 = parts[score_idx + 4]
     else:
         score = None
-
-        match_label_idx = next(
-            (i for i, p in enumerate(parts) if p.startswith("Match")),
-            None
-        )
 
         if match_label_idx is not None:
             team1 = parts[match_label_idx - 1]
@@ -628,10 +628,13 @@ def parse_footballbox(box):
             referee = parts[ri + 1]
 
     stadium = None
-    if attendance:
-        ai = next(i for i, p in enumerate(parts) if p.startswith("Attendance:"))
-        if ai >= 3:
-            stadium = f"{parts[ai - 3]}, {parts[ai - 1]}"
+
+    if "Referee:" in parts:
+        ri = parts.index("Referee:")
+        venue_parts = parts[ri - 3:ri]
+        venue_parts = [p for p in venue_parts if p != ","]
+        if len(venue_parts) >= 2:
+            stadium = f"{venue_parts[-2]}, {venue_parts[-1]}"
 
     date, time_converted, timezone_converted = convert_to_utc8(
         date_text,
@@ -640,9 +643,9 @@ def parse_footballbox(box):
     )
 
     return {
-        "match_no": match_no,
-        "bracket_match_no": match_no,
-        "official_match_no": match_no,
+        "match_no": display_match_no,
+        "bracket_match_no": bracket_match_no,
+        "official_match_no": official_match_no,
         "team1": team1,
         "team2": team2,
         "status": status,
@@ -711,6 +714,23 @@ st.write(knockout_matches_v2_data["Round of 32"][2])
 
 st.write("Upcoming match:")
 st.write(knockout_matches_v2_data["Round of 32"][10])
+
+st.write("=== Round of 32 ===")
+
+for m in knockout_matches_v2_data["Round of 32"]:
+    st.write(
+        m["match_no"],
+        "|",
+        m["team1"],
+        "vs",
+        m["team2"],
+        "|",
+        m["score"],
+        "|",
+        m["stadium"],
+        "|",
+        m["status"]
+    )
 
 def get_current_knockout_stage(knockout_matches):
     round_order = [

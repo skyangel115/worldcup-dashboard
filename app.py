@@ -379,7 +379,7 @@ def get_match_metadata_by_round(soup):
                 stadium = f"{venue_parts[-2]}, {venue_parts[-1]}"
             elif len(venue_parts) == 1:
                 stadium = venue_parts[0]
-
+                
             date, time_text, timezone = convert_to_utc8(
                 date,
                 time_text,
@@ -437,31 +437,6 @@ def load_knockout_matches(tables, soup):
         "Round_of_32",
         ["Round_of_16"]
     )
-    parse_footballbox(r32_boxes[0])
-
-    st.write("Round of 32:", len(get_footballboxes_by_round(
-        soup, "Round_of_32", ["Round_of_16"]
-    )))
-
-    st.write("Round of 16:", len(get_footballboxes_by_round(
-        soup, "Round_of_16", ["Quarterfinals", "Quarter-finals", "Quarter_finals"]
-    )))
-
-    st.write("Quarter-finals:", len(get_footballboxes_by_round(
-        soup, "Quarterfinals", ["Semifinals", "Semi-finals", "Semi_finals"]
-    )))
-
-    st.write("Semi-finals:", len(get_footballboxes_by_round(
-        soup, "Semifinals", ["Match_for_third_place", "Third-place_match", "Third_place_match"]
-    )))
-
-    st.write("Third-place match:", len(get_footballboxes_by_round(
-        soup, "Match_for_third_place", ["Final"]
-    )))
-
-    st.write("Final:", len(get_footballboxes_by_round(
-        soup, "Final", []
-    )))
     
     knockout_rounds = {
         "Round of 32": range(96, 112),
@@ -590,7 +565,7 @@ def parse_footballbox(box):
     )
 
     if tz_idx is not None and score_idx is not None:
-        team1 = parts[tz_idx + 1]
+        team1 = parts[score_idx - 1]
         score = parts[score_idx]
         team2 = parts[score_idx + 1]
 
@@ -629,12 +604,21 @@ def parse_footballbox(box):
 
     stadium = None
 
-    if "Referee:" in parts:
-        ri = parts.index("Referee:")
-        venue_parts = parts[ri - 3:ri]
-        venue_parts = [p for p in venue_parts if p != ","]
-        if len(venue_parts) >= 2:
-            stadium = f"{venue_parts[-2]}, {venue_parts[-1]}"
+    attendance_idx = next(
+        (i for i, p in enumerate(parts) if p.startswith("Attendance:")),
+        None
+    )
+
+    if attendance_idx is not None:
+        venue_parts = parts[attendance_idx - 3:attendance_idx]
+    else:
+        ri = parts.index("Referee:") if "Referee:" in parts else None
+        venue_parts = parts[ri - 3:ri] if ri is not None else []
+
+    venue_parts = [p for p in venue_parts if p != ","]
+
+    if len(venue_parts) >= 2:
+        stadium = f"{venue_parts[-2]}, {venue_parts[-1]}"
 
     date, time_converted, timezone_converted = convert_to_utc8(
         date_text,

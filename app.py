@@ -437,6 +437,16 @@ def load_knockout_matches(tables, soup):
         "Round_of_32",
         ["Round_of_16"]
     )
+    r16_box = get_footballboxes_by_round(
+        soup,
+        "Round_of_16",
+        ["Quarterfinals", "Quarter-finals", "Quarter_finals"]
+    )[0]
+
+    parts = [p.strip() for p in r16_box.get_text(" | ", strip=True).split("|") if p.strip()]
+
+    for i, p in enumerate(parts):
+        st.write(i, p)
     
     knockout_rounds = {
         "Round of 32": range(96, 112),

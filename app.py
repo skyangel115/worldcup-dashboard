@@ -592,15 +592,20 @@ def parse_footballbox(box):
         if team2 == "(" and score_idx + 4 < len(parts):
             team2 = parts[score_idx + 4]
     else:
-        score = None
-        team1 = parts[tz_idx + 1] if tz_idx is not None and tz_idx + 1 < len(parts) else None
+        else:
+            score = None
 
-        report_idx = next(
-            (i for i, p in enumerate(parts) if "Report" in p),
-            None
-        )
+            match_label_idx = next(
+                (i for i, p in enumerate(parts) if p.startswith("Match")),
+                None
+            )
 
-        team2 = parts[report_idx + 2] if report_idx is not None and report_idx + 2 < len(parts) else None
+            if match_label_idx is not None:
+                team1 = parts[match_label_idx - 1]
+                team2 = parts[match_label_idx + 1]
+            else:
+                team1 = parts[tz_idx + 1] if tz_idx is not None and tz_idx + 1 < len(parts) else None
+                team2 = None
 
     status = "Completed" if score else "Upcoming"
 

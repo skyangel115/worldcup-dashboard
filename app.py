@@ -408,6 +408,23 @@ def load_knockout_matches(tables, soup):
     }
 
     knockout_metadata = get_match_metadata_by_round(soup)
+    
+    # =====================
+    # DEBUG HTML Structure
+    # =====================    
+    header = soup.find(id="Round_of_32")
+
+    st.write("## DEBUG Round_of_32")
+
+    for i, tag in enumerate(header.find_all_next(limit=80)):
+        st.write(
+            i,
+            tag.name,
+            tag.get("id"),
+            tag.get("class")
+        )
+
+    
     knockout_matches = {}
 
     for round_name, table_range in knockout_rounds.items():

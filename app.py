@@ -396,8 +396,49 @@ def get_match_metadata_by_round(soup):
 
     return metadata
 
+# =====================
+# Knockout Parser
+# =====================
+
+def get_footballboxes_by_round(soup, start_id, next_ids):
+
+    header = soup.find(id=start_id)
+
+    if header is None:
+        return []
+
+    boxes = []
+
+    for tag in header.find_all_next():
+
+        # 到下一輪就停止
+        if tag.name in ["h2", "h3"]:
+            text = tag.get_text(" ", strip=True)
+
+            if any(
+                nid.replace("_", " ") in text
+                for nid in next_ids
+            ):
+                break
+
+        # 每一場比賽
+        if (
+            tag.name == "div"
+            and "footballbox" in (tag.get("class") or [])
+        ):
+            boxes.append(tag)
+
+    return boxes
 
 def load_knockout_matches(tables, soup):
+    r32_boxes = get_footballboxes_by_round(
+        soup,
+        "Round_of_32",
+        ["Round_of_16"]
+    )
+
+    st.write("Round of 32:", len(r32_boxes))
+    
     knockout_rounds = {
         "Round of 32": range(96, 112),
         "Round of 16": range(112, 120),
@@ -408,29 +449,6 @@ def load_knockout_matches(tables, soup):
     }
 
     knockout_metadata = get_match_metadata_by_round(soup)
-    
-    # =====================
-    # DEBUG HTML Structure
-    # =====================    
-    header = soup.find(id="Round_of_32")
-
-    boxes = []
-
-    for tag in header.find_all_next():
-
-        if tag.name in ["h2", "h3"] and tag.get_text(strip=True) != "Round of 32":
-            break
-
-        if tag.name == "div" and "footballbox" in (tag.get("class") or []):
-            boxes.append(tag)
-
-    st.write("Number of footballbox:", len(boxes))
-
-    for i, box in enumerate(boxes[:5]):
-        st.write("=" * 60)
-        st.write(f"Footballbox {i+1}")
-        st.write(box.get_text(" | ", strip=True))
-
     
     knockout_matches = {}
 

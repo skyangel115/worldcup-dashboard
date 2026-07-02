@@ -437,7 +437,29 @@ def load_knockout_matches(tables, soup):
         ["Round_of_16"]
     )
 
-    st.write("Round of 32:", len(r32_boxes))
+    st.write("Round of 32:", len(get_footballboxes_by_round(
+        soup, "Round_of_32", ["Round_of_16"]
+    )))
+
+    st.write("Round of 16:", len(get_footballboxes_by_round(
+        soup, "Round_of_16", ["Quarterfinals", "Quarter-finals", "Quarter_finals"]
+    )))
+
+    st.write("Quarter-finals:", len(get_footballboxes_by_round(
+        soup, "Quarterfinals", ["Semifinals", "Semi-finals", "Semi_finals"]
+    )))
+
+    st.write("Semi-finals:", len(get_footballboxes_by_round(
+        soup, "Semifinals", ["Match_for_third_place", "Third-place_match", "Third_place_match"]
+    )))
+
+    st.write("Third-place match:", len(get_footballboxes_by_round(
+        soup, "Match_for_third_place", ["Final"]
+    )))
+
+    st.write("Final:", len(get_footballboxes_by_round(
+        soup, "Final", []
+    )))
     
     knockout_rounds = {
         "Round of 32": range(96, 112),

@@ -430,13 +430,6 @@ def get_footballboxes_by_round(soup, start_id, next_ids):
 
     return boxes
 
-def parse_footballbox(box):
-
-    text = box.get_text(" | ", strip=True)
-
-    st.write(text)
-
-    return {}
 
 def load_knockout_matches(tables, soup):
     r32_boxes = get_footballboxes_by_round(
@@ -556,8 +549,145 @@ def load_knockout_matches(tables, soup):
 
     return knockout_matches
 
+def parse_footballbox(box):
+    parts = [p.strip() for p in box.get_text(" | ", strip=True).split("|") if p.strip()]
+
+    iso_date = next((p for p in parts if re.match(r"\d{4}-\d{2}-\d{2}", p)), None)
+    time_idx = next((i for i, p in enumerate(parts) if re.match(r"\d{1,2}:\d{2}", p)), None)
+    tz_idx = next((i for i, p in enumerate(parts) if p.startswith("UTC")), None)
+
+    date_text = None
+    time_text = None
+    timezone = None
+
+    if iso_date:
+        date_text = datetime.strptime(iso_date, "%Y-%m-%d").strftime("%B %d, %Y")
+
+    if time_idx is not None and time_idx + 1 < len(parts):
+        time_text = f"{parts[time_idx]} {parts[time_idx + 1]}"
+
+    if tz_idx is not None:
+        timezone = parts[tz_idx].replace("−", "-")
+
+    report_text = next((p for p in parts if "Report" in p), None)
+    report_match = re.search(r"Report\s*(\d+)", report_text or "")
+    match_no = f"Match {report_match.group(1)}" if report_match else None
+
+    score_pattern = r"\d+\s*[–-]\s*\d+"
+
+    score_idx = next(
+        (i for i, p in enumerate(parts) if re.match(score_pattern, p)),
+        None
+    )
+
+    if tz_idx is not None and score_idx is not None:
+        team1 = parts[tz_idx + 1]
+        score = parts[score_idx]
+        team2 = parts[score_idx + 1]
+
+        if team2 == "(" and score_idx + 3 < len(parts):
+            team2 = parts[score_idx + 3]
+    else:
+        team1, team2, score = None, None, None
+
+    status = "Completed" if score else "Upcoming"
+
+    pk_score = None
+    if "Penalties" in parts:
+        penalty_idx = parts.index("Penalties")
+        pk_score = next(
+            (p for p in parts[penalty_idx:] if re.match(score_pattern, p)),
+            None
+        )
+
+    attendance = next(
+        (p.replace("Attendance:", "").strip() for p in parts if p.startswith("Attendance:")),
+        None
+    )
+
+    referee = None
+    if "Referee:" in parts:
+        ri = parts.index("Referee:")
+        if ri + 1 < len(parts):
+            referee = parts[ri + 1]
+
+    stadium = None
+    if attendance:
+        ai = next(i for i, p in enumerate(parts) if p.startswith("Attendance:"))
+        if ai >= 3:
+            stadium = f"{parts[ai - 3]}, {parts[ai - 1]}"
+
+    date, time_converted, timezone_converted = convert_to_utc8(
+        date_text,
+        time_text,
+        timezone
+    )
+
+    return {
+        "match_no": match_no,
+        "bracket_match_no": match_no,
+        "official_match_no": match_no,
+        "team1": team1,
+        "team2": team2,
+        "status": status,
+        "score": score,
+        "pk_score": pk_score,
+        "date": date,
+        "time": time_converted,
+        "timezone": timezone_converted,
+        "stadium": stadium,
+        "attendance": attendance,
+        "referee": referee,
+    }
+
+def load_knockout_matches_v2(soup):
+    round_config = {
+        "Round of 32": {
+            "start": "Round_of_32",
+            "next": ["Round_of_16"],
+        },
+        "Round of 16": {
+            "start": "Round_of_16",
+            "next": ["Quarterfinals", "Quarter-finals", "Quarter_finals"],
+        },
+        "Quarter-finals": {
+            "start": "Quarterfinals",
+            "next": ["Semifinals", "Semi-finals", "Semi_finals"],
+        },
+        "Semi-finals": {
+            "start": "Semifinals",
+            "next": ["Match_for_third_place", "Third-place_match", "Third_place_match"],
+        },
+        "Third-place match": {
+            "start": "Match_for_third_place",
+            "next": ["Final"],
+        },
+        "Final": {
+            "start": "Final",
+            "next": [],
+        },
+    }
+
+    knockout_matches = {}
+
+    for round_name, cfg in round_config.items():
+        boxes = get_footballboxes_by_round(
+            soup,
+            cfg["start"],
+            cfg["next"]
+        )
+
+        knockout_matches[round_name] = [
+            parse_footballbox(box)
+            for box in boxes
+        ]
+
+    return knockout_matches
 
 knockout_matches = load_knockout_matches(tables, soup)
+
+knockout_matches_v2_data = load_knockout_matches_v2(soup)
+st.write(knockout_matches_v2_data["Round of 32"][0])
 
 def get_current_knockout_stage(knockout_matches):
     round_order = [

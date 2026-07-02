@@ -414,15 +414,22 @@ def load_knockout_matches(tables, soup):
     # =====================    
     header = soup.find(id="Round_of_32")
 
-    st.write("## DEBUG Round_of_32")
+    boxes = []
 
-    for i, tag in enumerate(header.find_all_next(limit=80)):
-        st.write(
-            i,
-            tag.name,
-            tag.get("id"),
-            tag.get("class")
-        )
+    for tag in header.find_all_next():
+
+        if tag.name in ["h2", "h3"] and tag.get_text(strip=True) != "Round of 32":
+            break
+
+        if tag.name == "div" and "footballbox" in (tag.get("class") or []):
+            boxes.append(tag)
+
+    st.write("Number of footballbox:", len(boxes))
+
+    for i, box in enumerate(boxes[:5]):
+        st.write("=" * 60)
+        st.write(f"Footballbox {i+1}")
+        st.write(box.get_text(" | ", strip=True))
 
     
     knockout_matches = {}

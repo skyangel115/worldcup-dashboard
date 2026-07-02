@@ -459,6 +459,9 @@ def load_knockout_matches(tables, soup):
 
             meta = knockout_metadata.get(round_name, {}).get(report_key, {})
 
+            if not meta and official_match_no:
+                meta = knockout_metadata.get(round_name, {}).get(official_match_no, {})
+
             round_matches.append({
                 "match_no": display_match_no,
                 "bracket_match_no": bracket_match_no,
@@ -2099,9 +2102,9 @@ def render_knockout_round(round_name, matches, expanded=True):
             team2 = match["team2"]
             status = match["status"]
             score = match["score"]
-            date = match.get("date", "-")
-            time = match.get("time", "-")
-            timezone = match.get("timezone", "UTC+8")
+            date = match.get("date") or "-"
+            time = match.get("time") or "-"
+            timezone = match.get("timezone") or "UTC+8"
             stadium = match.get("stadium")
 
             from datetime import datetime

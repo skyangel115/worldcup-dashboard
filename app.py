@@ -699,9 +699,9 @@ st.write(knockout_matches_v2_data["Round of 32"][2])
 st.write("Upcoming match:")
 st.write(knockout_matches_v2_data["Round of 32"][10])
 
-st.write("=== Round of 32 ===")
+st.write("=== Round of 16 ===")
 
-for m in knockout_matches_v2_data["Round of 32"]:
+for m in knockout_matches_v2_data["Round of 16"]:
     st.write(
         m["match_no"],
         "|",

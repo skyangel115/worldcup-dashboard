@@ -550,6 +550,10 @@ def load_knockout_matches(tables, soup):
     return knockout_matches
 
 def parse_footballbox(box):
+    if match_no == "Match 83":
+        for i, p in enumerate(parts):
+            st.write(i, p)
+        
     parts = [p.strip() for p in box.get_text(" | ", strip=True).split("|") if p.strip()]
 
     iso_date = next((p for p in parts if re.match(r"\d{4}-\d{2}-\d{2}", p)), None)

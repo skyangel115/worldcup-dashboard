@@ -430,12 +430,21 @@ def get_footballboxes_by_round(soup, start_id, next_ids):
 
     return boxes
 
+def parse_footballbox(box):
+
+    text = box.get_text(" | ", strip=True)
+
+    st.write(text)
+
+    return {}
+
 def load_knockout_matches(tables, soup):
     r32_boxes = get_footballboxes_by_round(
         soup,
         "Round_of_32",
         ["Round_of_16"]
     )
+    parse_footballbox(r32_boxes[0])
 
     st.write("Round of 32:", len(get_footballboxes_by_round(
         soup, "Round_of_32", ["Round_of_16"]

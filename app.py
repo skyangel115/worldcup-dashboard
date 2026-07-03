@@ -693,29 +693,31 @@ def load_knockout_matches_v2(soup):
             cfg["next"]
         )
 
-        knockout_matches[round_name] = [
+        round_matches = [
             parse_footballbox(box)
             for box in boxes
         ]
 
+        # 依照 Match 編號排序
+        round_matches = sorted(
+            round_matches,
+            key=lambda m: int(re.search(r"\d+", m["match_no"]).group())
+        )
+        # Debug
+        st.write(f"### {round_name}")
+        for m in round_matches:
+            st.write(m["match_no"], m["team1"], "vs", m["team2"])
+
+        knockout_matches[round_name] = round_matches
+
     return knockout_matches
 
-knockout_matches = load_knockout_matches(tables, soup)
+#knockout_matches = load_knockout_matches(tables, soup)
 
-knockout_matches_v2_data = load_knockout_matches_v2(soup)
+#knockout_matches_v2_data = load_knockout_matches_v2(soup)
 
-st.write("=== All Knockout Rounds ===")
+knockout_matches = load_knockout_matches_v2(soup)
 
-for round_name, matches in knockout_matches_v2_data.items():
-    st.write(f"### {round_name}")
-    for m in matches:
-        st.write(
-            m["match_no"], "|",
-            m["team1"], "vs", m["team2"], "|",
-            m["score"], "|",
-            m["stadium"], "|",
-            m["status"]
-        )
 
 def get_current_knockout_stage(knockout_matches):
     round_order = [

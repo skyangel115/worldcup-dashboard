@@ -432,21 +432,6 @@ def get_footballboxes_by_round(soup, start_id, next_ids):
 
 
 def load_knockout_matches(tables, soup):
-    r32_boxes = get_footballboxes_by_round(
-        soup,
-        "Round_of_32",
-        ["Round_of_16"]
-    )
-    r16_box = get_footballboxes_by_round(
-        soup,
-        "Round_of_16",
-        ["Quarterfinals", "Quarter-finals", "Quarter_finals"]
-    )[0]
-
-    parts = [p.strip() for p in r16_box.get_text(" | ", strip=True).split("|") if p.strip()]
-
-    for i, p in enumerate(parts):
-        st.write(i, p)
     
     knockout_rounds = {
         "Round of 32": range(96, 112),
@@ -718,31 +703,19 @@ def load_knockout_matches_v2(soup):
 knockout_matches = load_knockout_matches(tables, soup)
 
 knockout_matches_v2_data = load_knockout_matches_v2(soup)
-st.write("Completed normal match:")
-st.write(knockout_matches_v2_data["Round of 32"][0])
 
-st.write("Penalty match:")
-st.write(knockout_matches_v2_data["Round of 32"][2])
+st.write("=== All Knockout Rounds ===")
 
-st.write("Upcoming match:")
-st.write(knockout_matches_v2_data["Round of 32"][10])
-
-st.write("=== Round of 16 ===")
-
-for m in knockout_matches_v2_data["Round of 16"]:
-    st.write(
-        m["match_no"],
-        "|",
-        m["team1"],
-        "vs",
-        m["team2"],
-        "|",
-        m["score"],
-        "|",
-        m["stadium"],
-        "|",
-        m["status"]
-    )
+    for round_name, matches in knockout_matches_v2_data.items():
+        st.write(f"### {round_name}")
+        for m in matches:
+            st.write(
+                m["match_no"], "|",
+                m["team1"], "vs", m["team2"], "|",
+                m["score"], "|",
+                m["stadium"], "|",
+                m["status"]
+            )
 
 def get_current_knockout_stage(knockout_matches):
     round_order = [

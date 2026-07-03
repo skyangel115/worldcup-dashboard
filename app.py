@@ -536,21 +536,35 @@ def get_current_knockout_stage(knockout_matches):
     return "Completed", 1, 1
 
 def get_next_knockout_match(knockout_matches):
-    round_order = [
-        "Round of 32",
-        "Round of 16",
-        "Quarter-finals",
-        "Semi-finals",
-        "Third-place match",
-        "Final",
-    ]
+    upcoming_matches = []
 
-    for round_name in round_order:
-        for match in knockout_matches.get(round_name, []):
+    for round_name, matches in knockout_matches.items():
+        for match in matches:
             if match["status"] != "Completed":
-                return round_name, match
 
-    return None, None
+                date = match.get("date")
+                time_text = match.get("time")
+
+                if not date or not time_text:
+                    continue
+
+                try:
+                    dt = datetime.strptime(
+                        f"{date} {time_text}",
+                        "%Y/%m/%d %H:%M"
+                    )
+                except ValueError:
+                    continue
+
+                upcoming_matches.append((dt, round_name, match))
+
+    if not upcoming_matches:
+        return None, None
+
+    upcoming_matches.sort(key=lambda x: x[0])
+
+    return upcoming_matches[0][1], upcoming_matches[0][2]
+
 
 
 def format_match_day(date_text):

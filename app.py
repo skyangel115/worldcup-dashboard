@@ -706,16 +706,16 @@ knockout_matches_v2_data = load_knockout_matches_v2(soup)
 
 st.write("=== All Knockout Rounds ===")
 
-    for round_name, matches in knockout_matches_v2_data.items():
-        st.write(f"### {round_name}")
-        for m in matches:
-            st.write(
-                m["match_no"], "|",
-                m["team1"], "vs", m["team2"], "|",
-                m["score"], "|",
-                m["stadium"], "|",
-                m["status"]
-            )
+for round_name, matches in knockout_matches_v2_data.items():
+    st.write(f"### {round_name}")
+    for m in matches:
+        st.write(
+            m["match_no"], "|",
+            m["team1"], "vs", m["team2"], "|",
+            m["score"], "|",
+            m["stadium"], "|",
+            m["status"]
+        )
 
 def get_current_knockout_stage(knockout_matches):
     round_order = [

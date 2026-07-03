@@ -703,10 +703,6 @@ def load_knockout_matches_v2(soup):
             round_matches,
             key=lambda m: int(re.search(r"\d+", m["match_no"]).group())
         )
-        # Debug
-        st.write(f"### {round_name}")
-        for m in round_matches:
-            st.write(m["match_no"], m["team1"], "vs", m["team2"])
 
         knockout_matches[round_name] = round_matches
 

@@ -570,7 +570,7 @@ def get_next_knockout_match(knockout_matches):
 def format_match_day(date_text):
     try:
         match_date = datetime.strptime(date_text, "%Y/%m/%d").date()
-        today = datetime.now().date()
+        today = (datetime.utcnow() + timedelta(hours=8)).date()
         diff = (match_date - today).days
 
         if diff == 0:
@@ -2171,7 +2171,7 @@ def render_knockout_round(round_name, matches, expanded=True):
 
                 try:
                     match_date = datetime.strptime(date, "%Y/%m/%d").date()
-                    today = datetime.now().date()
+                    today = (datetime.utcnow() + timedelta(hours=8)).date()
                     diff = (match_date - today).days
 
                     if diff == 0:

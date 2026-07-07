@@ -2907,7 +2907,7 @@ def show_team_journey():
     </span>
 </div>
 """
-
+    current_stage_text = last_round if last_round else "Group Stage"
     progress_html = f"""
 <hr style="border:none;border-top:1px solid #D8E6F5;margin:22px 0;">
 

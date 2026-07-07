@@ -2303,6 +2303,273 @@ justify-content:center;
                     )
 
 
+def get_round_order():
+    return [
+        "Round of 32",
+        "Round of 16",
+        "Quarter-finals",
+        "Semi-finals",
+        "Third-place match",
+        "Final",
+    ]
+
+
+def get_team_journey_pool():
+    teams = set()
+
+    # 先抓進過 Round of 16 的隊伍
+    for match in knockout_matches.get("Round of 16", []):
+        if match["team1"]:
+            teams.add(match["team1"])
+        if match["team2"]:
+            teams.add(match["team2"])
+
+    return sorted(teams)
+
+
+def get_team_knockout_status(team):
+    last_round = None
+    is_active = False
+    next_match = None
+
+    for round_name in get_round_order():
+        for match in knockout_matches.get(round_name, []):
+            team_in_match = team in [match["team1"], match["team2"]]
+
+            if not team_in_match:
+                continue
+
+            last_round = round_name
+
+            if match["status"] != "Completed":
+                is_active = True
+                next_match = match
+                return is_active, last_round, next_match
+
+            # 如果比賽完成，要判斷這隊有沒有贏
+            score = match.get("score")
+            pk_score = match.get("pk_score")
+
+            if score:
+                s1, s2 = map(int, re.split(r"[–-]", score))
+
+                if match["team1"] == team:
+                    team_score, opp_score = s1, s2
+                else:
+                    team_score, opp_score = s2, s1
+
+                if team_score < opp_score:
+                    return False, last_round, None
+
+                if team_score == opp_score and pk_score:
+                    p1, p2 = map(int, re.split(r"[–-]", pk_score))
+
+                    if match["team1"] == team:
+                        team_pk, opp_pk = p1, p2
+                    else:
+                        team_pk, opp_pk = p2, p1
+
+                    if team_pk < opp_pk:
+                        return False, last_round, None
+
+    return is_active, last_round, next_match
+
+
+def get_team_group_stats(team):
+    played = wins = draws = losses = gf = ga = 0
+
+    for group, team1, s1, team2, s2 in matches:
+        if team not in [team1, team2]:
+            continue
+
+        played += 1
+
+        if team == team1:
+            team_score, opp_score = s1, s2
+        else:
+            team_score, opp_score = s2, s1
+
+        gf += team_score
+        ga += opp_score
+
+        if team_score > opp_score:
+            wins += 1
+        elif team_score < opp_score:
+            losses += 1
+        else:
+            draws += 1
+
+    return played, wins, draws, losses, gf, ga
+
+
+def get_team_knockout_stats(team):
+    played = wins = draws = losses = gf = ga = 0
+
+    for round_name in get_round_order():
+        for match in knockout_matches.get(round_name, []):
+            if team not in [match["team1"], match["team2"]]:
+                continue
+
+            if match["status"] != "Completed" or not match.get("score"):
+                continue
+
+            played += 1
+
+            s1, s2 = map(int, re.split(r"[–-]", match["score"]))
+
+            if team == match["team1"]:
+                team_score, opp_score = s1, s2
+            else:
+                team_score, opp_score = s2, s1
+
+            gf += team_score
+            ga += opp_score
+
+            if team_score > opp_score:
+                wins += 1
+            elif team_score < opp_score:
+                losses += 1
+            else:
+                # PK 輸贏另外算
+                if match.get("pk_score"):
+                    p1, p2 = map(int, re.split(r"[–-]", match["pk_score"]))
+
+                    if team == match["team1"]:
+                        team_pk, opp_pk = p1, p2
+                    else:
+                        team_pk, opp_pk = p2, p1
+
+                    if team_pk > opp_pk:
+                        wins += 1
+                    else:
+                        losses += 1
+                else:
+                    draws += 1
+
+    return played, wins, draws, losses, gf, ga
+
+
+def show_team_journey():
+    st.header("🛤️ Team Journey")
+    st.info("Select a team to view its path from the group stage to the current knockout stage.")
+
+    teams = get_team_journey_pool()
+
+    team_options = []
+
+    for team in teams:
+        is_active, last_round, next_match = get_team_knockout_status(team)
+
+        if is_active:
+            label = f"🟢 {get_flag(team)} {team} ({last_round})"
+        else:
+            label = f"⚪ {get_flag(team)} {team} (Eliminated in {last_round})"
+
+        team_options.append((label, team, is_active))
+
+    # Active teams 排前面
+    team_options = sorted(
+        team_options,
+        key=lambda x: (not x[2], x[1])
+    )
+
+    label_to_team = {label: team for label, team, active in team_options}
+
+    selected_label = st.selectbox(
+        "Select Team",
+        options=list(label_to_team.keys())
+    )
+
+    selected_team = label_to_team[selected_label]
+
+    is_active, last_round, next_match = get_team_knockout_status(selected_team)
+
+    g_played, g_wins, g_draws, g_losses, g_gf, g_ga = get_team_group_stats(selected_team)
+    k_played, k_wins, k_draws, k_losses, k_gf, k_ga = get_team_knockout_stats(selected_team)
+
+    played = g_played + k_played
+    wins = g_wins + k_wins
+    draws = g_draws + k_draws
+    losses = g_losses + k_losses
+    gf = g_gf + k_gf
+    ga = g_ga + k_ga
+    gd = gf - ga
+
+    status_text = "🟢 Active" if is_active else f"⚪ Eliminated in {last_round}"
+
+    if next_match is not None:
+        opponent = next_match["team2"] if next_match["team1"] == selected_team else next_match["team1"]
+        next_match_text = f"{get_flag(opponent)} {opponent} • {format_match_day(next_match.get('date'))} {next_match.get('time')}"
+    else:
+        next_match_text = "-"
+
+    st.markdown(
+        f"""
+<div style="
+background:linear-gradient(135deg,#F5FAFF,#EEF6FF);
+border:1px solid #D8E6F5;
+border-radius:18px;
+padding:22px 26px;
+margin-top:18px;
+margin-bottom:26px;
+box-shadow:0 4px 14px rgba(0,0,0,0.05);
+">
+
+<div style="font-size:32px;font-weight:950;color:#1f2937;margin-bottom:8px;">
+{get_flag(selected_team)} {selected_team}
+</div>
+
+<div style="font-size:18px;font-weight:850;color:#1F4E79;margin-bottom:20px;">
+{status_text}
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:14px;">
+
+<div style="background:white;border-radius:14px;padding:16px;text-align:center;">
+<div style="font-size:13px;color:#6b7280;font-weight:800;">Played</div>
+<div style="font-size:26px;font-weight:950;">{played}</div>
+</div>
+
+<div style="background:white;border-radius:14px;padding:16px;text-align:center;">
+<div style="font-size:13px;color:#6b7280;font-weight:800;">Wins</div>
+<div style="font-size:26px;font-weight:950;color:#166534;">{wins}</div>
+</div>
+
+<div style="background:white;border-radius:14px;padding:16px;text-align:center;">
+<div style="font-size:13px;color:#6b7280;font-weight:800;">Draws</div>
+<div style="font-size:26px;font-weight:950;color:#92400E;">{draws}</div>
+</div>
+
+<div style="background:white;border-radius:14px;padding:16px;text-align:center;">
+<div style="font-size:13px;color:#6b7280;font-weight:800;">Losses</div>
+<div style="font-size:26px;font-weight:950;color:#991B1B;">{losses}</div>
+</div>
+
+<div style="background:white;border-radius:14px;padding:16px;text-align:center;">
+<div style="font-size:13px;color:#6b7280;font-weight:800;">GF / GA</div>
+<div style="font-size:26px;font-weight:950;">{gf} / {ga}</div>
+</div>
+
+<div style="background:white;border-radius:14px;padding:16px;text-align:center;">
+<div style="font-size:13px;color:#6b7280;font-weight:800;">GD</div>
+<div style="font-size:26px;font-weight:950;">{gd:+d}</div>
+</div>
+
+</div>
+
+<hr style="border:none;border-top:1px solid #D8E6F5;margin:22px 0;">
+
+<div style="font-size:14px;color:#6b7280;font-weight:800;">Next Match</div>
+<div style="font-size:20px;font-weight:900;color:#1f2937;margin-top:6px;">
+{next_match_text}
+</div>
+
+</div>
+""",
+        unsafe_allow_html=True
+    )
+
+
 def show_knockout_qualification():
     st.header("🏆 Knockout Qualification")
     st.caption(
@@ -2550,6 +2817,5 @@ elif main_view == "🏟️ Knockout Stage":
     show_knockout_stage()
 
 elif main_view == "🛤️ Team Journey":
-    st.header("🛤️ Team Journey")
-    st.info("Select a team to view its path from the group stage to the current knockout stage.")
+    show_team_journey()
 

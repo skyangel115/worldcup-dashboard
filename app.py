@@ -2568,6 +2568,41 @@ def get_team_performance_metrics(team):
     }
 
 
+def get_team_profile_scores(team):
+    metrics = get_team_performance_metrics(team)
+
+    g_played, _, _, _, g_gf, g_ga = get_team_group_stats(team)
+    k_played, _, _, _, k_gf, k_ga = get_team_knockout_stats(team)
+
+    played = g_played + k_played
+    gf = g_gf + k_gf
+    ga = g_ga + k_ga
+    gd = gf - ga
+
+    if played == 0:
+        return {
+            "attack": 0,
+            "defense": 0,
+            "form": 0,
+            "efficiency": 0,
+        }
+
+    goals_per_match = gf / played
+    goals_against_per_match = ga / played
+    gd_per_match = gd / played
+
+    attack = min(goals_per_match / 3 * 100, 100)
+    defense = max(0, 100 - goals_against_per_match / 3 * 100)
+    form = metrics["win_rate"]
+    efficiency = min(max((gd_per_match + 3) / 6 * 100, 0), 100)
+
+    return {
+        "attack": round(attack),
+        "defense": round(defense),
+        "form": round(form),
+        "efficiency": round(efficiency),
+    }
+
 def get_team_match_history(team):
     history = []
 
@@ -2931,6 +2966,7 @@ def show_team_journey():
 
     progress = get_team_progress(selected_team)
     metrics = get_team_performance_metrics(selected_team)
+    profile = get_team_profile_scores(selected_team)
 
     stage_icons = {
         "Group Stage": "🌍",
@@ -2995,7 +3031,7 @@ height:100%;
 📊 Team Metrics
 </div>
 
-<div style="display:grid;grid-template-columns:.9fr 1.1fr;gap:16px;margin-top:22px;">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px;">
 
 <div style="background:#F9FAFB;border-radius:12px;padding:16px;text-align:center;">
 <div style="font-size:14px;color:#6b7280;font-weight:850;">🏆 Group Finish</div>
@@ -3018,6 +3054,61 @@ height:100%;
 </div>
 
 </div>
+</div>
+"""
+    profile_html = f"""
+<div style="
+background:white;
+border:1px solid #E5E7EB;
+border-radius:14px;
+padding:16px 18px;
+margin-top:16px;
+">
+
+<div style="font-size:15px;color:#6b7280;font-weight:900;margin-bottom:12px;">
+🧬 Team Profile
+</div>
+
+<div style="font-size:12px;color:#9CA3AF;font-weight:700;margin-bottom:14px;">
+Scores are normalized from this tournament's results only.
+</div>
+
+<div style="margin-bottom:12px;">
+<div style="display:flex;justify-content:space-between;font-size:14px;font-weight:850;">
+<span>⚔️ Attack</span><span>{profile["attack"]}</span>
+</div>
+<div style="background:#E5E7EB;border-radius:999px;height:10px;margin-top:6px;">
+<div style="background:#1F4E79;width:{profile["attack"]}%;height:10px;border-radius:999px;"></div>
+</div>
+</div>
+
+<div style="margin-bottom:12px;">
+<div style="display:flex;justify-content:space-between;font-size:14px;font-weight:850;">
+<span>🛡️ Defense</span><span>{profile["defense"]}</span>
+</div>
+<div style="background:#E5E7EB;border-radius:999px;height:10px;margin-top:6px;">
+<div style="background:#166534;width:{profile["defense"]}%;height:10px;border-radius:999px;"></div>
+</div>
+</div>
+
+<div style="margin-bottom:12px;">
+<div style="display:flex;justify-content:space-between;font-size:14px;font-weight:850;">
+<span>🔥 Form</span><span>{profile["form"]}</span>
+</div>
+<div style="background:#E5E7EB;border-radius:999px;height:10px;margin-top:6px;">
+<div style="background:#B45309;width:{profile["form"]}%;height:10px;border-radius:999px;"></div>
+</div>
+</div>
+
+<div>
+<div style="display:flex;justify-content:space-between;font-size:14px;font-weight:850;">
+<span>🎯 Efficiency</span><span>{profile["efficiency"]}</span>
+</div>
+<div style="background:#E5E7EB;border-radius:999px;height:10px;margin-top:6px;">
+<div style="background:#7C3AED;width:{profile["efficiency"]}%;height:10px;border-radius:999px;"></div>
+</div>
+</div>
+
 </div>
 """
 
@@ -3075,9 +3166,12 @@ box-shadow:0 4px 14px rgba(0,0,0,0.05);
 
 </div>
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px;">
+<div style="display:grid;grid-template-columns:.9fr 1.1fr;gap:16px;margin-top:22px;">
     <div>{progress_html}</div>
-    <div>{metrics_html}</div>
+    <div>
+        {metrics_html}
+        {profile_html}
+    </div>
 </div>
 
 <div style="font-size:14px;color:#6b7280;font-weight:800;">Next Match</div>

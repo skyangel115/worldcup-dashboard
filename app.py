@@ -2515,6 +2515,59 @@ def get_team_progress(team):
     return progress
 
 
+def get_team_performance_metrics(team):
+    history = get_team_match_history(team)
+
+    completed_matches = [
+        h for h in history
+        if h["status"] == "Completed"
+    ]
+
+    played = len(completed_matches)
+
+    wins = sum(1 for h in completed_matches if h["result"] == "Win")
+    clean_sheets = 0
+    gf = 0
+
+    for h in completed_matches:
+        score = h["score"]
+
+        score_main = score.split("(")[0].strip()
+        team_score, opp_score = map(int, re.split(r"[–-]", score_main))
+
+        gf += team_score
+
+        if opp_score == 0:
+            clean_sheets += 1
+
+    win_rate = wins / played * 100 if played > 0 else 0
+    goals_per_match = gf / played if played > 0 else 0
+
+    group_finish = "-"
+
+    for group in sorted(groups.keys()):
+        ranked = build_group_table(group)
+        if team in ranked.index:
+            position = list(ranked.index).index(team) + 1
+
+            if position == 1:
+                group_finish = f"Group {group} Winner"
+            elif position == 2:
+                group_finish = f"Group {group} Runner-up"
+            elif position == 3:
+                group_finish = f"Group {group} Third Place"
+            else:
+                group_finish = f"Group {group} Fourth Place"
+            break
+
+    return {
+        "group_finish": group_finish,
+        "win_rate": win_rate,
+        "goals_per_match": goals_per_match,
+        "clean_sheets": clean_sheets,
+    }
+
+
 def get_team_match_history(team):
     history = []
 
@@ -2873,6 +2926,7 @@ def show_team_journey():
         next_match_text = "-"
 
     progress = get_team_progress(selected_team)
+    metrics = get_team_performance_metrics(selected_team)
 
     stage_icons = {
         "Group Stage": "🌍",
@@ -2908,7 +2962,6 @@ def show_team_journey():
 """
     current_stage_text = last_round if last_round else "Group Stage"
     progress_html = f"""
-<hr style="border:none;border-top:1px solid #D8E6F5;margin:22px 0;">
 
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
     <div style="font-size:14px;color:#6b7280;font-weight:800;">
@@ -2927,6 +2980,45 @@ padding:10px 16px;
 margin-bottom:18px;
 ">
 {progress_rows}
+</div>
+"""
+    metrics_html = f"""
+<div style="
+background:white;
+border:1px solid #E5E7EB;
+border-radius:14px;
+padding:10px 16px;
+margin-bottom:18px;
+height:100%;
+">
+
+<div style="font-size:14px;color:#6b7280;font-weight:800;margin-bottom:10px;">
+📊 Team Metrics
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+
+<div style="background:#F9FAFB;border-radius:12px;padding:12px;text-align:center;">
+<div style="font-size:12px;color:#6b7280;font-weight:800;">Group Finish</div>
+<div style="font-size:16px;font-weight:950;color:#1f2937;margin-top:4px;">{metrics["group_finish"]}</div>
+</div>
+
+<div style="background:#F9FAFB;border-radius:12px;padding:12px;text-align:center;">
+<div style="font-size:12px;color:#6b7280;font-weight:800;">Win Rate</div>
+<div style="font-size:18px;font-weight:950;color:#166534;margin-top:4px;">{metrics["win_rate"]:.0f}%</div>
+</div>
+
+<div style="background:#F9FAFB;border-radius:12px;padding:12px;text-align:center;">
+<div style="font-size:12px;color:#6b7280;font-weight:800;">Goals / Match</div>
+<div style="font-size:18px;font-weight:950;color:#1F4E79;margin-top:4px;">{metrics["goals_per_match"]:.2f}</div>
+</div>
+
+<div style="background:#F9FAFB;border-radius:12px;padding:12px;text-align:center;">
+<div style="font-size:12px;color:#6b7280;font-weight:800;">Clean Sheets</div>
+<div style="font-size:18px;font-weight:950;color:#92400E;margin-top:4px;">{metrics["clean_sheets"]}</div>
+</div>
+
+</div>
 </div>
 """
 
@@ -2984,7 +3076,10 @@ box-shadow:0 4px 14px rgba(0,0,0,0.05);
 
 </div>
 
-{progress_html}
+<div style="display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-top:22px;">
+    <div>{progress_html}</div>
+    <div>{metrics_html}</div>
+</div>
 
 <div style="font-size:14px;color:#6b7280;font-weight:800;">Next Match</div>
 <div style="font-size:20px;font-weight:900;color:#1f2937;margin-top:6px;">

@@ -3066,7 +3066,7 @@ border-radius:999px;
 </div>
 """
 
-        progress_html = f"""
+    progress_html = f"""
 <div style="
 background:white;
 border:1px solid #E5E7EB;
@@ -3081,7 +3081,7 @@ height:100%;
 </div>
 """
 
-        profile_html = f"""
+    profile_html = f"""
 <div style="
 background:white;
 border:1px solid #E5E7EB;
@@ -3126,7 +3126,7 @@ Scores are normalized from this tournament's results only.
 </div>
 """
 
-        metrics_html = f"""
+    metrics_html = f"""
 <div style="
 background:white;
 border:1px solid #E5E7EB;
@@ -3215,9 +3215,9 @@ box-shadow:0 4px 14px rgba(0,0,0,0.05);
 </div>
 
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:22px;">
-    <div>{progress_html}</div>
-    <div>{profile_html}</div>
-    <div>{metrics_html}</div>
+    {progress_html}
+    {profile_html}
+    {metrics_html}
 </div>
 
 <div style="font-size:14px;color:#6b7280;font-weight:800;">Next Match</div>

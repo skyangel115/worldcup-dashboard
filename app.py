@@ -2917,7 +2917,11 @@ def show_team_journey():
     ga = g_ga + k_ga
     gd = gf - ga
 
-    status_text = "🟢 Active" if is_active else f"⚪ Eliminated in {last_round}"
+    status_text = (
+        f"🟢 Active • {last_round}"
+        if is_active
+        else f"⚪ Eliminated in {last_round}"
+    )
 
     if next_match is not None:
         opponent = next_match["team2"] if next_match["team1"] == selected_team else next_match["team1"]
@@ -2963,13 +2967,8 @@ def show_team_journey():
     current_stage_text = last_round if last_round else "Group Stage"
     progress_html = f"""
 
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-    <div style="font-size:14px;color:#6b7280;font-weight:800;">
-        Tournament Progress
-    </div>
-    <div style="font-size:14px;color:#1F4E79;font-weight:900;">
-        Current Stage: {current_stage_text}
-    </div>
+<div style="font-size:14px;color:#6b7280;font-weight:800;margin-bottom:10px;">
+Tournament Progress
 </div>
 
 <div style="
@@ -2999,22 +2998,22 @@ height:100%;
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
 
 <div style="background:#F9FAFB;border-radius:12px;padding:12px;text-align:center;">
-<div style="font-size:12px;color:#6b7280;font-weight:800;">Group Finish</div>
+<div style="font-size:12px;color:#6b7280;font-weight:800;">🏆 Group Finish</div>
 <div style="font-size:16px;font-weight:950;color:#1f2937;margin-top:4px;">{metrics["group_finish"]}</div>
 </div>
 
 <div style="background:#F9FAFB;border-radius:12px;padding:12px;text-align:center;">
-<div style="font-size:12px;color:#6b7280;font-weight:800;">Win Rate</div>
+<div style="font-size:12px;color:#6b7280;font-weight:800;">📈 Win Rate</div>
 <div style="font-size:18px;font-weight:950;color:#166534;margin-top:4px;">{metrics["win_rate"]:.0f}%</div>
 </div>
 
 <div style="background:#F9FAFB;border-radius:12px;padding:12px;text-align:center;">
-<div style="font-size:12px;color:#6b7280;font-weight:800;">Goals / Match</div>
+<div style="font-size:12px;color:#6b7280;font-weight:800;">⚽ Goals / Match</div>
 <div style="font-size:18px;font-weight:950;color:#1F4E79;margin-top:4px;">{metrics["goals_per_match"]:.2f}</div>
 </div>
 
 <div style="background:#F9FAFB;border-radius:12px;padding:12px;text-align:center;">
-<div style="font-size:12px;color:#6b7280;font-weight:800;">Clean Sheets</div>
+<div style="font-size:12px;color:#6b7280;font-weight:800;">🧤 Clean Sheets</div>
 <div style="font-size:18px;font-weight:950;color:#92400E;margin-top:4px;">{metrics["clean_sheets"]}</div>
 </div>
 
@@ -3076,7 +3075,7 @@ box-shadow:0 4px 14px rgba(0,0,0,0.05);
 
 </div>
 
-<div style="display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-top:22px;">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px;">
     <div>{progress_html}</div>
     <div>{metrics_html}</div>
 </div>

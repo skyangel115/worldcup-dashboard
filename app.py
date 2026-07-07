@@ -3027,41 +3027,41 @@ border-radius:999px;
         progress_rows += f"""
 <div style="display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;margin-bottom:4px;">
 
-    <div style="display:flex;flex-direction:column;align-items:center;">
-        <div style="
-        width:38px;
-        height:38px;
-        border-radius:50%;
-        background:{node_bg};
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        font-size:20px;
-        font-weight:900;
-        box-shadow:0 2px 8px rgba(0,0,0,.06);
-        ">
-        {stage_icons.get(stage, "🏆")}
-        </div>
-        {line_html}
-    </div>
+<div style="display:flex;flex-direction:column;align-items:center;">
+<div style="
+width:38px;
+height:38px;
+border-radius:50%;
+background:{node_bg};
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:20px;
+font-weight:900;
+box-shadow:0 2px 8px rgba(0,0,0,.06);
+">
+{stage_icons.get(stage, "🏆")}
+</div>
+{line_html}
+</div>
 
-    <div>
-        <div style="font-size:15px;font-weight:950;color:#1f2937;">
-            {stage}
-        </div>
-    </div>
+<div>
+<div style="font-size:15px;font-weight:950;color:#1f2937;">
+{stage}
+</div>
+</div>
 
-    <div style="
-        background:{badge_bg};
-        color:{badge_color};
-        padding:5px 12px;
-        border-radius:999px;
-        font-size:13px;
-        font-weight:900;
-        white-space:nowrap;
-    ">
-        {badge}
-    </div>
+<div style="
+background:{badge_bg};
+color:{badge_color};
+padding:5px 12px;
+border-radius:999px;
+font-size:13px;
+font-weight:900;
+white-space:nowrap;
+">
+{badge}
+</div>
 
 </div>
 """

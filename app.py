@@ -2985,35 +2985,72 @@ def show_team_journey():
 
     progress_rows = ""
 
-    for stage, status in progress.items():
-        # 不顯示還沒走到的未來輪次
-        if status == "future":
-            continue
-            
-        progress_rows = ""
+    visible_progress = [
+        (stage, status)
+        for stage, status in progress.items()
+        if status != "future"
+    ]
 
-        for stage, status in progress.items():
-            if status == "future":
-                continue
+    for idx, (stage, status) in enumerate(visible_progress):
 
-            if status == "completed":
-                badge = "✓ Completed"
-                badge_bg = "#DCFCE7"
-                badge_color = "#166534"
-            elif status == "current":
-                badge = "● Next Match"
-                badge_bg = "#FEF3C7"
-                badge_color = "#B45309"
-            elif status == "eliminated":
-                badge = "✕ Eliminated"
-                badge_bg = "#FEE2E2"
-                badge_color = "#991B1B"
+        is_last = idx == len(visible_progress) - 1
 
-            progress_rows += f"""
-<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;">
-    <div style="font-size:15px;font-weight:900;color:#1f2937;">
-        {stage_icons.get(stage, "🏆")} {stage}
+        if status == "completed":
+            badge = "✓ Completed"
+            badge_bg = "#DCFCE7"
+            badge_color = "#166534"
+            node_bg = "#EAF6FF"
+            line_color = "#16A34A"
+        elif status == "current":
+            badge = "● Next Match"
+            badge_bg = "#FEF3C7"
+            badge_color = "#B45309"
+            node_bg = "#FFF7ED"
+            line_color = "#F97316"
+        else:
+            badge = "✕ Eliminated"
+            badge_bg = "#FEE2E2"
+            badge_color = "#991B1B"
+            node_bg = "#FFF1F2"
+            line_color = "#DC2626"
+
+        line_html = "" if is_last else f"""
+<div style="
+width:4px;
+height:30px;
+background:{line_color};
+margin:6px auto;
+border-radius:999px;
+"></div>
+"""
+
+        progress_rows += f"""
+<div style="display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;margin-bottom:4px;">
+
+    <div style="display:flex;flex-direction:column;align-items:center;">
+        <div style="
+        width:38px;
+        height:38px;
+        border-radius:50%;
+        background:{node_bg};
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:20px;
+        font-weight:900;
+        box-shadow:0 2px 8px rgba(0,0,0,.06);
+        ">
+        {stage_icons.get(stage, "🏆")}
+        </div>
+        {line_html}
     </div>
+
+    <div>
+        <div style="font-size:15px;font-weight:950;color:#1f2937;">
+            {stage}
+        </div>
+    </div>
+
     <div style="
         background:{badge_bg};
         color:{badge_color};
@@ -3021,9 +3058,11 @@ def show_team_journey():
         border-radius:999px;
         font-size:13px;
         font-weight:900;
+        white-space:nowrap;
     ">
         {badge}
     </div>
+
 </div>
 """
 

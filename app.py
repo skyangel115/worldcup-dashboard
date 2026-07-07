@@ -2564,12 +2564,42 @@ def render_team_match_history(history):
 
     current_stage = None
 
-    for h in history:
+    stage_icons = {
+        "Group": "🌍",
+        "Round of 32": "🏆",
+        "Round of 16": "🏆",
+        "Quarter-finals": "🥇",
+        "Semi-finals": "🔥",
+        "Third-place match": "🥉",
+        "Final": "🏅",
+    }
+
+    for idx, h in enumerate(history):
         stage = h["stage"]
 
         if stage != current_stage:
             current_stage = stage
-            st.markdown(f"#### {stage}")
+
+            icon = "🌍" if stage.startswith("Group") else stage_icons.get(stage, "🏆")
+
+            st.markdown(
+                f"""
+<div style="
+font-size:24px;
+font-weight:950;
+color:#1f2937;
+margin-top:26px;
+margin-bottom:14px;
+display:flex;
+align-items:center;
+gap:10px;
+">
+<span>{icon}</span>
+<span>{stage}</span>
+</div>
+""",
+                unsafe_allow_html=True
+            )
 
         opponent = h["opponent"]
         score = h["score"]
@@ -2596,68 +2626,129 @@ def render_team_match_history(history):
             bg_color = "#F9FAFB"
             result_color = "#4B5563"
 
-        date_line = ""
+        date_badge = ""
+        if date:
+            try:
+                date_badge = datetime.strptime(date, "%Y/%m/%d").strftime("%b %d").replace(" 0", " ")
+            except:
+                date_badge = date
+
+        date_html = ""
         if date and time:
-            date_line = f"""
-<div style="font-size:13px;color:#6b7280;margin-top:8px;">
+            date_html = f"""
+<div style="font-size:13px;color:#6b7280;margin-top:10px;">
 📅 {date} · {time}
 </div>
 """
 
-        stadium_line = ""
+        stadium_html = ""
         if stadium:
-            stadium_line = f"""
+            stadium_html = f"""
 <div style="font-size:13px;color:#9CA3AF;margin-top:4px;">
 🏟️ {stadium}
+</div>
+"""
+
+        badge_html = ""
+        if date_badge:
+            badge_html = f"""
+<div style="
+position:absolute;
+top:14px;
+right:18px;
+background:white;
+border:1px solid #E5E7EB;
+border-radius:999px;
+padding:5px 12px;
+font-size:12px;
+font-weight:900;
+color:#6B7280;
+">
+{date_badge}
 </div>
 """
 
         st.markdown(
             f"""
 <div style="
+position:relative;
+display:grid;
+grid-template-columns:42px 1fr;
+gap:14px;
+margin-bottom:16px;
+">
+
+<div style="
+display:flex;
+flex-direction:column;
+align-items:center;
+">
+<div style="
+width:22px;
+height:22px;
+border-radius:50%;
+background:{border_color};
+box-shadow:0 0 0 5px {bg_color};
+margin-top:24px;
+"></div>
+<div style="
+width:3px;
+height:100%;
+background:#E5E7EB;
+margin-top:6px;
+"></div>
+</div>
+
+<div style="
+position:relative;
 background:{bg_color};
 border:1px solid #E5E7EB;
 border-left:7px solid {border_color};
-border-radius:16px;
-padding:16px 18px;
-margin-bottom:14px;
-box-shadow:0 3px 10px rgba(0,0,0,0.04);
+border-radius:18px;
+padding:18px 22px;
+box-shadow:0 4px 12px rgba(0,0,0,0.05);
 ">
 
-<div style="display:flex;justify-content:space-between;align-items:center;gap:16px;">
+{badge_html}
+
+<div style="
+display:grid;
+grid-template-columns:1.3fr 0.7fr 0.9fr;
+align-items:center;
+gap:16px;
+">
 
 <div>
-<div style="font-size:18px;font-weight:900;color:#1f2937;">
+<div style="font-size:19px;font-weight:950;color:#1f2937;">
 {get_flag(opponent)} {opponent}
 </div>
-<div style="font-size:13px;color:#6b7280;font-weight:700;margin-top:4px;">
+<div style="font-size:13px;color:#6b7280;font-weight:800;margin-top:5px;">
 Opponent
 </div>
+{date_html}
+{stadium_html}
 </div>
 
 <div style="text-align:center;">
-<div style="font-size:26px;font-weight:950;color:#1f2937;">
+<div style="font-size:30px;font-weight:950;color:#1f2937;">
 {score}
 </div>
-<div style="font-size:13px;color:#6b7280;font-weight:700;">
+<div style="font-size:13px;color:#6b7280;font-weight:800;">
 Score
 </div>
 </div>
 
 <div style="text-align:right;">
-<div style="font-size:18px;font-weight:950;color:{result_color};">
+<div style="font-size:20px;font-weight:950;color:{result_color};">
 {result_icon} {result}
 </div>
-<div style="font-size:13px;color:#6b7280;font-weight:700;margin-top:4px;">
+<div style="font-size:13px;color:#6b7280;font-weight:800;margin-top:5px;">
 Result
 </div>
 </div>
 
 </div>
-
-{date_line}
-{stadium_line}
-
+</div>
 </div>
 """,
             unsafe_allow_html=True

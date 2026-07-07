@@ -2897,7 +2897,7 @@ def show_team_journey():
         if status == "future":
             continue
             
-        progress_rows += f"""
+    progress_rows += f"""
 <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;">
     <span style="font-size:15px;font-weight:800;color:#1f2937;">
         {stage_icons.get(stage, "🏆")} {stage}

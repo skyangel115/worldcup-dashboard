@@ -2510,7 +2510,7 @@ def get_team_progress(team):
                     progress[stage] = "eliminated"
 
             else:
-                progress[stage] = "current"
+                progress[stage] = "future"
 
     return progress
 
@@ -2886,13 +2886,17 @@ def show_team_journey():
     status_badges = {
         "completed": "✅ Completed",
         "current": "🔵 Current",
-        "future": "⚪ Future",
+        "future": "🟠 Next Match",
         "eliminated": "❌ Eliminated",
     }
 
     progress_rows = ""
 
     for stage, status in progress.items():
+        # 不顯示還沒走到的未來輪次
+        if status == "future":
+            continue
+            
         progress_rows += f"""
 <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;">
     <span style="font-size:15px;font-weight:800;color:#1f2937;">
@@ -2907,15 +2911,20 @@ def show_team_journey():
     progress_html = f"""
 <hr style="border:none;border-top:1px solid #D8E6F5;margin:22px 0;">
 
-<div style="font-size:14px;color:#6b7280;font-weight:800;margin-bottom:10px;">
-Tournament Progress
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+    <div style="font-size:14px;color:#6b7280;font-weight:800;">
+        Tournament Progress
+    </div>
+    <div style="font-size:14px;color:#1F4E79;font-weight:900;">
+        Current Stage: {current_stage_text}
+    </div>
 </div>
 
 <div style="
 background:white;
 border:1px solid #E5E7EB;
 border-radius:14px;
-padding:14px 18px;
+padding:10px 16px;
 margin-bottom:18px;
 ">
 {progress_rows}

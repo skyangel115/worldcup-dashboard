@@ -2314,6 +2314,10 @@ def get_round_order():
     ]
 
 
+# =====================
+# Team Journey Functions
+# =====================
+
 def get_team_journey_pool():
     teams = set()
 
@@ -2448,6 +2452,114 @@ def get_team_knockout_stats(team):
 
     return played, wins, draws, losses, gf, ga
 
+def get_team_match_history(team):
+    history = []
+
+    # Group stage matches
+    for group, team1, s1, team2, s2 in matches:
+        if team not in [team1, team2]:
+            continue
+
+        if team == team1:
+            opponent = team2
+            team_score = s1
+            opp_score = s2
+        else:
+            opponent = team1
+            team_score = s2
+            opp_score = s1
+
+        if team_score > opp_score:
+            result = "Win"
+            result_icon = "✅"
+        elif team_score < opp_score:
+            result = "Loss"
+            result_icon = "❌"
+        else:
+            result = "Draw"
+            result_icon = "🤝"
+
+        history.append({
+            "stage": f"Group {group}",
+            "opponent": opponent,
+            "score": f"{team_score}-{opp_score}",
+            "result": result,
+            "result_icon": result_icon,
+            "status": "Completed",
+            "date": None,
+            "time": None,
+            "stadium": None,
+            "pk_score": None,
+        })
+
+    # Knockout matches
+    for round_name in get_round_order():
+        for match in knockout_matches.get(round_name, []):
+            if team not in [match["team1"], match["team2"]]:
+                continue
+
+            opponent = match["team2"] if match["team1"] == team else match["team1"]
+
+            if match["status"] == "Completed" and match.get("score"):
+                score_text = None
+                s1, s2 = map(int, re.split(r"[–-]", match["score"]))
+
+                if team == match["team1"]:
+                    team_score, opp_score = s1, s2
+                else:
+                    team_score, opp_score = s2, s1
+
+                if team_score > opp_score:
+                    result = "Win"
+                    result_icon = "✅"
+                elif team_score < opp_score:
+                    result = "Loss"
+                    result_icon = "❌"
+                else:
+                    if match.get("pk_score"):
+                        p1, p2 = map(int, re.split(r"[–-]", match["pk_score"]))
+
+                        if team == match["team1"]:
+                            team_pk, opp_pk = p1, p2
+                        else:
+                            team_pk, opp_pk = p2, p1
+
+                        if team_pk > opp_pk:
+                            result = "Win"
+                            result_icon = "✅"
+                        else:
+                            result = "Loss"
+                            result_icon = "❌"
+
+                        score_text = f"{team_score}-{opp_score} ({team_pk}-{opp_pk} pens)"
+                    else:
+                        result = "Draw"
+                        result_icon = "🤝"
+                        score_text = f"{team_score}-{opp_score}"
+                if team_score != opp_score:
+                    score_text = f"{team_score}-{opp_score}"
+
+            else:
+                result = "Upcoming"
+                result_icon = "🕒"
+                score_text = "vs"
+
+            history.append({
+                "stage": round_name,
+                "opponent": opponent,
+                "score": score_text,
+                "result": result,
+                "result_icon": result_icon,
+                "status": match["status"],
+                "date": match.get("date"),
+                "time": match.get("time"),
+                "stadium": match.get("stadium"),
+                "pk_score": match.get("pk_score"),
+            })
+
+    return history
+
+
 
 def show_team_journey():
     st.header("🛤️ Team Journey")
@@ -2568,7 +2680,12 @@ box-shadow:0 4px 14px rgba(0,0,0,0.05);
 """,
         unsafe_allow_html=True
     )
+    history = get_team_match_history(selected_team)
 
+    st.markdown("### 🏆 Tournament Journey")
+
+    for h in history:
+        st.write(h)
 
 def show_knockout_qualification():
     st.header("🏆 Knockout Qualification")

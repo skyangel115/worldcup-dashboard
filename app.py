@@ -2535,7 +2535,8 @@ main_view = st.segmented_control(
     "Main Navigation",
     options=[
         "🌍 Group Stage",
-        "🏟️ Knockout Stage"
+        "🏟️ Knockout Stage",
+        "🛤️ Team Journey",
     ],
     label_visibility="collapsed",
     default="🌍 Group Stage",
@@ -2548,4 +2549,7 @@ if main_view == "🌍 Group Stage":
 elif main_view == "🏟️ Knockout Stage":
     show_knockout_stage()
 
+elif main_view == "🛤️ Team Journey":
+    st.header("🛤️ Team Journey")
+    st.info("Select a team to view its path from the group stage to the current knockout stage.")
 

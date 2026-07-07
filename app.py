@@ -2559,6 +2559,109 @@ def get_team_match_history(team):
 
     return history
 
+def render_team_match_history(history):
+    st.markdown("### 🏆 Tournament Journey")
+
+    current_stage = None
+
+    for h in history:
+        stage = h["stage"]
+
+        if stage != current_stage:
+            current_stage = stage
+            st.markdown(f"#### {stage}")
+
+        opponent = h["opponent"]
+        score = h["score"]
+        result = h["result"]
+        result_icon = h["result_icon"]
+        date = h.get("date")
+        time = h.get("time")
+        stadium = h.get("stadium")
+
+        if result == "Win":
+            border_color = "#16A34A"
+            bg_color = "#F0FDF4"
+            result_color = "#166534"
+        elif result == "Loss":
+            border_color = "#DC2626"
+            bg_color = "#FFF5F5"
+            result_color = "#991B1B"
+        elif result == "Draw":
+            border_color = "#F59E0B"
+            bg_color = "#FFFBEB"
+            result_color = "#92400E"
+        else:
+            border_color = "#6B7280"
+            bg_color = "#F9FAFB"
+            result_color = "#4B5563"
+
+        date_line = ""
+        if date and time:
+            date_line = f"""
+<div style="font-size:13px;color:#6b7280;margin-top:8px;">
+📅 {date} · {time}
+</div>
+"""
+
+        stadium_line = ""
+        if stadium:
+            stadium_line = f"""
+<div style="font-size:13px;color:#9CA3AF;margin-top:4px;">
+🏟️ {stadium}
+</div>
+"""
+
+        st.markdown(
+            f"""
+<div style="
+background:{bg_color};
+border:1px solid #E5E7EB;
+border-left:7px solid {border_color};
+border-radius:16px;
+padding:16px 18px;
+margin-bottom:14px;
+box-shadow:0 3px 10px rgba(0,0,0,0.04);
+">
+
+<div style="display:flex;justify-content:space-between;align-items:center;gap:16px;">
+
+<div>
+<div style="font-size:18px;font-weight:900;color:#1f2937;">
+{get_flag(opponent)} {opponent}
+</div>
+<div style="font-size:13px;color:#6b7280;font-weight:700;margin-top:4px;">
+Opponent
+</div>
+</div>
+
+<div style="text-align:center;">
+<div style="font-size:26px;font-weight:950;color:#1f2937;">
+{score}
+</div>
+<div style="font-size:13px;color:#6b7280;font-weight:700;">
+Score
+</div>
+</div>
+
+<div style="text-align:right;">
+<div style="font-size:18px;font-weight:950;color:{result_color};">
+{result_icon} {result}
+</div>
+<div style="font-size:13px;color:#6b7280;font-weight:700;margin-top:4px;">
+Result
+</div>
+</div>
+
+</div>
+
+{date_line}
+{stadium_line}
+
+</div>
+""",
+            unsafe_allow_html=True
+        )
 
 
 def show_team_journey():
@@ -2681,11 +2784,7 @@ box-shadow:0 4px 14px rgba(0,0,0,0.05);
         unsafe_allow_html=True
     )
     history = get_team_match_history(selected_team)
-
-    st.markdown("### 🏆 Tournament Journey")
-
-    for h in history:
-        st.write(h)
+    render_team_match_history(history)
 
 def show_knockout_qualification():
     st.header("🏆 Knockout Qualification")

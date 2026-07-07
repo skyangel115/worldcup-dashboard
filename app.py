@@ -2452,6 +2452,69 @@ def get_team_knockout_stats(team):
 
     return played, wins, draws, losses, gf, ga
 
+
+def get_team_progress(team):
+
+    stages = [
+        "Group Stage",
+        "Round of 32",
+        "Round of 16",
+        "Quarter-finals",
+        "Semi-finals",
+        "Final"
+    ]
+
+    progress = {}
+
+    is_active, last_round, _ = get_team_knockout_status(team)
+
+    progress["Group Stage"] = "completed"
+
+    for stage in stages[1:]:
+
+        progress[stage] = "future"
+
+        for match in knockout_matches.get(stage, []):
+
+            if team not in [match["team1"], match["team2"]]:
+                continue
+
+            if match["status"] == "Completed":
+
+                score = match.get("score")
+
+                s1, s2 = map(int, re.split(r"[–-]", score))
+
+                if team == match["team1"]:
+                    ts, os = s1, s2
+                else:
+                    ts, os = s2, s1
+
+                if ts == os and match.get("pk_score"):
+
+                    p1, p2 = map(int, re.split(r"[–-]", match["pk_score"]))
+
+                    if team == match["team1"]:
+                        tp, op = p1, p2
+                    else:
+                        tp, op = p2, p1
+
+                    win = tp > op
+
+                else:
+                    win = ts > os
+
+                if win:
+                    progress[stage] = "completed"
+                else:
+                    progress[stage] = "eliminated"
+
+            else:
+                progress[stage] = "current"
+
+    return progress
+
+
 def get_team_match_history(team):
     history = []
 
@@ -2809,6 +2872,56 @@ def show_team_journey():
     else:
         next_match_text = "-"
 
+    progress = get_team_progress(selected_team)
+
+    stage_icons = {
+        "Group Stage": "🌍",
+        "Round of 32": "🏆",
+        "Round of 16": "🏆",
+        "Quarter-finals": "🥇",
+        "Semi-finals": "🔥",
+        "Final": "🏅",
+    }
+
+    status_badges = {
+        "completed": "✅ Completed",
+        "current": "🔵 Current",
+        "future": "⚪ Future",
+        "eliminated": "❌ Eliminated",
+    }
+
+    progress_rows = ""
+
+    for stage, status in progress.items():
+        progress_rows += f"""
+<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;">
+    <span style="font-size:15px;font-weight:800;color:#1f2937;">
+        {stage_icons.get(stage, "🏆")} {stage}
+    </span>
+    <span style="font-size:14px;font-weight:850;color:#1F4E79;">
+        {status_badges.get(status, status)}
+    </span>
+</div>
+"""
+
+    progress_html = f"""
+<hr style="border:none;border-top:1px solid #D8E6F5;margin:22px 0;">
+
+<div style="font-size:14px;color:#6b7280;font-weight:800;margin-bottom:10px;">
+Tournament Progress
+</div>
+
+<div style="
+background:white;
+border:1px solid #E5E7EB;
+border-radius:14px;
+padding:14px 18px;
+margin-bottom:18px;
+">
+{progress_rows}
+</div>
+"""
+
     st.markdown(
         f"""
 <div style="
@@ -2863,7 +2976,7 @@ box-shadow:0 4px 14px rgba(0,0,0,0.05);
 
 </div>
 
-<hr style="border:none;border-top:1px solid #D8E6F5;margin:22px 0;">
+{progress_html}
 
 <div style="font-size:14px;color:#6b7280;font-weight:800;">Next Match</div>
 <div style="font-size:20px;font-weight:900;color:#1f2937;margin-top:6px;">

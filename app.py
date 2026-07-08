@@ -3449,6 +3449,16 @@ box-shadow:0 4px 14px rgba(0,0,0,0.05);
         metrics_a = get_team_performance_metrics(selected_team)
         metrics_b = get_team_performance_metrics(compare_team)
 
+        team_title_style = """
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        gap:10px;
+        font-size:36px;
+        font-weight:950;
+        color:#1f2937;
+        """
+
         st.markdown(
             f"""
 <div style="
@@ -3468,15 +3478,7 @@ gap:20px;
 margin-bottom:24px;
 ">
 
-<div style="
-display:flex;
-justify-content:center;
-align-items:center;
-gap:10px;
-font-size:30px;
-font-weight:950;
-color:#1f2937;
-">
+<div style="{team_title_style}">
 <span>{get_flag(selected_team)}</span>
 <span>{selected_team}</span>
 </div>
@@ -3493,15 +3495,7 @@ box-shadow:0 2px 8px rgba(0,0,0,.04);
 VS
 </div>
 
-<div style="
-display:flex;
-justify-content:center;
-align-items:center;
-gap:10px;
-font-size:40px;
-font-weight:950;
-color:#1f2937;
-">
+<div style="{team_title_style}">
 <span>{compare_team}</span>
 <span>{get_flag(compare_team)}</span>
 </div>

@@ -14,7 +14,7 @@ st.markdown(
 <div style="
 position:relative;
 padding:38px 32px 48px 32px;
-margin-bottom:28px;
+margin-bottom:16px;
 border-radius:24px;
 overflow:hidden;
 background:
@@ -23,7 +23,7 @@ linear-gradient(90deg, rgba(255,255,255,.98) 0%, rgba(255,255,255,.94) 48%, rgba
 
 <div style="
 position:absolute;
-right:70px;
+right:110px;
 top:8px;
 font-size:180px;
 font-weight:950;

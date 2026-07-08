@@ -13,7 +13,7 @@ st.markdown(
     """
 <div style="
 position:relative;
-padding:46px 32px 60px 32px;
+padding:38px 32px 48px 32px;
 margin-bottom:28px;
 border-radius:24px;
 overflow:hidden;
@@ -55,16 +55,7 @@ margin-bottom:12px;
 ">
 
 <span style="color:#1F4E79;">
-FIFA WORLD CUP
-</span>
-
-<span style="
-color:#C9A227;
-font-weight:1000;
-margin-left:6px;
-">
-2026
-</span>
+FIFA WORLD CUP <span style="color:#C9A227;">2026</span>
 
 </div>
 

@@ -3016,18 +3016,35 @@ def show_team_journey():
 
         line_html = "" if is_last else f"""
 <div style="
+position:absolute;
+left:18px;
+top:42px;
 width:4px;
-height:30px;
+height:42px;
 background:{line_color};
-margin:6px auto;
 border-radius:999px;
 "></div>
 """
 
         progress_rows += f"""
-<div style="display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;margin-bottom:4px;">
+<div style="
+position:relative;
+display:grid;
+grid-template-columns:48px 1fr auto;
+gap:12px;
+align-items:center;
+min-height:82px;
+margin-bottom:4px;
+">
 
-<div style="display:flex;flex-direction:column;align-items:center;">
+<div style="
+position:relative;
+display:flex;
+align-items:center;
+justify-content:center;
+height:48px;
+">
+{line_html}
 <div style="
 width:38px;
 height:38px;
@@ -3039,10 +3056,10 @@ justify-content:center;
 font-size:20px;
 font-weight:900;
 box-shadow:0 2px 8px rgba(0,0,0,.06);
+z-index:2;
 ">
 {stage_icons.get(stage, "🏆")}
 </div>
-{line_html}
 </div>
 
 <div>
@@ -3230,6 +3247,7 @@ box-shadow:0 4px 14px rgba(0,0,0,0.05);
         unsafe_allow_html=True
     )
     history = get_team_match_history(selected_team)
+    st.write(history)
     render_team_match_history(history)
 
 def show_knockout_qualification():

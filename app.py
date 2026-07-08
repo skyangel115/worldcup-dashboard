@@ -2326,7 +2326,7 @@ def get_team_journey_pool():
     teams = set()
 
     # 先抓進過 Round of 16 的隊伍
-    for match in knockout_matches.get("Round of 16", []):
+    for match in knockout_matches.get("Round of 32", []):
         if match["team1"]:
             teams.add(match["team1"])
         if match["team2"]:
@@ -2927,9 +2927,23 @@ def show_team_journey():
         team_options.append((label, team, is_active))
 
     # Active teams 排前面
+    round_rank = {
+        "Final": 6,
+        "Third-place match": 5,
+        "Semi-finals": 4,
+        "Quarter-finals": 3,
+        "Round of 16": 2,
+        "Round of 32": 1,
+        None: 0,
+    }
+
     team_options = sorted(
         team_options,
-        key=lambda x: (not x[2], x[1])
+        key=lambda x: (
+            not x[2],                         # active teams first
+            -round_rank.get(get_team_knockout_status(x[1])[1], 0),
+            x[1]
+        )
     )
 
     label_to_team = {label: team for label, team, active in team_options}

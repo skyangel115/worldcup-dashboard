@@ -13,7 +13,7 @@ st.markdown(
     """
 <div style="
 position:relative;
-padding:32px 40px 38px 40px;
+padding:42px 40px 54px 40px;
 margin-bottom:16px;
 border-radius:24px;
 overflow:hidden;
@@ -40,7 +40,7 @@ position:absolute;
 right:34px;
 top:68px;
 font-size:190px;
-opacity:.12;
+opacity:.02;
 z-index:0;
 ">
 🏆
@@ -77,7 +77,7 @@ margin-top:18px;
 max-width:900px;
 line-height:1.7;
 ">
-Follow every team's journey through the FIFA World Cup 2026.
+Explore every team's journey through the FIFA World Cup 2026.
 </div>
 
 <div style="

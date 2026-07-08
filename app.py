@@ -3436,7 +3436,100 @@ box-shadow:0 4px 14px rgba(0,0,0,0.05);
 
         compare_team = label_to_team[compare_label]
 
-        st.info(f"🚧 Compare Mode: {get_flag(selected_team)} {selected_team} vs {get_flag(compare_team)} {compare_team}")
+        profile_a = get_team_profile_scores(selected_team)
+        profile_b = get_team_profile_scores(compare_team)
+
+        metrics_a = get_team_performance_metrics(selected_team)
+        metrics_b = get_team_performance_metrics(compare_team)
+
+        st.markdown(
+            f"""
+<div style="
+background:linear-gradient(135deg,#F5FAFF,#EEF6FF);
+border:1px solid #D8E6F5;
+border-radius:18px;
+padding:24px 28px;
+margin-top:18px;
+margin-bottom:24px;
+">
+
+<div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px;margin-bottom:24px;">
+    <div style="text-align:left;font-size:28px;font-weight:950;color:#1f2937;">
+        {get_flag(selected_team)} {selected_team}
+    </div>
+    <div style="font-size:18px;font-weight:950;color:#64748B;background:white;border-radius:999px;padding:8px 16px;">
+        VS
+    </div>
+    <div style="text-align:right;font-size:28px;font-weight:950;color:#1f2937;">
+        {get_flag(compare_team)} {compare_team}
+    </div>
+</div>
+
+<div style="background:white;border:1px solid #E5E7EB;border-radius:16px;padding:20px 22px;margin-bottom:18px;">
+<div style="font-size:18px;font-weight:950;color:#1f2937;margin-bottom:16px;">
+🛡️ Team Profile Comparison
+</div>
+
+{"".join([
+f'''
+<div style="margin-bottom:16px;">
+<div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;font-size:14px;font-weight:900;color:#374151;margin-bottom:6px;">
+    <div>{profile_a[key]}</div>
+    <div>{icon} {label}</div>
+    <div style="text-align:right;">{profile_b[key]}</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+    <div style="background:#E5E7EB;border-radius:999px;height:10px;">
+        <div style="background:{color};width:{profile_a[key]}%;height:10px;border-radius:999px;"></div>
+    </div>
+    <div style="background:#E5E7EB;border-radius:999px;height:10px;">
+        <div style="background:{color};width:{profile_b[key]}%;height:10px;border-radius:999px;"></div>
+    </div>
+</div>
+</div>
+'''
+        for key, label, icon, color in [
+            ("attack", "Attack", "⚔️", "#1F4E79"),
+            ("defense", "Defense", "🛡️", "#166534"),
+            ("form", "Form", "🔥", "#B45309"),
+        ]
+        ])}
+</div>
+
+<div style="background:white;border:1px solid #E5E7EB;border-radius:16px;padding:20px 22px;">
+<div style="font-size:18px;font-weight:950;color:#1f2937;margin-bottom:16px;">
+📊 Tournament Metrics Comparison
+</div>
+
+<div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;background:#F9FAFB;border-radius:12px;padding:14px 16px;margin-bottom:10px;">
+    <div style="font-weight:950;color:#1F4E79;">{metrics_a["group_finish"]}</div>
+    <div style="font-weight:900;color:#6b7280;">🏆 Group Finish</div>
+    <div style="text-align:right;font-weight:950;color:#1F4E79;">{metrics_b["group_finish"]}</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;background:#F9FAFB;border-radius:12px;padding:14px 16px;margin-bottom:10px;">
+    <div style="font-weight:950;color:#1F4E79;">{metrics_a["goals_per_match"]:.2f}</div>
+    <div style="font-weight:900;color:#6b7280;">⚽ Goals / Match</div>
+    <div style="text-align:right;font-weight:950;color:#1F4E79;">{metrics_b["goals_per_match"]:.2f}</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;background:#F9FAFB;border-radius:12px;padding:14px 16px;margin-bottom:10px;">
+    <div style="font-weight:950;color:#92400E;">{metrics_a["clean_sheets"]}</div>
+    <div style="font-weight:900;color:#6b7280;">🧤 Clean Sheets</div>
+    <div style="text-align:right;font-weight:950;color:#92400E;">{metrics_b["clean_sheets"]}</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;background:#F9FAFB;border-radius:12px;padding:14px 16px;">
+    <div style="font-weight:950;color:#166534;">{metrics_a["win_rate"]:.0f}%</div>
+    <div style="font-weight:900;color:#6b7280;">📈 Win Rate</div>
+    <div style="text-align:right;font-weight:950;color:#166534;">{metrics_b["win_rate"]:.0f}%</div>
+</div>
+
+</div>
+</div>
+""",
+            unsafe_allow_html=True
+        )
 
 def show_knockout_qualification():
     st.header("🏆 Knockout Qualification")

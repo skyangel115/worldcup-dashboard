@@ -872,8 +872,6 @@ for i, table in enumerate(tables):
                 "Score": "⏳",
                 "Status": "Remaining"
             }
-st.write("matches count:", len(matches))
-st.write(matches[:10])
 
 
 # =====================
@@ -2912,8 +2910,6 @@ Result
 
 
 def show_team_journey():
-    st.header("🛤️ Team Journey")
-    st.info("Select a team to view its path from the group stage to the current knockout stage.")
 
     teams = get_team_journey_pool()
 

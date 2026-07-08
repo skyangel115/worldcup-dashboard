@@ -3053,15 +3053,6 @@ def show_team_journey():
 
     teams = get_team_journey_pool()
 
-    view_mode = st.segmented_control(
-        "View",
-        options=[
-            "🛤️ Team Journey",
-            "⚖️ Compare Teams"
-        ],
-        default="🛤️ Team Journey"
-    )
-
     team_options = []
 
     for team in teams:
@@ -3095,15 +3086,30 @@ def show_team_journey():
     )
 
     label_to_team = {label: team for label, team, active in team_options}
+    control_col1, control_col2 = st.columns([3, 1.4])
 
-    if view_mode == "🛤️ Team Journey":
-
+    with control_col1:
         selected_label = st.selectbox(
             "Select Team",
-            options=list(label_to_team.keys())
+            options=list(label_to_team.keys()),
+            key="main_team_select"
         )
 
-        selected_team = label_to_team[selected_label]
+    selected_team = label_to_team[selected_label]
+
+    with control_col2:
+        view_mode = st.segmented_control(
+            "View",
+            options=[
+                "🛤️ Journey",
+                "⚖️ Compare"
+            ],
+            default="🛤️ Journey",
+            key="team_view_mode"
+        )
+
+    if view_mode == "🛤️ Journey":
+
 
         is_active, last_round, next_match = get_team_knockout_status(selected_team)
 
@@ -3417,7 +3423,20 @@ box-shadow:0 4px 14px rgba(0,0,0,0.05);
 
     else:
 
-        st.info("🚧 Compare Mode coming soon.")
+        compare_options = [
+            label for label in label_to_team.keys()
+            if label_to_team[label] != selected_team
+        ]
+
+        compare_label = st.selectbox(
+            "Compare With",
+            options=compare_options,
+            key="compare_team_select"
+        )
+
+        compare_team = label_to_team[compare_label]
+
+        st.info(f"🚧 Compare Mode: {get_flag(selected_team)} {selected_team} vs {get_flag(compare_team)} {compare_team}")
 
 def show_knockout_qualification():
     st.header("🏆 Knockout Qualification")

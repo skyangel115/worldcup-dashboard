@@ -104,6 +104,49 @@ line-height:1.55;
 """,
     unsafe_allow_html=True
 )
+
+st.markdown(
+    """
+<style>
+/* =====================
+   Global Premium Hover
+   ===================== */
+
+/* Most HTML cards */
+div[style*="border-radius:16px"],
+div[style*="border-radius:18px"],
+div[style*="border-radius:24px"] {
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+/* Gentle card lift */
+div[style*="border-radius:16px"]:hover,
+div[style*="border-radius:18px"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Hero 不要動 */
+div[style*="Tournament Dashboard"]:hover {
+    transform: none !important;
+}
+
+/* Next Kick-off bar */
+div[style*="NEXT KICK-OFF"] {
+    transition: filter .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+
+div[style*="NEXT KICK-OFF"]:hover {
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.18) !important;
+}
+</style>
+""",
+    unsafe_allow_html=True
+)
+
+
 # ---------- Hero ----------
 #group_matches_completed = 72 if tournament_stage == "Round of 32" else "In Progress"
 #group_status = "Completed" if tournament_stage == "Round of 32" else "Ongoing"

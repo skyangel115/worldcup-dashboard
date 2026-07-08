@@ -13,7 +13,7 @@ st.markdown(
     """
 <div style="
 position:relative;
-padding:34px 28px 42px 28px;
+padding:46px 32px 60px 32px;
 margin-bottom:28px;
 border-radius:24px;
 overflow:hidden;
@@ -28,7 +28,7 @@ top:8px;
 font-size:180px;
 font-weight:950;
 letter-spacing:-10px;
-color:rgba(31,78,121,.055);
+color:rgba(31,78,121,.035);
 line-height:1;
 z-index:0;
 ">
@@ -40,54 +40,61 @@ position:absolute;
 right:34px;
 top:68px;
 font-size:190px;
-opacity:.045;
+opacity:.02;
 z-index:0;
 ">
 🏆
 </div>
 
 <div style="
-position:relative;
-z-index:2;
-">
-<div style="
 font-size:15px;
 font-weight:900;
 letter-spacing:.18em;
 text-transform:uppercase;
-color:#1F4E79;
 margin-bottom:12px;
 ">
-FIFA WORLD CUP 2026
+
+<span style="color:#1F4E79;">
+FIFA WORLD CUP
+</span>
+
+<span style="
+color:#C9A227;
+font-weight:1000;
+margin-left:6px;
+">
+2026
+</span>
+
 </div>
 
 <div style="
-font-size:52px;
-font-weight:950;
+font-size:58px;
+font-weight:900;
+letter-spacing:-0.04em;
 line-height:1.05;
-color:#1f2937;
-letter-spacing:-1.8px;
+color:#1E293B;
 ">
 Tournament Dashboard
 </div>
 
 <div style="
-font-size:19px;
+font-size:20px;
 color:#4B5563;
 font-weight:500;
 margin-top:16px;
-max-width:760px;
-line-height:1.55;
+max-width:900px;
+line-height:1.7;
 ">
 Track standings, qualification scenarios, knockout progression, and each team's tournament journey in one place.
 </div>
 
 <div style="
 margin-top:22px;
-width:58px;
-height:5px;
+width:90px;
+height:4px;
 border-radius:999px;
-background:linear-gradient(90deg,#1F4E79,#F4A300);
+background:linear-gradient(90deg,#123C73,#D4AF37,#8A1538);
 "></div>
 
 <div style="

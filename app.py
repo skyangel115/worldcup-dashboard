@@ -3438,6 +3438,13 @@ box-shadow:0 4px 14px rgba(0,0,0,0.05);
 
         profile_a = get_team_profile_scores(selected_team)
         profile_b = get_team_profile_scores(compare_team)
+        def compare_color(a, b, base_color):
+            if a > b:
+                return base_color, "#9CA3AF", "🏆", ""
+            elif a < b:
+                return "#9CA3AF", base_color, "", "🏆"
+            else:
+                return base_color, base_color, "=", "="
 
         metrics_a = get_team_performance_metrics(selected_team)
         metrics_b = get_team_performance_metrics(compare_team)
@@ -3472,7 +3479,7 @@ margin-bottom:24px;
 
 {"".join([
 f'''
-<div style="margin-bottom:18px;">
+<div style="margin-bottom:20px;">
 
 <div style="
 font-size:14px;
@@ -3486,7 +3493,7 @@ margin-bottom:8px;
 
 <div style="
 display:grid;
-grid-template-columns:80px 1fr 1fr 80px;
+grid-template-columns:90px 1fr 1fr 90px;
 gap:14px;
 align-items:center;
 ">
@@ -3494,15 +3501,15 @@ align-items:center;
 <div style="
 font-size:20px;
 font-weight:950;
-color:{color};
+color:{compare_color(profile_a[key], profile_b[key], color)[0]};
 text-align:right;
 ">
-{profile_a[key]}
+{compare_color(profile_a[key], profile_b[key], color)[2]} {profile_a[key]}
 </div>
 
 <div style="background:#E5E7EB;border-radius:999px;height:11px;">
     <div style="
-    background:{color};
+    background:{compare_color(profile_a[key], profile_b[key], color)[0]};
     width:{profile_a[key]}%;
     height:11px;
     border-radius:999px;
@@ -3511,7 +3518,7 @@ text-align:right;
 
 <div style="background:#E5E7EB;border-radius:999px;height:11px;">
     <div style="
-    background:{color};
+    background:{compare_color(profile_a[key], profile_b[key], color)[1]};
     width:{profile_b[key]}%;
     height:11px;
     border-radius:999px;
@@ -3521,10 +3528,10 @@ text-align:right;
 <div style="
 font-size:20px;
 font-weight:950;
-color:{color};
+color:{compare_color(profile_a[key], profile_b[key], color)[1]};
 text-align:left;
 ">
-{profile_b[key]}
+{profile_b[key]} {compare_color(profile_a[key], profile_b[key], color)[3]}
 </div>
 
 </div>

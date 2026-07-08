@@ -3498,7 +3498,7 @@ display:flex;
 justify-content:center;
 align-items:center;
 gap:10px;
-font-size:30px;
+font-size:40px;
 font-weight:950;
 color:#1f2937;
 ">
@@ -3510,7 +3510,7 @@ color:#1f2937;
 
 <div style="background:white;border:1px solid #E5E7EB;border-radius:16px;padding:20px 22px;margin-bottom:18px;">
 <div style="font-size:18px;font-weight:950;color:#1f2937;margin-bottom:16px;">
-🛡️ Team Profile Comparison
+🛡️ Team Profile
 </div>
 
 {"".join([
@@ -3589,7 +3589,7 @@ for key, label, icon, color in [
 
 <div style="background:white;border:1px solid #E5E7EB;border-radius:16px;padding:20px 22px;">
 <div style="font-size:18px;font-weight:950;color:#1f2937;margin-bottom:16px;">
-📊 Tournament Metrics Comparison
+📊 Tournament Metrics
 </div>
 
 <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;background:#F9FAFB;border-radius:12px;padding:14px 16px;margin-bottom:10px;">

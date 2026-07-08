@@ -1404,7 +1404,7 @@ def show_group(selected_group):
     table["Top 2 Scenario %"] = [probabilities[team] for team in table.index]
 
     remaining_count = (matrix.values == "⏳").sum() // 2
-    st.write("remaining_count:", remaining_count)
+   
 
     if remaining_count == 0:
         st.success(f"🏆Group {selected_group} finished")
@@ -3249,7 +3249,6 @@ box-shadow:0 4px 14px rgba(0,0,0,0.05);
         unsafe_allow_html=True
     )
     history = get_team_match_history(selected_team)
-    st.write(history)
     render_team_match_history(history)
 
 def show_knockout_qualification():

@@ -3460,16 +3460,52 @@ margin-top:18px;
 margin-bottom:24px;
 ">
 
-<div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px;margin-bottom:24px;">
-    <div style="text-align:left;font-size:28px;font-weight:950;color:#1f2937;">
-        {get_flag(selected_team)} {selected_team}
-    </div>
-    <div style="font-size:18px;font-weight:950;color:#64748B;background:white;border-radius:999px;padding:8px 16px;">
-        VS
-    </div>
-    <div style="text-align:right;font-size:28px;font-weight:950;color:#1f2937;">
-        {get_flag(compare_team)} {compare_team}
-    </div>
+<div style="
+display:grid;
+grid-template-columns:1fr auto 1fr;
+align-items:center;
+gap:20px;
+margin-bottom:24px;
+">
+
+<div style="
+display:flex;
+justify-content:center;
+align-items:center;
+gap:10px;
+font-size:30px;
+font-weight:950;
+color:#1f2937;
+">
+<span>{get_flag(selected_team)}</span>
+<span>{selected_team}</span>
+</div>
+
+<div style="
+font-size:18px;
+font-weight:950;
+color:#64748B;
+background:white;
+border-radius:999px;
+padding:8px 16px;
+box-shadow:0 2px 8px rgba(0,0,0,.04);
+">
+VS
+</div>
+
+<div style="
+display:flex;
+justify-content:center;
+align-items:center;
+gap:10px;
+font-size:30px;
+font-weight:950;
+color:#1f2937;
+">
+<span>{compare_team}</span>
+<span>{get_flag(compare_team)}</span>
+</div>
+
 </div>
 
 <div style="background:white;border:1px solid #E5E7EB;border-radius:16px;padding:20px 22px;margin-bottom:18px;">
@@ -3507,7 +3543,13 @@ text-align:right;
 {compare_color(profile_a[key], profile_b[key], color)[2]} {profile_a[key]}
 </div>
 
-<div style="background:#E5E7EB;border-radius:999px;height:11px;">
+<div style="
+background:#E5E7EB;
+border-radius:999px;
+height:11px;
+display:flex;
+justify-content:flex-end;
+">
     <div style="
     background:{compare_color(profile_a[key], profile_b[key], color)[0]};
     width:{profile_a[key]}%;

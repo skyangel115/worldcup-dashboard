@@ -3472,28 +3472,70 @@ margin-bottom:24px;
 
 {"".join([
 f'''
-<div style="margin-bottom:16px;">
-<div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;font-size:14px;font-weight:900;color:#374151;margin-bottom:6px;">
-    <div>{profile_a[key]}</div>
-    <div>{icon} {label}</div>
-    <div style="text-align:right;">{profile_b[key]}</div>
+<div style="margin-bottom:18px;">
+
+<div style="
+font-size:14px;
+font-weight:950;
+color:#374151;
+text-align:center;
+margin-bottom:8px;
+">
+{icon} {label}
 </div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-    <div style="background:#E5E7EB;border-radius:999px;height:10px;">
-        <div style="background:{color};width:{profile_a[key]}%;height:10px;border-radius:999px;"></div>
-    </div>
-    <div style="background:#E5E7EB;border-radius:999px;height:10px;">
-        <div style="background:{color};width:{profile_b[key]}%;height:10px;border-radius:999px;"></div>
-    </div>
+
+<div style="
+display:grid;
+grid-template-columns:80px 1fr 1fr 80px;
+gap:14px;
+align-items:center;
+">
+
+<div style="
+font-size:20px;
+font-weight:950;
+color:{color};
+text-align:right;
+">
+{profile_a[key]}
+</div>
+
+<div style="background:#E5E7EB;border-radius:999px;height:11px;">
+    <div style="
+    background:{color};
+    width:{profile_a[key]}%;
+    height:11px;
+    border-radius:999px;
+    "></div>
+</div>
+
+<div style="background:#E5E7EB;border-radius:999px;height:11px;">
+    <div style="
+    background:{color};
+    width:{profile_b[key]}%;
+    height:11px;
+    border-radius:999px;
+    "></div>
+</div>
+
+<div style="
+font-size:20px;
+font-weight:950;
+color:{color};
+text-align:left;
+">
+{profile_b[key]}
+</div>
+
 </div>
 </div>
 '''
-        for key, label, icon, color in [
-            ("attack", "Attack", "⚔️", "#1F4E79"),
-            ("defense", "Defense", "🛡️", "#166534"),
-            ("form", "Form", "🔥", "#B45309"),
-        ]
-        ])}
+for key, label, icon, color in [
+    ("attack", "Attack", "⚔️", "#1F4E79"),
+    ("defense", "Defense", "🛡️", "#166534"),
+    ("form", "Form", "🔥", "#B45309"),
+]
+])}
 </div>
 
 <div style="background:white;border:1px solid #E5E7EB;border-radius:16px;padding:20px 22px;">

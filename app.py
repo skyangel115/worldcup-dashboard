@@ -811,65 +811,70 @@ for group_label, table_idx in zip(list("ABCDEFGHIJKL"), standing_tables):
 # =====================
 
 matches = []
-
 match_info = {}
 
 for i, table in enumerate(tables):
     if table.shape[1] < 3:
         continue
 
-    team1 = str(table.columns[0]).strip()
-    score = str(table.columns[1]).strip()
-    team2 = str(table.columns[2]).strip()
+    for _, row in table.iterrows():
+        team1 = str(row.iloc[0]).strip()
+        score = str(row.iloc[1]).strip()
+        team2 = str(row.iloc[2]).strip()
 
-    if not re.match(r"^\d+\s*[–-]\s*\d+$", score):
-        continue
+        if not re.match(r"^\d+\s*[–-]\s*\d+$", score):
+            continue
 
-    s1, s2 = re.split(r"[–-]", score)
-    s1 = int(s1.strip())
-    s2 = int(s2.strip())
+        s1, s2 = re.split(r"[–-]", score)
+        s1 = int(s1.strip())
+        s2 = int(s2.strip())
 
-    group_found = None
+        group_found = None
 
-    for g, team_list in groups.items():
-        if team1 in team_list and team2 in team_list:
-            group_found = g
-            break
+        for g, team_list in groups.items():
+            if team1 in team_list and team2 in team_list:
+                group_found = g
+                break
 
-    if group_found is not None:
-        matches.append((group_found, team1, s1, team2, s2))
-        match_key = tuple(sorted([team1, team2]))
-        match_info[match_key] = {
-            "Group": group_found,
-            "Score": f"{s1}-{s2}",
-            "Status": "Played"
-        }
-  
+        if group_found is not None:
+            matches.append((group_found, team1, s1, team2, s2))
+            match_key = tuple(sorted([team1, team2]))
+            match_info[match_key] = {
+                "Group": group_found,
+                "Score": f"{s1}-{s2}",
+                "Status": "Played"
+            }
+
+# Upcoming group matches
 for i, table in enumerate(tables):
     if table.shape[1] < 3:
         continue
 
-    team1 = str(table.columns[0]).strip()
-    middle = str(table.columns[1]).strip()
-    team2 = str(table.columns[2]).strip()
+    for _, row in table.iterrows():
+        team1 = str(row.iloc[0]).strip()
+        middle = str(row.iloc[1]).strip()
+        team2 = str(row.iloc[2]).strip()
 
-    if not middle.startswith("Match"):
-        continue
+        if not middle.startswith("Match"):
+            continue
 
-    group_found = None
+        group_found = None
 
-    for g, team_list in groups.items():
-        if team1 in team_list and team2 in team_list:
-            group_found = g
-            break
+        for g, team_list in groups.items():
+            if team1 in team_list and team2 in team_list:
+                group_found = g
+                break
 
-    if group_found is not None:
-        match_key = tuple(sorted([team1, team2]))
-        match_info[match_key] = {
-            "Group": group_found,
-            "Score": "⏳",
-            "Status": "Remaining"
-        }
+        if group_found is not None:
+            match_key = tuple(sorted([team1, team2]))
+            match_info[match_key] = {
+                "Group": group_found,
+                "Score": "⏳",
+                "Status": "Remaining"
+            }
+st.write("matches count:", len(matches))
+st.write(matches[:10])
+
 
 # =====================
 # Dashboard Functions

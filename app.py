@@ -1,12 +1,72 @@
 import streamlit as st
 import time
 
-st.set_page_config(page_title="World Cup Dashboard", layout="wide")
+#st.set_page_config(page_title="World Cup Dashboard", layout="wide")
 
-st.title("🌍 FIFA World Cup 2026 Dashboard")
+#st.title("🌍 FIFA World Cup 2026 Dashboard")
 
-st.write("Track standings, qualification probabilities, and knockout progression throughout the tournament.")
+#st.write("Track standings, qualification probabilities, and knockout progression throughout the tournament.")
 
+
+# ---------- Hero Header----------
+st.markdown(
+    """
+<div style="
+padding:28px 4px 34px 4px;
+margin-bottom:8px;
+">
+<div style="
+font-size:15px;
+font-weight:900;
+letter-spacing:.16em;
+text-transform:uppercase;
+color:#1F4E79;
+margin-bottom:10px;
+">
+FIFA WORLD CUP 2026
+</div>
+
+<div style="
+font-size:52px;
+font-weight:950;
+line-height:1.05;
+color:#1f2937;
+letter-spacing:-1.8px;
+">
+Tournament Dashboard
+</div>
+
+<div style="
+font-size:19px;
+color:#4B5563;
+font-weight:500;
+margin-top:16px;
+max-width:760px;
+line-height:1.55;
+">
+Track standings, qualification scenarios, knockout progression, and each team's tournament journey in one place.
+</div>
+
+<div style="
+margin-top:22px;
+width:86px;
+height:5px;
+border-radius:999px;
+background:linear-gradient(90deg,#1F4E79,#F4A300);
+"></div>
+
+<div style="
+font-size:15px;
+color:#9CA3AF;
+font-weight:600;
+margin-top:22px;
+">
+⚠ Scenario percentages are based on simulated scorelines from 0–7 goals per team and represent scenario frequency, not real-world match probabilities.
+</div>
+</div>
+""",
+    unsafe_allow_html=True
+)
 
 # ---------- Hero ----------
 #group_matches_completed = 72 if tournament_stage == "Round of 32" else "In Progress"

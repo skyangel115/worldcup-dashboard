@@ -3053,6 +3053,15 @@ def show_team_journey():
 
     teams = get_team_journey_pool()
 
+    view_mode = st.segmented_control(
+        "View",
+        options=[
+            "🛤️ Team Journey",
+            "⚖️ Compare Teams"
+        ],
+        default="🛤️ Team Journey"
+    )
+
     team_options = []
 
     for team in teams:
@@ -3087,89 +3096,91 @@ def show_team_journey():
 
     label_to_team = {label: team for label, team, active in team_options}
 
-    selected_label = st.selectbox(
-        "Select Team",
-        options=list(label_to_team.keys())
-    )
+    if view_mode == "🛤️ Team Journey":
 
-    selected_team = label_to_team[selected_label]
+        selected_label = st.selectbox(
+            "Select Team",
+            options=list(label_to_team.keys())
+        )
 
-    is_active, last_round, next_match = get_team_knockout_status(selected_team)
+        selected_team = label_to_team[selected_label]
 
-    g_played, g_wins, g_draws, g_losses, g_gf, g_ga = get_team_group_stats(selected_team)
-    k_played, k_wins, k_draws, k_losses, k_gf, k_ga = get_team_knockout_stats(selected_team)
+        is_active, last_round, next_match = get_team_knockout_status(selected_team)
 
-    played = g_played + k_played
-    wins = g_wins + k_wins
-    draws = g_draws + k_draws
-    losses = g_losses + k_losses
-    gf = g_gf + k_gf
-    ga = g_ga + k_ga
-    gd = gf - ga
+        g_played, g_wins, g_draws, g_losses, g_gf, g_ga = get_team_group_stats(selected_team)
+        k_played, k_wins, k_draws, k_losses, k_gf, k_ga = get_team_knockout_stats(selected_team)
 
-    status_text = (
-        f"🟢 Active • {last_round}"
-        if is_active
-        else f"⚪ Eliminated in {last_round}"
-    )
+        played = g_played + k_played
+        wins = g_wins + k_wins
+        draws = g_draws + k_draws
+        losses = g_losses + k_losses
+        gf = g_gf + k_gf
+        ga = g_ga + k_ga
+        gd = gf - ga
 
-    if next_match is not None:
-        opponent = next_match["team2"] if next_match["team1"] == selected_team else next_match["team1"]
-        next_match_text = f"{get_flag(opponent)} {opponent} • {format_match_day(next_match.get('date'))} {next_match.get('time')}"
-    else:
-        next_match_text = "-"
+        status_text = (
+            f"🟢 Active • {last_round}"
+            if is_active
+            else f"⚪ Eliminated in {last_round}"
+        )
 
-    progress = get_team_progress(selected_team)
-    metrics = get_team_performance_metrics(selected_team)
-    profile = get_team_profile_scores(selected_team)
-
-    stage_icons = {
-        "Group Stage": "🌍",
-        "Round of 32": "🏆",
-        "Round of 16": "🏆",
-        "Quarter-finals": "🥇",
-        "Semi-finals": "🔥",
-        "Final": "🏅",
-    }
-
-    status_badges = {
-        "completed": "✅ Completed",
-        "current": "🟠 Next Match",
-        "eliminated": "❌ Eliminated",
-    }
-
-    progress_rows = ""
-
-    visible_progress = [
-        (stage, status)
-        for stage, status in progress.items()
-        if status != "future"
-    ]
-
-    for idx, (stage, status) in enumerate(visible_progress):
-
-        is_last = idx == len(visible_progress) - 1
-
-        if status == "completed":
-            badge = "✓ Completed"
-            badge_bg = "#DCFCE7"
-            badge_color = "#166534"
-            node_bg = "#EAF6FF"
-            line_color = "#16A34A"
-        elif status == "current":
-            badge = "● Next Match"
-            badge_bg = "#FEF3C7"
-            badge_color = "#B45309"
-            node_bg = "#FFF7ED"
-            line_color = "#F97316"
+        if next_match is not None:
+            opponent = next_match["team2"] if next_match["team1"] == selected_team else next_match["team1"]
+            next_match_text = f"{get_flag(opponent)} {opponent} • {format_match_day(next_match.get('date'))} {next_match.get('time')}"
         else:
-            badge = "✕ Eliminated"
-            badge_bg = "#FEE2E2"
-            badge_color = "#991B1B"
-            node_bg = "#FFF1F2"
-            line_color = "#DC2626"
+            next_match_text = "-"
 
-        line_html = "" if is_last else f"""
+        progress = get_team_progress(selected_team)
+        metrics = get_team_performance_metrics(selected_team)
+        profile = get_team_profile_scores(selected_team)
+
+        stage_icons = {
+            "Group Stage": "🌍",
+            "Round of 32": "🏆",
+            "Round of 16": "🏆",
+            "Quarter-finals": "🥇",
+            "Semi-finals": "🔥",
+            "Final": "🏅",
+        }
+
+        status_badges = {
+            "completed": "✅ Completed",
+            "current": "🟠 Next Match",
+            "eliminated": "❌ Eliminated",
+        }
+
+        progress_rows = ""
+
+        visible_progress = [
+            (stage, status)
+            for stage, status in progress.items()
+            if status != "future"
+        ]
+
+        for idx, (stage, status) in enumerate(visible_progress):
+
+            is_last = idx == len(visible_progress) - 1
+
+            if status == "completed":
+                badge = "✓ Completed"
+                badge_bg = "#DCFCE7"
+                badge_color = "#166534"
+                node_bg = "#EAF6FF"
+                line_color = "#16A34A"
+            elif status == "current":
+                badge = "● Next Match"
+                badge_bg = "#FEF3C7"
+                badge_color = "#B45309"
+                node_bg = "#FFF7ED"
+                line_color = "#F97316"
+            else:
+                badge = "✕ Eliminated"
+                badge_bg = "#FEE2E2"
+                badge_color = "#991B1B"
+                node_bg = "#FFF1F2"
+                line_color = "#DC2626"
+
+            line_html = "" if is_last else f"""
 <div style="
 position:absolute;
 left:18px;
@@ -3181,7 +3192,7 @@ border-radius:999px;
 "></div>
 """
 
-        progress_rows += f"""
+            progress_rows += f"""
 <div style="
 position:relative;
 display:grid;
@@ -3238,7 +3249,7 @@ white-space:nowrap;
 </div>
 """
 
-    progress_html = f"""
+        progress_html = f"""
 <div style="
 background:white;
 border:1px solid #E5E7EB;
@@ -3253,7 +3264,7 @@ height:100%;
 </div>
 """
 
-    profile_html = f"""
+        profile_html = f"""
 <div style="
 background:white;
 border:1px solid #E5E7EB;
@@ -3298,7 +3309,7 @@ Scores are normalized from this tournament's results only.
 </div>
 """
 
-    metrics_html = f"""
+        metrics_html = f"""
 <div style="
 background:white;
 border:1px solid #E5E7EB;
@@ -3332,8 +3343,8 @@ height:100%;
 </div>
 """
 
-    st.markdown(
-        f"""
+        st.markdown(
+            f"""
 <div style="
 background:linear-gradient(135deg,#F5FAFF,#EEF6FF);
 border:1px solid #D8E6F5;
@@ -3399,10 +3410,14 @@ box-shadow:0 4px 14px rgba(0,0,0,0.05);
 
 </div>
 """,
-        unsafe_allow_html=True
-    )
-    history = get_team_match_history(selected_team)
-    render_team_match_history(history)
+            unsafe_allow_html=True
+        )
+        history = get_team_match_history(selected_team)
+        render_team_match_history(history)
+
+    else:
+
+        st.info("🚧 Compare Mode coming soon.")
 
 def show_knockout_qualification():
     st.header("🏆 Knockout Qualification")

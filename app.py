@@ -12,16 +12,51 @@ import time
 st.markdown(
     """
 <div style="
-padding:28px 4px 34px 4px;
-margin-bottom:8px;
+position:relative;
+padding:34px 28px 42px 28px;
+margin-bottom:28px;
+border-radius:24px;
+overflow:hidden;
+background:
+linear-gradient(90deg, rgba(255,255,255,.98) 0%, rgba(255,255,255,.94) 48%, rgba(245,250,255,.80) 100%);
+">
+
+<div style="
+position:absolute;
+right:70px;
+top:8px;
+font-size:180px;
+font-weight:950;
+letter-spacing:-10px;
+color:rgba(31,78,121,.055);
+line-height:1;
+z-index:0;
+">
+2026
+</div>
+
+<div style="
+position:absolute;
+right:34px;
+top:68px;
+font-size:190px;
+opacity:.045;
+z-index:0;
+">
+🏆
+</div>
+
+<div style="
+position:relative;
+z-index:2;
 ">
 <div style="
 font-size:15px;
 font-weight:900;
-letter-spacing:.16em;
+letter-spacing:.18em;
 text-transform:uppercase;
 color:#1F4E79;
-margin-bottom:10px;
+margin-bottom:12px;
 ">
 FIFA WORLD CUP 2026
 </div>
@@ -49,25 +84,28 @@ Track standings, qualification scenarios, knockout progression, and each team's 
 
 <div style="
 margin-top:22px;
-width:86px;
+width:58px;
 height:5px;
 border-radius:999px;
 background:linear-gradient(90deg,#1F4E79,#F4A300);
 "></div>
 
 <div style="
-font-size:15px;
-color:#9CA3AF;
+font-size:14px;
+color:#A0A8B5;
 font-weight:600;
 margin-top:22px;
+max-width:920px;
+line-height:1.55;
 ">
 ⚠ Scenario percentages are based on simulated scorelines from 0–7 goals per team and represent scenario frequency, not real-world match probabilities.
 </div>
 </div>
+
+</div>
 """,
     unsafe_allow_html=True
 )
-
 # ---------- Hero ----------
 #group_matches_completed = 72 if tournament_stage == "Round of 32" else "In Progress"
 #group_status = "Completed" if tournament_stage == "Round of 32" else "Ongoing"

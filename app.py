@@ -136,9 +136,9 @@ margin-top:22px;
 #    unsafe_allow_html=True,
 #)
 
-st.caption(
-    "⚠ Scenario percentages are based on simulated scorelines from 0–7 goals per team and represent scenario frequency, not real-world match probabilities."
-)
+#st.caption(
+#    "⚠ Scenario percentages are based on simulated scorelines from 0–7 goals per team and represent scenario frequency, not real-world match probabilities."
+#)
 
 st.markdown("""
 <style>

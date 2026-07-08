@@ -13,7 +13,7 @@ st.markdown(
     """
 <div style="
 position:relative;
-padding:38px 32px 48px 32px;
+padding:32px 40px 38px 40px;
 margin-bottom:16px;
 border-radius:24px;
 overflow:hidden;
@@ -40,7 +40,7 @@ position:absolute;
 right:34px;
 top:68px;
 font-size:190px;
-opacity:.02;
+opacity:.12;
 z-index:0;
 ">
 🏆
@@ -51,7 +51,7 @@ font-size:15px;
 font-weight:900;
 letter-spacing:.18em;
 text-transform:uppercase;
-margin-bottom:12px;
+margin-bottom:16px;
 ">
 
 <span style="color:#1F4E79;">
@@ -73,11 +73,11 @@ Tournament Dashboard
 font-size:20px;
 color:#4B5563;
 font-weight:500;
-margin-top:16px;
+margin-top:18px;
 max-width:900px;
 line-height:1.7;
 ">
-Track standings, qualification scenarios, knockout progression, and each team's tournament journey in one place.
+Follow every team's journey through the FIFA World Cup 2026.
 </div>
 
 <div style="

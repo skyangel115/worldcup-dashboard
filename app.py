@@ -13,7 +13,7 @@ st.markdown(
     """
 <div style="
 position:relative;
-padding:42px 40px 54px 40px;
+padding:46px 40px 58px 40px;
 margin-bottom:16px;
 border-radius:24px;
 overflow:hidden;
@@ -40,7 +40,7 @@ position:absolute;
 right:34px;
 top:68px;
 font-size:190px;
-opacity:.02;
+opacity:.025;
 z-index:0;
 ">
 🏆
@@ -51,11 +51,11 @@ font-size:15px;
 font-weight:900;
 letter-spacing:.18em;
 text-transform:uppercase;
-margin-bottom:16px;
+margin-bottom:20px;
 ">
 
-<span style="color:#1F4E79;">
-FIFA WORLD CUP <span style="color:#C9A227;">2026</span>
+<span style="color:#1F4E79;">FIFA WORLD CUP </span>
+<span style="color:#C9A227;">2026</span>
 
 </div>
 
@@ -63,7 +63,7 @@ FIFA WORLD CUP <span style="color:#C9A227;">2026</span>
 font-size:58px;
 font-weight:900;
 letter-spacing:-0.04em;
-line-height:1.05;
+line-height:1.12;
 color:#1E293B;
 ">
 Tournament Dashboard
@@ -73,7 +73,7 @@ Tournament Dashboard
 font-size:20px;
 color:#4B5563;
 font-weight:500;
-margin-top:18px;
+margin-top:26px;
 max-width:900px;
 line-height:1.7;
 ">
@@ -81,7 +81,7 @@ Explore every team's journey through the FIFA World Cup 2026.
 </div>
 
 <div style="
-margin-top:22px;
+margin-top:30px;
 width:90px;
 height:4px;
 border-radius:999px;
@@ -92,7 +92,7 @@ background:linear-gradient(90deg,#123C73,#D4AF37,#8A1538);
 font-size:14px;
 color:#A0A8B5;
 font-weight:600;
-margin-top:22px;
+margin-top:28px;
 max-width:920px;
 line-height:1.55;
 ">

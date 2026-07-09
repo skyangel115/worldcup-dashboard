@@ -3086,27 +3086,58 @@ def show_team_journey():
     )
 
     label_to_team = {label: team for label, team, active in team_options}
-    control_col1, control_col2 = st.columns([3, 1.4])
+    
+    with st.container(border=True):
 
-    with control_col1:
-        selected_label = st.selectbox(
-            "Select Team",
-            options=list(label_to_team.keys()),
-            key="main_team_select"
+        st.markdown(
+            """
+<div style="
+display:flex;
+align-items:center;
+gap:12px;
+margin-bottom:12px;
+">
+<div style="
+width:6px;
+height:22px;
+border-radius:999px;
+background:#3B82F6;
+"></div>
+<div style="
+font-size:22px;
+font-weight:900;
+color:#1F2937;
+letter-spacing:.2px;
+">
+Team Selection
+</div>
+</div>
+""",
+            unsafe_allow_html=True
         )
 
-    selected_team = label_to_team[selected_label]
+    
+        control_col1, control_col2 = st.columns([3, 1.4])
 
-    with control_col2:
-        view_mode = st.segmented_control(
-            "View",
-            options=[
-                "🛤️ Journey",
-                "⚖️ Compare"
-            ],
-            default="🛤️ Journey",
-            key="team_view_mode"
-        )
+        with control_col1:
+            selected_label = st.selectbox(
+                "Select Team",
+                options=list(label_to_team.keys()),
+                key="main_team_select"
+            )
+
+        selected_team = label_to_team[selected_label]
+
+        with control_col2:
+            view_mode = st.segmented_control(
+                "View",
+                options=[
+                    "🛤️ Journey",
+                    "⚖️ Compare"
+                ],
+                default="🛤️ Journey",
+                key="team_view_mode"
+            )
 
     if view_mode == "🛤️ Journey":
 

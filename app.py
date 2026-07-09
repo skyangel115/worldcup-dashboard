@@ -3507,6 +3507,56 @@ box-shadow:0 4px 14px rgba(0,0,0,0.05);
         color:#1f2937;
         """
 
+        st.markdown("""
+        <style>
+        .tooltip {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: help;
+        }
+
+        .tooltip-icon {
+            font-size: 13px;
+            color: #94A3B8;
+            font-weight: 900;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            opacity: 0;
+            width: 260px;
+            background: #111827;
+            color: white;
+            text-align: left;
+            border-radius: 10px;
+            padding: 10px 12px;
+            position: absolute;
+            z-index: 9999;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: opacity .18s ease;
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.45;
+            box-shadow: 0 8px 24px rgba(15,23,42,.18);
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+
+        profile_tooltips = {
+            "attack": "Composite attacking score based on goals scored and offensive efficiency. Scores are normalized to a 0–100 scale within this tournament.",
+            "defense": "Composite defensive score based on goals conceded and clean-sheet performance. Scores are normalized to a 0–100 scale within this tournament.",
+            "form": "Recent tournament form based on match results and momentum. Scores are normalized to a 0–100 scale within this tournament.",
+        }
+
         st.markdown(
             f"""
 <div style="
@@ -3606,7 +3656,10 @@ font-size:18px;
 font-weight:900;
 color:#1F2937;
 ">
-{icon} {label}
+<span class="tooltip">
+{icon} {label} <span class="tooltip-icon">ℹ︎</span>
+<span class="tooltiptext">{profile_tooltips[key]}</span>
+</span>
 </div>
 
 <div style="

@@ -3662,79 +3662,58 @@ margin:-20px -22px 22px -22px;
 border-radius:16px 16px 0 0;
 ">
 
-<div style="
-display:flex;
-align-items:center;
-gap:12px;
-">
-
-<div style="
-width:6px;
-height:22px;
-border-radius:999px;
-background:#3B82F6;
-"></div>
-
-<div style="
-font-size:22px;
-font-weight:900;
-color:#1F2937;
-letter-spacing:.2px;
-">
+<div style="display:flex;align-items:center;gap:12px;">
+<div style="width:6px;height:22px;border-radius:999px;background:#3B82F6;"></div>
+<div style="font-size:22px;font-weight:900;color:#1F2937;letter-spacing:.2px;">
 Tournament Metrics
 </div>
-
-</div>
 </div>
 
-<div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;background:#F9FAFB;border-radius:12px;padding:14px 16px;margin-bottom:10px;">
+</div>
+
+<div style="display:grid;grid-template-columns:220px 1fr 220px;gap:20px;align-items:center;background:#F9FAFB;border-radius:12px;padding:10px 16px;margin-bottom:8px;">
 <div style="text-align:center;font-size:18px;font-weight:950;color:#1F4E79;">{metrics_a["group_finish"]}</div>
 <div style="text-align:center;font-size:18px;font-weight:950;color:#374151;">🏆 Group Finish</div>
 <div style="text-align:center;font-size:18px;font-weight:950;color:#1F4E79;">{metrics_b["group_finish"]}</div>
 </div>
 
-<div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;background:#F9FAFB;border-radius:12px;padding:14px 16px;margin-bottom:10px;">
-<div style="text-align:center;font-size:18px;font-weight:950;color:#1F4E79;">{metrics_a["goals_per_match"]:.2f}</div>
+<div style="display:grid;grid-template-columns:220px 1fr 220px;gap:20px;align-items:center;background:#F9FAFB;border-radius:12px;padding:10px 16px;margin-bottom:8px;">
+<div style="text-align:center;font-size:19px;font-weight:950;color:#1F4E79;">{metrics_a["goals_per_match"]:.2f}</div>
 
 <div style="text-align:center;">
-<div style="font-size:18px;font-weight:950;color:#374151;">
-⚽ Goals / Match
-</div>
+<div style="font-size:18px;font-weight:950;color:#374151;">⚽ Goals / Match</div>
 <div style="font-size:15px;font-weight:900;color:{compare_delta(metrics_a["goals_per_match"], metrics_b["goals_per_match"])[1]};margin-top:2px;">
 {compare_delta(metrics_a["goals_per_match"], metrics_b["goals_per_match"])[0]}
-</div></div>
-
-<div style="text-align:center;font-size:18px;font-weight:950;color:#1F4E79;">{metrics_b["goals_per_match"]:.2f}</div>
+</div>
 </div>
 
-<div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;background:#F9FAFB;border-radius:12px;padding:14px 16px;margin-bottom:10px;">
-<div style="text-align:center;font-size:18px;font-weight:950;color:#92400E;">{metrics_a["clean_sheets"]}</div>
+<div style="text-align:center;font-size:19px;font-weight:950;color:#1F4E79;">{metrics_b["goals_per_match"]:.2f}</div>
+</div>
+
+<div style="display:grid;grid-template-columns:220px 1fr 220px;gap:20px;align-items:center;background:#F9FAFB;border-radius:12px;padding:10px 16px;margin-bottom:8px;">
+<div style="text-align:center;font-size:19px;font-weight:950;color:#92400E;">{metrics_a["clean_sheets"]}</div>
 
 <div style="text-align:center;">
-<div style="font-size:18px;font-weight:950;color:#374151;">
-🧤 Clean Sheets
-</div>
+<div style="font-size:18px;font-weight:950;color:#374151;">🧤 Clean Sheets</div>
 <div style="font-size:15px;font-weight:900;color:{compare_delta(metrics_a["clean_sheets"], metrics_b["clean_sheets"])[1]};margin-top:2px;">
 {compare_delta(metrics_a["clean_sheets"], metrics_b["clean_sheets"])[0]}
 </div>
 </div>
 
-<div style="text-align:center;font-size:18px;font-weight:950;color:#92400E;">{metrics_b["clean_sheets"]}</div>
+<div style="text-align:center;font-size:19px;font-weight:950;color:#92400E;">{metrics_b["clean_sheets"]}</div>
 </div>
 
-<div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;background:#F9FAFB;border-radius:12px;padding:14px 16px;">
-<div style="text-align:center;font-size:18px;font-weight:950;color:#166534;">{metrics_a["win_rate"]:.0f}%</div>
+<div style="display:grid;grid-template-columns:220px 1fr 220px;gap:20px;align-items:center;background:#F9FAFB;border-radius:12px;padding:10px 16px;">
+<div style="text-align:center;font-size:19px;font-weight:950;color:#166534;">{metrics_a["win_rate"]:.0f}%</div>
 
 <div style="text-align:center;">
-<div style="font-size:18px;font-weight:950;color:#374151;">
-📈 Win Rate
-</div>
+<div style="font-size:18px;font-weight:950;color:#374151;">📈 Win Rate</div>
 <div style="font-size:15px;font-weight:900;color:{compare_delta(metrics_a["win_rate"], metrics_b["win_rate"], is_percent=True)[1]};margin-top:2px;">
 {compare_delta(metrics_a["win_rate"], metrics_b["win_rate"], is_percent=True)[0]}
 </div>
 </div>
 
-<div style="text-align:center;font-size:18px;font-weight:950;color:#166534;">{metrics_b["win_rate"]:.0f}%</div>
+<div style="text-align:center;font-size:19px;font-weight:950;color:#166534;">{metrics_b["win_rate"]:.0f}%</div>
 </div>
 
 </div>

@@ -3648,6 +3648,27 @@ for key, label, icon, color in [
 </div>
 
 <div style="
+background:white;
+border:1px solid #E5E7EB;
+border-radius:16px;
+padding:20px 22px;
+">
+
+<div style="
+background:linear-gradient(90deg,#EEF6FF,#E5F0FD);
+border-bottom:1px solid #C7DCF6;
+padding:14px 18px;
+margin:-20px -22px 22px -22px;
+border-radius:16px 16px 0 0;
+">
+
+<div style="
+display:flex;
+align-items:center;
+gap:12px;
+">
+
+<div style="
 width:6px;
 height:22px;
 border-radius:999px;
@@ -3661,6 +3682,9 @@ color:#1F2937;
 letter-spacing:.2px;
 ">
 Tournament Metrics
+</div>
+
+</div>
 </div>
 
 <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;background:#F9FAFB;border-radius:12px;padding:14px 16px;margin-bottom:10px;">

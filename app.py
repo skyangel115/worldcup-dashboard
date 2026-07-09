@@ -3121,7 +3121,7 @@ Team Selection
 
         with control_col1:
             selected_label = st.selectbox(
-                "Select Team",
+                "Primary Team",
                 options=list(label_to_team.keys()),
                 key="main_team_select"
             )
@@ -3138,6 +3138,20 @@ Team Selection
                 default="🛤️ Journey",
                 key="team_view_mode"
             )
+        if view_mode == "⚖️ Compare":
+            compare_options = [
+                label for label in label_to_team.keys()
+                if label_to_team[label] != selected_team
+            ]
+
+            compare_label = st.selectbox(
+                "Compare Team",
+                options=compare_options,
+                key="compare_team_select"
+            )
+
+            compare_team = label_to_team[compare_label]
+    
 
     if view_mode == "🛤️ Journey":
 
@@ -3453,19 +3467,6 @@ box-shadow:0 4px 14px rgba(0,0,0,0.05);
         render_team_match_history(history)
 
     else:
-
-        compare_options = [
-            label for label in label_to_team.keys()
-            if label_to_team[label] != selected_team
-        ]
-
-        compare_label = st.selectbox(
-            "Compare With",
-            options=compare_options,
-            key="compare_team_select"
-        )
-
-        compare_team = label_to_team[compare_label]
 
         profile_a = get_team_profile_scores(selected_team)
         profile_b = get_team_profile_scores(compare_team)

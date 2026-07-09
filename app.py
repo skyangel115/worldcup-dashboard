@@ -3444,7 +3444,7 @@ box-shadow:0 4px 14px rgba(0,0,0,0.05);
             elif a < b:
                 return "#9CA3AF", base_color, "", "🏆"
             else:
-                return base_color, base_color, "=", "="
+                return base_color, base_color, "", ""
 
         def compare_delta(a, b):
             diff = a - b
@@ -3454,7 +3454,7 @@ box-shadow:0 4px 14px rgba(0,0,0,0.05);
             elif diff < 0:
                 return f"▼ {diff}", "#991B1B"
             else:
-                return "=", "#64748B"
+                return "Tie", "#64748B"
 
         metrics_a = get_team_performance_metrics(selected_team)
         metrics_b = get_team_performance_metrics(compare_team)

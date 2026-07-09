@@ -3519,9 +3519,19 @@ VS
 </div>
 
 <div style="background:white;border:1px solid #E5E7EB;border-radius:16px;padding:20px 22px;margin-bottom:18px;">
-<div style="font-size:18px;font-weight:950;color:#1f2937;margin-bottom:16px;">
+<div style="
+background:linear-gradient(90deg,#F8FBFF,#EEF6FF);
+border-bottom:1px solid #DCE9F8;
+padding:14px 18px;
+margin:-20px -22px 22px -22px;
+border-radius:16px 16px 0 0;
+font-size:20px;
+font-weight:950;
+color:#1F2937;
+">
 🛡️ Team Profile
 </div>
+
 
 {"".join([
 f'''
@@ -3610,13 +3620,22 @@ for key, label, icon, color in [
 </div>
 
 <div style="background:white;border:1px solid #E5E7EB;border-radius:16px;padding:20px 22px;">
-<div style="font-size:18px;font-weight:950;color:#1f2937;margin-bottom:16px;">
+<div style="
+background:linear-gradient(90deg,#F8FBFF,#EEF6FF);
+border-bottom:1px solid #DCE9F8;
+padding:14px 18px;
+margin:-20px -22px 22px -22px;
+border-radius:16px 16px 0 0;
+font-size:20px;
+font-weight:950;
+color:#1F2937;
+">
 📊 Tournament Metrics
 </div>
 
 <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;background:#F9FAFB;border-radius:12px;padding:14px 16px;margin-bottom:10px;">
 <div style="font-weight:950;color:#1F4E79;">{metrics_a["group_finish"]}</div>
-<div style="text-align:center;font-size:17px;font-weight:950;color:#374151;">🏆 Group Finish</div>
+<div style="text-align:center;font-size:18px;font-weight:950;color:#374151;">🏆 Group Finish</div>
 <div style="text-align:right;font-weight:950;color:#1F4E79;">{metrics_b["group_finish"]}</div>
 </div>
 
@@ -3624,10 +3643,10 @@ for key, label, icon, color in [
 <div style="font-weight:950;color:#1F4E79;">{metrics_a["goals_per_match"]:.2f}</div>
 
 <div style="text-align:center;">
-<div style="font-size:17px;font-weight:950;color:#374151;">
+<div style="font-size:18px;font-weight:950;color:#374151;">
 ⚽ Goals / Match
 </div>
-<div style="font-size:14px;font-weight:900;color:{compare_delta(metrics_a["goals_per_match"], metrics_b["goals_per_match"])[1]};margin-top:2px;">
+<div style="font-size:15px;font-weight:900;color:{compare_delta(metrics_a["goals_per_match"], metrics_b["goals_per_match"])[1]};margin-top:2px;">
 {compare_delta(metrics_a["goals_per_match"], metrics_b["goals_per_match"])[0]}
 </div></div>
 
@@ -3638,10 +3657,10 @@ for key, label, icon, color in [
 <div style="font-weight:950;color:#92400E;">{metrics_a["clean_sheets"]}</div>
 
 <div style="text-align:center;">
-<div style="font-size:17px;font-weight:950;color:#374151;">
+<div style="font-size:18px;font-weight:950;color:#374151;">
 🧤 Clean Sheets
 </div>
-<div style="font-size:14px;font-weight:900;color:{compare_delta(metrics_a["clean_sheets"], metrics_b["clean_sheets"])[1]};margin-top:2px;">
+<div style="font-size:15px;font-weight:900;color:{compare_delta(metrics_a["clean_sheets"], metrics_b["clean_sheets"])[1]};margin-top:2px;">
 {compare_delta(metrics_a["clean_sheets"], metrics_b["clean_sheets"])[0]}
 </div>
 </div>
@@ -3653,10 +3672,10 @@ for key, label, icon, color in [
 <div style="font-weight:950;color:#166534;">{metrics_a["win_rate"]:.0f}%</div>
 
 <div style="text-align:center;">
-<div style="font-size:17px;font-weight:950;color:#374151;">
+<div style="font-size:18px;font-weight:950;color:#374151;">
 📈 Win Rate
 </div>
-<div style="font-size:14px;font-weight:900;color:{compare_delta(metrics_a["win_rate"], metrics_b["win_rate"])[1]};margin-top:2px;">
+<div style="font-size:15px;font-weight:900;color:{compare_delta(metrics_a["win_rate"], metrics_b["win_rate"], is_percent=True)[1]};margin-top:2px;">
 {compare_delta(metrics_a["win_rate"], metrics_b["win_rate"], is_percent=True)[0]}
 </div>
 </div>

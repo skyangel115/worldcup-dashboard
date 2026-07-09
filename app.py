@@ -1,7 +1,7 @@
 import streamlit as st
 import time
 
-#st.set_page_config(page_title="World Cup Dashboard", layout="wide")
+st.set_page_config(page_title="World Cup Dashboard", layout="wide")
 
 #st.title("🌍 FIFA World Cup 2026 Dashboard")
 

@@ -3688,13 +3688,13 @@ Tournament Metrics
 </div>
 
 <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;background:#F9FAFB;border-radius:12px;padding:14px 16px;margin-bottom:10px;">
-<div style="font-weight:950;color:#1F4E79;">{metrics_a["group_finish"]}</div>
+<div style="text-align:center;font-size:18px;font-weight:950;color:#1F4E79;">{metrics_a["group_finish"]}</div>
 <div style="text-align:center;font-size:18px;font-weight:950;color:#374151;">🏆 Group Finish</div>
-<div style="text-align:right;font-weight:950;color:#1F4E79;">{metrics_b["group_finish"]}</div>
+<div style="text-align:center;font-size:18px;font-weight:950;color:#1F4E79;">{metrics_b["group_finish"]}</div>
 </div>
 
 <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;background:#F9FAFB;border-radius:12px;padding:14px 16px;margin-bottom:10px;">
-<div style="font-weight:950;color:#1F4E79;">{metrics_a["goals_per_match"]:.2f}</div>
+<div style="text-align:center;font-size:18px;font-weight:950;color:#1F4E79;">{metrics_a["goals_per_match"]:.2f}</div>
 
 <div style="text-align:center;">
 <div style="font-size:18px;font-weight:950;color:#374151;">
@@ -3704,11 +3704,11 @@ Tournament Metrics
 {compare_delta(metrics_a["goals_per_match"], metrics_b["goals_per_match"])[0]}
 </div></div>
 
-<div style="text-align:right;font-weight:950;color:#1F4E79;">{metrics_b["goals_per_match"]:.2f}</div>
+<div style="text-align:center;font-size:18px;font-weight:950;color:#1F4E79;">{metrics_b["goals_per_match"]:.2f}</div>
 </div>
 
 <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;background:#F9FAFB;border-radius:12px;padding:14px 16px;margin-bottom:10px;">
-<div style="font-weight:950;color:#92400E;">{metrics_a["clean_sheets"]}</div>
+<div style="text-align:center;font-size:18px;font-weight:950;color:#92400E;">{metrics_a["clean_sheets"]}</div>
 
 <div style="text-align:center;">
 <div style="font-size:18px;font-weight:950;color:#374151;">
@@ -3719,11 +3719,11 @@ Tournament Metrics
 </div>
 </div>
 
-<div style="text-align:right;font-weight:950;color:#92400E;">{metrics_b["clean_sheets"]}</div>
+<div style="text-align:center;font-size:18px;font-weight:950;color:#92400E;">{metrics_b["clean_sheets"]}</div>
 </div>
 
 <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;background:#F9FAFB;border-radius:12px;padding:14px 16px;">
-<div style="font-weight:950;color:#166534;">{metrics_a["win_rate"]:.0f}%</div>
+<div style="text-align:center;font-size:18px;font-weight:950;color:#166534;">{metrics_a["win_rate"]:.0f}%</div>
 
 <div style="text-align:center;">
 <div style="font-size:18px;font-weight:950;color:#374151;">
@@ -3734,7 +3734,7 @@ Tournament Metrics
 </div>
 </div>
 
-<div style="text-align:right;font-weight:950;color:#166534;">{metrics_b["win_rate"]:.0f}%</div>
+<div style="text-align:center;font-size:18px;font-weight:950;color:#166534;">{metrics_b["win_rate"]:.0f}%</div>
 </div>
 
 </div>

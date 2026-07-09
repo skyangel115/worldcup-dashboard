@@ -3526,18 +3526,18 @@ text-align:center;
 margin-bottom:8px;
 ">
 <div style="
-font-size:14px;
-font-weight:950;
-color:#374151;
+font-size:18px;
+font-weight:900;
+color:#1F2937;
 ">
 {icon} {label}
 </div>
 
 <div style="
-font-size:12px;
+font-size:15px;
 font-weight:900;
 color:{compare_delta(profile_a[key], profile_b[key])[1]};
-margin-top:2px;
+margin-top:4px;
 ">
 {compare_delta(profile_a[key], profile_b[key])[0]}
 </div>

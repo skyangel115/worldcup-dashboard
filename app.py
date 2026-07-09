@@ -3446,15 +3446,21 @@ box-shadow:0 4px 14px rgba(0,0,0,0.05);
             else:
                 return base_color, base_color, "", ""
 
-        def compare_delta(a, b):
-            diff = a - b
-
-            if diff > 0:
-                return f"▲ +{diff}", "#166534"
-            elif diff < 0:
-                return f"▼ {diff}", "#991B1B"
+        def compare_delta(a, b, is_percent=False):
+            diff = round(a - b, 2)
+            if abs(diff) < 1e-6:
+                return "Tie", "#6B7280"
+            sign = "+" if diff > 0 else ""
+            if is_percent:
+                text = f"▲ {sign}{diff:.0f}%"
             else:
-                return "Tie", "#64748B"
+                if diff == int(diff):
+                    text = f"▲ {sign}{int(diff)}" if diff > 0 else f"▼ {int(diff)}"
+                else:
+                    text = f"▲ {sign}{diff:.2f}" if diff > 0 else f"▼ {diff:.2f}"
+            color = "#15803D" if diff > 0 else "#B91C1C"
+
+            return text, color
 
         metrics_a = get_team_performance_metrics(selected_team)
         metrics_b = get_team_performance_metrics(compare_team)
@@ -3651,7 +3657,7 @@ for key, label, icon, color in [
 📈 Win Rate
 </div>
 <div style="font-size:13px;font-weight:900;color:{compare_delta(metrics_a["win_rate"], metrics_b["win_rate"])[1]};margin-top:2px;">
-{compare_delta(metrics_a["win_rate"], metrics_b["win_rate"])[0]}
+{compare_delta(metrics_a["win_rate"], metrics_b["win_rate"], is_percent=True)[0]}
 </div>
 </div>
 

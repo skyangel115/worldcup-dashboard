@@ -270,6 +270,78 @@ div[data-testid="stSegmentedControl"] button[aria-pressed="true"]{
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+
+/* ---------- Tooltip ---------- */
+
+.tooltip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: help;
+}
+
+.tooltip-icon {
+    font-size: 14px;
+    color: #64748B;
+    font-weight: 900;
+    margin-left: 3px;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    opacity: 0;
+    width: 300px;
+    background: #111827;
+    color: white;
+    text-align: left;
+    border-radius: 10px;
+    padding: 10px 12px;
+    position: absolute;
+    z-index: 9999;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: opacity .18s ease;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.45;
+    box-shadow: 0 8px 24px rgba(15,23,42,.18);
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+
+# =====================
+# Tooltip text
+# =====================
+
+PROFILE_TOOLTIPS = {
+    "attack": (
+        "Composite attacking score based on goals scored "
+        "and offensive efficiency. Scores are normalized "
+        "to a 0–100 scale within this tournament."
+    ),
+    "defense": (
+        "Composite defensive score based on goals conceded "
+        "and clean-sheet performance. Scores are normalized "
+        "to a 0–100 scale within this tournament."
+    ),
+    "form": (
+        "Recent tournament form based on match results "
+        "and momentum. Scores are normalized to a 0–100 "
+        "scale within this tournament."
+    ),
+}
+
 # =====================
 # Country Flags
 # =====================
@@ -3333,7 +3405,11 @@ Scores are normalized from this tournament's results only.
 
 <div style="margin-bottom:18px;">
 <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:900;">
-<span>⚔️ Attack</span><span>{profile["attack"]}</span>
+<span class="tooltip">
+⚔️ Attack <span class="tooltip-icon">ℹ︎</span>
+<span class="tooltiptext">{PROFILE_TOOLTIPS["attack"]}</span>
+</span>
+<span>{profile["attack"]}</span>
 </div>
 <div style="background:#E5E7EB;border-radius:999px;height:10px;margin-top:7px;">
 <div style="background:#1F4E79;width:{profile["attack"]}%;height:10px;border-radius:999px;"></div>
@@ -3342,7 +3418,11 @@ Scores are normalized from this tournament's results only.
 
 <div style="margin-bottom:18px;">
 <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:900;">
-<span>🛡️ Defense</span><span>{profile["defense"]}</span>
+<span class="tooltip">
+🛡️ Defense <span class="tooltip-icon">ℹ︎</span>
+<span class="tooltiptext">{PROFILE_TOOLTIPS["defense"]}</span>
+</span>
+<span>{profile["defense"]}</span>
 </div>
 <div style="background:#E5E7EB;border-radius:999px;height:10px;margin-top:7px;">
 <div style="background:#166534;width:{profile["defense"]}%;height:10px;border-radius:999px;"></div>
@@ -3351,7 +3431,11 @@ Scores are normalized from this tournament's results only.
 
 <div>
 <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:900;">
-<span>🔥 Form</span><span>{profile["form"]}</span>
+<span class="tooltip">
+🔥 Form <span class="tooltip-icon">ℹ︎</span>
+<span class="tooltiptext">{PROFILE_TOOLTIPS["form"]}</span>
+</span>
+<span>{profile["form"]}</span>
 </div>
 <div style="background:#E5E7EB;border-radius:999px;height:10px;margin-top:7px;">
 <div style="background:#B45309;width:{profile["form"]}%;height:10px;border-radius:999px;"></div>
@@ -3507,50 +3591,6 @@ box-shadow:0 4px 14px rgba(0,0,0,0.05);
         color:#1f2937;
         """
 
-        st.markdown("""
-        <style>
-        .tooltip {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            cursor: help;
-        }
-
-        .tooltip-icon {
-            font-size: 13px;
-            color: #94A3B8;
-            font-weight: 900;
-        }
-
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            opacity: 0;
-            width: 260px;
-            background: #111827;
-            color: white;
-            text-align: left;
-            border-radius: 10px;
-            padding: 10px 12px;
-            position: absolute;
-            z-index: 9999;
-            bottom: 130%;
-            left: 50%;
-            transform: translateX(-50%);
-            transition: opacity .18s ease;
-            font-size: 13px;
-            font-weight: 600;
-            line-height: 1.45;
-            box-shadow: 0 8px 24px rgba(15,23,42,.18);
-        }
-
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
-        </style>
-        """, unsafe_allow_html=True)
-
         profile_tooltips = {
             "attack": "Composite attacking score based on goals scored and offensive efficiency. Scores are normalized to a 0–100 scale within this tournament.",
             "defense": "Composite defensive score based on goals conceded and clean-sheet performance. Scores are normalized to a 0–100 scale within this tournament.",
@@ -3658,7 +3698,8 @@ color:#1F2937;
 ">
 <span class="tooltip">
 {icon} {label} <span class="tooltip-icon">ℹ︎</span>
-<span class="tooltiptext">{profile_tooltips[key]}</span>
+<span class="tooltiptext">
+{PROFILE_TOOLTIPS[key]}
 </span>
 </div>
 

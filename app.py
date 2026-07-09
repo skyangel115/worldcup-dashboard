@@ -3518,18 +3518,46 @@ VS
 
 </div>
 
-<div style="background:white;border:1px solid #E5E7EB;border-radius:16px;padding:20px 22px;margin-bottom:18px;">
 <div style="
-background:linear-gradient(90deg,#F8FBFF,#EEF6FF);
-border-bottom:1px solid #DCE9F8;
+background:white;
+border:1px solid #E5E7EB;
+border-radius:16px;
+padding:20px 22px;
+margin-bottom:18px;
+">
+
+<div style="
+background:linear-gradient(90deg,#EEF6FF,#E5F0FD);
+border-bottom:1px solid #C7DCF6;
 padding:14px 18px;
 margin:-20px -22px 22px -22px;
 border-radius:16px 16px 0 0;
-font-size:20px;
-font-weight:950;
-color:#1F2937;
 ">
-🛡️ Team Profile
+
+<div style="
+display:flex;
+align-items:center;
+gap:12px;
+">
+
+<div style="
+width:6px;
+height:22px;
+border-radius:999px;
+background:#3B82F6;
+"></div>
+
+<div style="
+font-size:22px;
+font-weight:900;
+color:#1F2937;
+letter-spacing:.2px;
+">
+Team Profile
+</div>
+
+</div>
+
 </div>
 
 
@@ -3619,18 +3647,20 @@ for key, label, icon, color in [
 ])}
 </div>
 
-<div style="background:white;border:1px solid #E5E7EB;border-radius:16px;padding:20px 22px;">
 <div style="
-background:linear-gradient(90deg,#F8FBFF,#EEF6FF);
-border-bottom:1px solid #DCE9F8;
-padding:14px 18px;
-margin:-20px -22px 22px -22px;
-border-radius:16px 16px 0 0;
-font-size:20px;
-font-weight:950;
+width:6px;
+height:22px;
+border-radius:999px;
+background:#3B82F6;
+"></div>
+
+<div style="
+font-size:22px;
+font-weight:900;
 color:#1F2937;
+letter-spacing:.2px;
 ">
-📊 Tournament Metrics
+Tournament Metrics
 </div>
 
 <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;background:#F9FAFB;border-radius:12px;padding:14px 16px;margin-bottom:10px;">

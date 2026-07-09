@@ -3525,22 +3525,22 @@ f'''
 text-align:center;
 margin-bottom:8px;
 ">
-    <div style="
-    font-size:14px;
-    font-weight:950;
-    color:#374151;
-    ">
-    {icon} {label}
-    </div>
+<div style="
+font-size:14px;
+font-weight:950;
+color:#374151;
+">
+{icon} {label}
+</div>
 
-    <div style="
-    font-size:12px;
-    font-weight:900;
-    color:{compare_delta(profile_a[key], profile_b[key])[1]};
-    margin-top:2px;
-    ">
-    {compare_delta(profile_a[key], profile_b[key])[0]}
-    </div>
+<div style="
+font-size:12px;
+font-weight:900;
+color:{compare_delta(profile_a[key], profile_b[key])[1]};
+margin-top:2px;
+">
+{compare_delta(profile_a[key], profile_b[key])[0]}
+</div>
 </div>
 
 <div style="

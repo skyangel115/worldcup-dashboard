@@ -793,6 +793,72 @@ def format_match_day(date_text):
     except:
         return date_text or "-"
 
+def parse_score_pair(score_text):
+    """
+    將 '2–1'、'2-1' 之類的比分轉成 (2, 1)。
+    無法解析時回傳 None。
+    """
+    if not score_text:
+        return None
+
+    match = re.search(r"(\d+)\s*[–-]\s*(\d+)", str(score_text))
+
+    if match is None:
+        return None
+
+    return int(match.group(1)), int(match.group(2))
+
+
+def get_tournament_champion(knockout_matches):
+    """
+    從 Final 比賽結果取得冠軍隊伍。
+    平手時會進一步讀取 pk_score。
+    """
+    final_matches = knockout_matches.get("Final", [])
+
+    if not final_matches:
+        return None
+
+    final_match = final_matches[0]
+
+    if final_match.get("status") != "Completed":
+        return None
+
+    team1 = final_match.get("team1")
+    team2 = final_match.get("team2")
+
+    if not team1 or not team2:
+        return None
+
+    score_pair = parse_score_pair(final_match.get("score"))
+
+    if score_pair is None:
+        return None
+
+    score1, score2 = score_pair
+
+    if score1 > score2:
+        return team1
+
+    if score2 > score1:
+        return team2
+
+    # 正規時間／延長賽仍平手時，依點球比分決定
+    penalty_pair = parse_score_pair(final_match.get("pk_score"))
+
+    if penalty_pair is None:
+        return None
+
+    penalty1, penalty2 = penalty_pair
+
+    if penalty1 > penalty2:
+        return team1
+
+    if penalty2 > penalty1:
+        return team2
+
+    return None
+
 # =====================
 # Hero
 # =====================
@@ -883,17 +949,20 @@ Current Stage
     )
 
 def render_upcoming_match_bar(knockout_matches):
+
     next_round, next_match = get_next_knockout_match(knockout_matches)
 
-    if next_match is None:
-        return
+    # =====================
+    # Upcoming Match Banner
+    # =====================
+    if next_match is not None:
 
-    match_day = format_match_day(next_match.get("date"))
-    match_time = next_match.get("time", "-")
-    timezone = next_match.get("timezone", "UTC+8")
+        match_day = format_match_day(next_match.get("date"))
+        match_time = next_match.get("time", "-")
+        timezone = next_match.get("timezone", "UTC+8")
 
-    st.markdown(
-        f"""
+        st.markdown(
+            f"""
 <div style="
 background:linear-gradient(135deg,#0B2F6B,#123F86);
 border-radius:12px;
@@ -941,6 +1010,7 @@ font-weight:950;
 white-space:nowrap;
 ">
 {get_flag(next_match["team1"])} {next_match["team1"]}
+
 <span style="
 background:rgba(255,255,255,.15);
 border:1px solid rgba(255,255,255,.25);
@@ -952,19 +1022,11 @@ margin:0 12px;
 ">
 VS
 </span>
+
 {get_flag(next_match["team2"])} {next_match["team2"]}
 </div>
 
 </div>
-
-<div style="
-display:flex;
-align-items:center;
-gap:18px;
-font-size:17px;
-font-weight:900;
-white-space:nowrap;
-">
 
 <div style="
 background:rgba(255,255,255,.12);
@@ -973,10 +1035,107 @@ padding:8px 18px;
 border-radius:999px;
 font-size:18px;
 font-weight:900;
+white-space:nowrap;
 ">
 🗓 {match_day} • {match_time} ({timezone})
 </div>
 
+</div>
+</div>
+""",
+            unsafe_allow_html=True
+        )
+
+        return
+
+    # =====================
+    # Champion Banner
+    # =====================
+    champion = get_tournament_champion(knockout_matches)
+
+    if champion is None:
+        return
+
+    st.markdown(
+        f"""
+<div style="
+position:relative;
+overflow:hidden;
+background:linear-gradient(135deg,#0B2F6B 0%,#123F86 56%,#1F4E79 100%);
+border:1px solid rgba(212,175,55,.42);
+border-radius:14px;
+padding:16px 22px;
+margin-top:18px;
+margin-bottom:24px;
+box-shadow:0 6px 18px rgba(11,47,107,.20);
+color:white;
+">
+
+<div style="
+position:absolute;
+right:26px;
+top:-24px;
+font-size:112px;
+opacity:.07;
+line-height:1;
+">
+🏆
+</div>
+
+<div style="
+position:relative;
+z-index:2;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:22px;
+flex-wrap:wrap;
+">
+
+<div style="
+display:flex;
+align-items:center;
+gap:18px;
+flex-wrap:wrap;
+">
+
+<div style="
+font-size:14px;
+font-weight:950;
+letter-spacing:.10em;
+text-transform:uppercase;
+color:#F6D86B;
+white-space:nowrap;
+">
+🏆 World Champions
+</div>
+
+<div style="
+width:1px;
+height:32px;
+background:rgba(255,255,255,.35);
+"></div>
+
+<div style="
+font-size:28px;
+font-weight:950;
+white-space:nowrap;
+">
+{get_flag(champion)} {champion}
+</div>
+
+</div>
+
+<div style="
+background:rgba(255,255,255,.12);
+border:1px solid rgba(255,255,255,.20);
+padding:8px 18px;
+border-radius:999px;
+font-size:16px;
+font-weight:900;
+white-space:nowrap;
+">
+FIFA World Cup 2026
 </div>
 
 </div>

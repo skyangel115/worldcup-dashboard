@@ -2706,51 +2706,34 @@ def get_team_journey_pool():
 
 
 def get_team_knockout_status(team):
+    """
+    回傳：
+    is_active：是否仍有未完成比賽
+    last_round：目前／最後參加的輪次
+    next_match：下一場未完成比賽
+    """
+
+    # 先搜尋所有尚未完成的比賽。
+    # 這樣準決賽落敗者仍能正確找到季軍戰。
+    for round_name in get_round_order():
+        for match in knockout_matches.get(round_name, []):
+
+            if team not in [match.get("team1"), match.get("team2")]:
+                continue
+
+            if match.get("status") != "Completed":
+                return True, round_name, match
+
+    # 沒有未完成比賽，再找最後參加的輪次
     last_round = None
-    is_active = False
-    next_match = None
 
     for round_name in get_round_order():
         for match in knockout_matches.get(round_name, []):
-            team_in_match = team in [match["team1"], match["team2"]]
 
-            if not team_in_match:
-                continue
+            if team in [match.get("team1"), match.get("team2")]:
+                last_round = round_name
 
-            last_round = round_name
-
-            if match["status"] != "Completed":
-                is_active = True
-                next_match = match
-                return is_active, last_round, next_match
-
-            # 如果比賽完成，要判斷這隊有沒有贏
-            score = match.get("score")
-            pk_score = match.get("pk_score")
-
-            if score:
-                s1, s2 = map(int, re.split(r"[–-]", score))
-
-                if match["team1"] == team:
-                    team_score, opp_score = s1, s2
-                else:
-                    team_score, opp_score = s2, s1
-
-                if team_score < opp_score:
-                    return False, last_round, None
-
-                if team_score == opp_score and pk_score:
-                    p1, p2 = map(int, re.split(r"[–-]", pk_score))
-
-                    if match["team1"] == team:
-                        team_pk, opp_pk = p1, p2
-                    else:
-                        team_pk, opp_pk = p2, p1
-
-                    if team_pk < opp_pk:
-                        return False, last_round, None
-
-    return is_active, last_round, next_match
+    return False, last_round, None
 
 
 def get_team_group_stats(team):
@@ -2779,6 +2762,108 @@ def get_team_group_stats(team):
 
     return played, wins, draws, losses, gf, ga
 
+def get_match_winner(match):
+    """
+    從已完成的比賽取得勝隊。
+    正規比分平手時，使用 pk_score 判斷。
+    """
+
+    if not match or match.get("status") != "Completed":
+        return None
+
+    team1 = match.get("team1")
+    team2 = match.get("team2")
+    score = match.get("score")
+
+    if not team1 or not team2 or not score:
+        return None
+
+    try:
+        score1, score2 = map(
+            int,
+            re.split(r"[–-]", str(score))
+        )
+    except (ValueError, TypeError):
+        return None
+
+    if score1 > score2:
+        return team1
+
+    if score2 > score1:
+        return team2
+
+    # 主比分平手時，用點球結果
+    pk_score = match.get("pk_score")
+
+    if not pk_score:
+        return None
+
+    try:
+        pk1, pk2 = map(
+            int,
+            re.split(r"[–-]", str(pk_score))
+        )
+    except (ValueError, TypeError):
+        return None
+
+    if pk1 > pk2:
+        return team1
+
+    if pk2 > pk1:
+        return team2
+
+    return None
+
+def get_final_placement(team):
+    """
+    比賽完成後回傳：
+    Champion / Runner-up / Third Place / Fourth Place
+
+    尚未產生最終名次時回傳 None。
+    """
+
+    # Final：冠軍與亞軍
+    final_matches = knockout_matches.get("Final", [])
+
+    if final_matches:
+        final_match = final_matches[0]
+
+        if final_match.get("status") == "Completed":
+            winner = get_match_winner(final_match)
+
+            if winner is not None:
+                if team == winner:
+                    return "Champion"
+
+                if team in [
+                    final_match.get("team1"),
+                    final_match.get("team2"),
+                ]:
+                    return "Runner-up"
+
+    # Third-place match：季軍與第四名
+    third_place_matches = knockout_matches.get(
+        "Third-place match",
+        []
+    )
+
+    if third_place_matches:
+        third_match = third_place_matches[0]
+
+        if third_match.get("status") == "Completed":
+            winner = get_match_winner(third_match)
+
+            if winner is not None:
+                if team == winner:
+                    return "Third Place"
+
+                if team in [
+                    third_match.get("team1"),
+                    third_match.get("team2"),
+                ]:
+                    return "Fourth Place"
+
+    return None
 
 def get_team_knockout_stats(team):
     played = wins = draws = losses = gf = ga = 0
@@ -3286,33 +3371,79 @@ def show_team_journey():
 
     team_options = []
 
+    placement_icons = {
+        "Champion": "🏆",
+        "Runner-up": "🥈",
+        "Third Place": "🥉",
+        "Fourth Place": "🏅",
+    }
+
     for team in teams:
         is_active, last_round, next_match = get_team_knockout_status(team)
+        placement = get_final_placement(team)
 
-        if is_active:
-            label = f"🟢 {get_flag(team)} {team} ({last_round})"
+        if placement is not None:
+            icon = placement_icons[placement]
+            label = (
+                f"{icon} {get_flag(team)} "
+                f"{team} ({placement})"
+            )
+
+        elif is_active:
+            label = (
+                f"🟢 {get_flag(team)} "
+                f"{team} ({last_round})"
+            )
+
         else:
-            label = f"⚪ {get_flag(team)} {team} (Eliminated in {last_round})"
+            label = (
+                f"⚪ {get_flag(team)} "
+                f"{team} (Eliminated in {last_round})"
+            )
 
         team_options.append((label, team, is_active))
 
     # Active teams 排前面
+    placement_rank = {
+        "Champion": 100,
+        "Runner-up": 90,
+        "Third Place": 80,
+        "Fourth Place": 70,
+    }
+
     round_rank = {
-        "Final": 6,
-        "Third-place match": 5,
-        "Semi-finals": 4,
-        "Quarter-finals": 3,
-        "Round of 16": 2,
-        "Round of 32": 1,
+        "Final": 60,
+        "Third-place match": 55,
+        "Semi-finals": 50,
+        "Quarter-finals": 40,
+        "Round of 16": 30,
+        "Round of 32": 20,
         None: 0,
     }
+
+
+    def get_team_display_rank(team):
+        placement = get_final_placement(team)
+
+        if placement is not None:
+            return placement_rank[placement]
+
+        is_active, last_round, _ = get_team_knockout_status(team)
+
+        base_rank = round_rank.get(last_round, 0)
+
+        # 同一輪時，仍在賽事中的隊伍排前面
+        if is_active:
+            base_rank += 5
+
+        return base_rank
+
 
     team_options = sorted(
         team_options,
         key=lambda x: (
-            not x[2],                         # active teams first
-            -round_rank.get(get_team_knockout_status(x[1])[1], 0),
-            x[1]
+            -get_team_display_rank(x[1]),
+            x[1],
         )
     )
 
@@ -3400,11 +3531,23 @@ Team Selection
         ga = g_ga + k_ga
         gd = gf - ga
 
-        status_text = (
-            f"🟢 Active • {last_round}"
-            if is_active
-            else f"⚪ Eliminated in {last_round}"
-        )
+        placement = get_final_placement(selected_team)
+
+        placement_status = {
+            "Champion": "🏆 Tournament Champion",
+            "Runner-up": "🥈 Tournament Runner-up",
+            "Third Place": "🥉 Third Place",
+            "Fourth Place": "🏅 Fourth Place",
+        }
+
+        if placement is not None:
+            status_text = placement_status[placement]
+
+        elif is_active:
+            status_text = f"🟢 Active • {last_round}"
+
+        else:
+            status_text = f"⚪ Eliminated in {last_round}"
 
         if next_match is not None:
             opponent = next_match["team2"] if next_match["team1"] == selected_team else next_match["team1"]
